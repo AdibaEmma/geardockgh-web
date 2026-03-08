@@ -1,0 +1,13 @@
+export { CustomCursor } from './CustomCursor';
+export { Navbar } from './Navbar';
+export { Hero } from './Hero';
+export { Ticker } from './Ticker';
+export { TrustBar } from './TrustBar';
+export { Categories } from './Categories';
+export { FeaturedProducts } from './FeaturedProducts';
+export { FlashDeal } from './FlashDeal';
+export { HowItWorks } from './HowItWorks';
+export { Testimonials } from './Testimonials';
+export { WhyUs } from './WhyUs';
+export { Newsletter } from './Newsletter';
+export { Footer } from './Footer';
