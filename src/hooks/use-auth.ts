@@ -7,7 +7,7 @@ import { useAuthStore } from '@/stores/auth-store';
 import { useToastStore } from '@/stores/toast-store';
 import type { LoginRequest, RegisterRequest } from '@/types';
 
-export function useLogin() {
+export function useLogin(redirectTo?: string) {
   const router = useRouter();
   const setTokens = useAuthStore((s) => s.setTokens);
   const setUser = useAuthStore((s) => s.setUser);
@@ -20,7 +20,7 @@ export function useLogin() {
       setTokens(accessToken, refreshToken);
       setUser(user.user ?? user);
       addToast({ type: 'success', message: 'Welcome back!' });
-      router.push('/products');
+      router.push(redirectTo ?? '/products');
     },
     onError: (error: any) => {
       const message =
@@ -30,7 +30,7 @@ export function useLogin() {
   });
 }
 
-export function useRegister() {
+export function useRegister(redirectTo?: string) {
   const router = useRouter();
   const setTokens = useAuthStore((s) => s.setTokens);
   const setUser = useAuthStore((s) => s.setUser);
@@ -43,7 +43,7 @@ export function useRegister() {
       setTokens(accessToken, refreshToken);
       setUser(user.user ?? user);
       addToast({ type: 'success', message: 'Account created successfully!' });
-      router.push('/products');
+      router.push(redirectTo ?? '/products');
     },
     onError: (error: any) => {
       const message =

@@ -231,7 +231,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 </Button>
               </Link>
             ) : (
-              <Link href="/login" onClick={onClose}>
+              <Link href="/login?redirect=/checkout" onClick={onClose}>
                 <Button className="w-full" size="lg">
                   Sign in to Checkout
                 </Button>

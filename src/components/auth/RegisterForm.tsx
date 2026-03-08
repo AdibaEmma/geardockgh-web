@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { useRegister } from '@/hooks/use-auth';
@@ -21,7 +22,9 @@ const registerSchema = z.object({
 type RegisterFormData = z.infer<typeof registerSchema>;
 
 export function RegisterForm() {
-  const { mutate: registerUser, isPending } = useRegister();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get('redirect') ?? undefined;
+  const { mutate: registerUser, isPending } = useRegister(redirectTo);
 
   const {
     register,
@@ -96,7 +99,7 @@ export function RegisterForm() {
       >
         Already have an account?{' '}
         <Link
-          href="/login"
+          href={redirectTo ? `/login?redirect=${encodeURIComponent(redirectTo)}` : '/login'}
           className="font-medium transition-colors hover:underline"
           style={{ color: 'var(--gold)' }}
         >

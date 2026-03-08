@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { useLogin } from '@/hooks/use-auth';
@@ -16,7 +17,9 @@ const loginSchema = z.object({
 type LoginFormData = z.infer<typeof loginSchema>;
 
 export function LoginForm() {
-  const { mutate: login, isPending } = useLogin();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get('redirect') ?? undefined;
+  const { mutate: login, isPending } = useLogin(redirectTo);
 
   const {
     register,
@@ -65,7 +68,7 @@ export function LoginForm() {
       >
         Don&apos;t have an account?{' '}
         <Link
-          href="/register"
+          href={redirectTo ? `/register?redirect=${encodeURIComponent(redirectTo)}` : '/register'}
           className="font-medium transition-colors hover:underline"
           style={{ color: 'var(--gold)' }}
         >

@@ -26,6 +26,20 @@ export const metadata: Metadata = {
   title: "GearDockGH — Premium Gear for Remote Workers & Creators",
   description:
     "Premium imported gear for Ghana's remote workers, content creators, gamers, and students. Top-tier equipment. Delivered to your door.",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicons/geardockgh-favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicons/geardockgh-favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicons/geardockgh-favicon-48x48.png", sizes: "48x48", type: "image/png" },
+      { url: "/favicons/geardockgh-favicon-64x64.png", sizes: "64x64", type: "image/png" },
+      { url: "/favicons/geardockgh-favicon-128x128.png", sizes: "128x128", type: "image/png" },
+      { url: "/favicons/geardockgh-favicon-256x256.png", sizes: "256x256", type: "image/png" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png" },
+    ],
+  },
   openGraph: {
     title: "GearDockGH — Premium Gear for Remote Workers & Creators",
     description:

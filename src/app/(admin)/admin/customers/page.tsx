@@ -93,10 +93,17 @@ export default function AdminCustomersPage() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [searchInput, setSearchInput] = useState('');
+  const [roleFilter, setRoleFilter] = useState('');
 
   const { data, isLoading } = useQuery({
-    queryKey: ['admin-customers', page, search],
-    queryFn: () => getAdminCustomers({ page, limit: 20, search: search || undefined }),
+    queryKey: ['admin-customers', page, search, roleFilter],
+    queryFn: () =>
+      getAdminCustomers({
+        page,
+        limit: 20,
+        search: search || undefined,
+        role: roleFilter || undefined,
+      }),
   });
 
   const result = data?.data as { data: AdminCustomer[]; meta: { total: number; page: number; totalPages: number } } | undefined;
@@ -135,6 +142,31 @@ export default function AdminCustomersPage() {
           Search
         </button>
       </form>
+
+      {/* Role filter pills */}
+      <div className="flex gap-2">
+        {([
+          { label: 'All', value: '' },
+          { label: 'Customers', value: 'CUSTOMER' },
+          { label: 'Admins', value: 'ADMIN' },
+        ] as const).map((rf) => (
+          <button
+            key={rf.value}
+            onClick={() => {
+              setRoleFilter(rf.value);
+              setPage(1);
+            }}
+            className="whitespace-nowrap rounded-full border px-3 py-1 text-xs font-medium"
+            style={{
+              background: roleFilter === rf.value ? 'var(--gold)' : 'transparent',
+              color: roleFilter === rf.value ? 'var(--deep)' : 'var(--muted)',
+              borderColor: roleFilter === rf.value ? 'var(--gold)' : 'var(--border)',
+            }}
+          >
+            {rf.label}
+          </button>
+        ))}
+      </div>
 
       {/* Total count */}
       {meta && (

@@ -106,6 +106,15 @@ nav.landing-nav.scrolled {
   letter-spacing: -0.5px;
   color: var(--white);
   text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.nav-logo-icon {
+  height: 64px;
+  width: 64px;
+  object-fit: contain;
+  margin: -16px -12px -16px -8px;
 }
 .nav-logo span { color: var(--gold); }
 .nav-links {

@@ -36,8 +36,16 @@ export const STATUS_COLORS: Record<string, string> = {
 };
 
 export const CATEGORIES = [
-  { value: 'remote-work', label: 'Remote Work', icon: '💼' },
-  { value: 'creator-tools', label: 'Creator Tools', icon: '🎬' },
-  { value: 'gaming', label: 'Gaming Setup', icon: '🎮' },
-  { value: 'student', label: 'Student Essentials', icon: '📚' },
+  { value: 'desks-furniture', label: 'Desks & Furniture', icon: '🪑' },
+  { value: 'laptops-computers', label: 'Laptops & Computers', icon: '💻' },
+  { value: 'monitors-displays', label: 'Monitors & Displays', icon: '🖥️' },
+  { value: 'audio-headphones', label: 'Audio & Headphones', icon: '🎧' },
+  { value: 'keyboards-mice', label: 'Keyboards & Mice', icon: '⌨️' },
+  { value: 'accessories', label: 'Accessories', icon: '🔌' },
+  { value: 'lighting', label: 'Lighting', icon: '💡' },
+  { value: 'cameras-video', label: 'Cameras & Video', icon: '📷' },
+  { value: 'storage-networking', label: 'Storage & Networking', icon: '💾' },
+  { value: 'gaming-consoles', label: 'Gaming Consoles', icon: '🎮' },
+  { value: 'gaming-accessories', label: 'Gaming Accessories', icon: '🕹️' },
+  { value: 'other', label: 'Other', icon: '📦' },
 ];

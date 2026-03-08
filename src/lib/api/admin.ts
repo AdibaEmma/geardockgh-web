@@ -1,5 +1,5 @@
 import { apiClient } from './client';
-import type { Order } from '@/types';
+import type { Order, Product } from '@/types';
 
 export interface DashboardStats {
   totalOrders: number;
@@ -45,6 +45,7 @@ interface AdminOrdersParams {
   page?: number;
   limit?: number;
   status?: string;
+  search?: string;
 }
 
 export async function getAdminStats() {
@@ -79,6 +80,7 @@ interface AdminCustomersParams {
   page?: number;
   limit?: number;
   search?: string;
+  role?: string;
 }
 
 interface AdminCustomersResponse {
@@ -123,4 +125,52 @@ export async function createAdminTenant(data: { id: string; name: string }) {
 
 export async function updateAdminTenant(id: string, data: { name?: string; isActive?: boolean }) {
   return apiClient.patch<Tenant>('/admin/tenants/' + id, data);
+}
+
+// --- Admin Products ---
+
+interface AdminProductsParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+  category?: string;
+  status?: string; // 'published' | 'draft'
+}
+
+export async function getAdminProducts(params?: AdminProductsParams) {
+  return apiClient.get<{ data: Product[]; meta: { total: number; page: number; limit: number; totalPages: number } }>('/admin/products', { params });
+}
+
+export async function createAdminProduct(data: {
+  name: string;
+  description?: string;
+  pricePesewas: number;
+  comparePricePesewas?: number;
+  stockCount?: number;
+  isPreorder?: boolean;
+  isPublished?: boolean;
+  category?: string;
+  imagesJson?: string;
+  specsJson?: string;
+}) {
+  return apiClient.post<Product>('/admin/products', data);
+}
+
+export async function updateAdminProduct(id: string, data: Partial<{
+  name: string;
+  description: string;
+  pricePesewas: number;
+  comparePricePesewas: number;
+  stockCount: number;
+  isPreorder: boolean;
+  isPublished: boolean;
+  category: string;
+  imagesJson: string;
+  specsJson: string;
+}>) {
+  return apiClient.patch<Product>(`/admin/products/${id}`, data);
+}
+
+export async function deleteAdminProduct(id: string) {
+  return apiClient.delete(`/admin/products/${id}`);
 }

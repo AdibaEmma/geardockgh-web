@@ -28,9 +28,14 @@ export function ShopHeader() {
           {/* Logo */}
           <Link
             href="/"
-            className="font-[family-name:var(--font-syne)] text-lg font-bold"
+            className="flex items-center gap-2 font-[family-name:var(--font-syne)] text-lg font-bold"
             style={{ color: 'var(--gold)' }}
           >
+            <img
+              src="/images/branding/geardockgh-logo-nobg.png"
+              alt=""
+              className="h-16 w-16 -my-4 -ml-2 -mr-3 object-contain"
+            />
             GearDockGH
           </Link>
 

@@ -47,6 +47,7 @@ export function Navbar() {
 
       <nav className={`landing-nav${scrolled ? ' scrolled' : ''}`}>
         <Link href="/" className="nav-logo">
+          <img src="/images/branding/geardockgh-logo-nobg.png" alt="" className="nav-logo-icon" />
           GearDock<span>GH</span>
         </Link>
 

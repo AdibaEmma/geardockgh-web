@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Search } from 'lucide-react';
 import { getAdminOrders, updateOrderStatus } from '@/lib/api/admin';
 import { OrderStatusBadge } from '@/components/orders/OrderStatusBadge';
 import { Button } from '@/components/ui/Button';
@@ -24,16 +24,25 @@ const allStatuses: OrderStatus[] = [
 export default function AdminOrdersPage() {
   const [statusFilter, setStatusFilter] = useState<string>('');
   const [page, setPage] = useState(1);
+  const [searchInput, setSearchInput] = useState('');
+  const [search, setSearch] = useState('');
   const queryClient = useQueryClient();
   const addToast = useToastStore((s) => s.addToast);
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSearch(searchInput);
+    setPage(1);
+  };
+
   const { data, isLoading } = useQuery({
-    queryKey: ['admin-orders', { page, status: statusFilter }],
+    queryKey: ['admin-orders', { page, status: statusFilter, search }],
     queryFn: () =>
       getAdminOrders({
         page,
         limit: 20,
         status: statusFilter || undefined,
+        search: search || undefined,
       }),
   });
 
@@ -62,6 +71,31 @@ export default function AdminOrdersPage() {
       >
         Orders
       </h1>
+
+      {/* Search */}
+      <form onSubmit={handleSearch} className="mb-4 flex items-center gap-3">
+        <div
+          className="flex flex-1 items-center gap-2 rounded-lg border px-3 py-2"
+          style={{ background: 'var(--card)', borderColor: 'var(--border)' }}
+        >
+          <Search size={16} style={{ color: 'var(--muted)' }} />
+          <input
+            type="text"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            placeholder="Search by order number or customer name..."
+            className="flex-1 bg-transparent text-sm outline-none placeholder:text-[var(--muted)]"
+            style={{ color: 'var(--white)' }}
+          />
+        </div>
+        <button
+          type="submit"
+          className="shrink-0 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
+          style={{ background: 'var(--gold)', color: 'var(--black)' }}
+        >
+          Search
+        </button>
+      </form>
 
       {/* Filter */}
       <div className="mb-4 flex gap-2 overflow-x-auto pb-2">
