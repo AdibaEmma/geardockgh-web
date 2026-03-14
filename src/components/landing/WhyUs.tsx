@@ -25,7 +25,7 @@ const FEATURES: Feature[] = [
     num: '03',
     title: 'Fast, Reliable Delivery',
     description:
-      '48-hour delivery in Accra. Nationwide shipping within 5\u20137 days. Real-time tracking on every order.',
+      '48-hour delivery in Bolgatanga. Nationwide shipping within 5\u20137 days. Real-time tracking on every order.',
   },
   {
     num: '04',
@@ -39,7 +39,7 @@ const TRUST_STATS = [
   { value: '500', suffix: '+', label: 'Orders Delivered' },
   { value: '4.9', suffix: '/5', label: 'Customer Rating' },
   { value: '200', suffix: '+', label: 'Products Curated' },
-  { value: '48', suffix: 'h', label: 'Accra Delivery' },
+  { value: '48', suffix: 'h', label: 'Bolgatanga Delivery' },
 ];
 
 const TRUST_BADGES = [

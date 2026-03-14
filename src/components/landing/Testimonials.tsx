@@ -11,7 +11,7 @@ interface Testimonial {
 const TESTIMONIALS: Testimonial[] = [
   {
     name: 'Kwame A.',
-    role: 'Software Engineer, Accra',
+    role: 'Software Engineer, Bolgatanga',
     emoji: '\uD83D\uDC68\u200D\uD83D\uDCBB',
     text: 'The Sony headphones are a game-changer for my remote work. Arrived in 2 days. MoMo payment was seamless.',
     rating: 5,

@@ -28,7 +28,7 @@ const PRODUCTS: Product[] = [
     slug: 'sony-wh-1000xm5',
     nameHtml: true,
     description:
-      "Industry-leading ANC. 30hr battery. Perfect for deep work in Accra traffic or Bolgatanga heat.",
+      "Industry-leading ANC. 30hr battery. Perfect for deep work in Bolgatanga heat or Tamale bustle.",
     price: 'GH\u20B5 2,400',
     comparePrice: 'GH\u20B5 3,100',
     priceUnit: '/ unit',

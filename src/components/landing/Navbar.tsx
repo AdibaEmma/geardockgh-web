@@ -42,7 +42,7 @@ export function Navbar() {
   return (
     <>
       <div className={`announcement-bar${scrolled ? ' hidden' : ''}`}>
-        <span>FREE DELIVERY IN ACCRA ON ORDERS OVER GH&#8373; 500</span>
+        <span>FREE DELIVERY IN BOLGATANGA ON ORDERS OVER GH&#8373; 500</span>
       </div>
 
       <nav className={`landing-nav${scrolled ? ' scrolled' : ''}`}>

@@ -22,7 +22,7 @@ const STEPS = [
     emoji: '\uD83D\uDCE6',
     title: 'Delivered to Your Door',
     description:
-      '48-hour delivery in Accra. Nationwide shipping within 5\u20137 days. Real-time tracking included.',
+      '48-hour delivery in Bolgatanga. Nationwide shipping within 5\u20137 days. Real-time tracking included.',
   },
 ];
 

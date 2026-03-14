@@ -5,7 +5,7 @@ import { useEffect, useRef } from 'react';
 const TRUST_ITEMS = [
   { icon: '\uD83D\uDCF1', label: 'MTN MoMo Accepted' },
   { icon: '\uD83D\uDCB3', label: 'Visa & Mastercard' },
-  { icon: '\uD83D\uDE9A', label: '48h Delivery in Accra' },
+  { icon: '\uD83D\uDE9A', label: '48h Delivery in Bolgatanga' },
   { icon: '\u2705', label: 'Verified Imports Only' },
   { icon: '\uD83D\uDD04', label: '7-Day Easy Returns' },
 ];

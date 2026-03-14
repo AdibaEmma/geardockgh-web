@@ -73,7 +73,7 @@ export function AddressForm({
       <div className="grid grid-cols-2 gap-3">
         <Input
           label="City"
-          placeholder="Accra"
+          placeholder="Bolgatanga"
           error={errors.city?.message}
           {...register('city')}
         />

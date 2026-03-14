@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 const STATS = [
   { value: '200', suffix: '+', label: 'Products Curated' },
-  { value: '48', suffix: 'h', label: 'Delivery in Accra' },
+  { value: '48', suffix: 'h', label: 'Delivery in Bolgatanga' },
   { value: '4', suffix: 'x', label: 'Buyer Categories' },
 ];
 
