@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { RegisterForm } from '@/components/auth/RegisterForm';
 
@@ -20,7 +21,9 @@ export default function RegisterPage() {
       >
         Join GearDockGH to access premium gear
       </p>
-      <RegisterForm />
+      <Suspense>
+        <RegisterForm />
+      </Suspense>
     </div>
   );
 }

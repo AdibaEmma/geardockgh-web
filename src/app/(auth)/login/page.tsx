@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { LoginForm } from '@/components/auth/LoginForm';
 
@@ -20,7 +21,9 @@ export default function LoginPage() {
       >
         Sign in to your GearDockGH account
       </p>
-      <LoginForm />
+      <Suspense>
+        <LoginForm />
+      </Suspense>
     </div>
   );
 }
