@@ -127,6 +127,39 @@ export async function updateAdminTenant(id: string, data: { name?: string; isAct
   return apiClient.patch<Tenant>('/admin/tenants/' + id, data);
 }
 
+// --- ImportBrain Integration ---
+
+export interface ImportBrainStatus {
+  connected: boolean;
+  status: string;
+  hasPlatformKey: boolean;
+  integrationId?: string;
+  importbrainTenantId?: string;
+  connectedAt?: string;
+  disconnectedAt?: string;
+}
+
+export async function getImportBrainStatus() {
+  return apiClient.get<ImportBrainStatus>('/admin/integrations/importbrain/status');
+}
+
+export async function saveImportBrainPlatformKey(platformKey: string) {
+  return apiClient.post<{ success: boolean }>(
+    '/admin/integrations/importbrain/platform-key',
+    { platformKey },
+  );
+}
+
+export async function connectImportBrain() {
+  return apiClient.post<{ importbrainTenantId: string; integrationId: string; status: string }>(
+    '/admin/integrations/importbrain/connect',
+  );
+}
+
+export async function disconnectImportBrain() {
+  return apiClient.delete('/admin/integrations/importbrain/disconnect');
+}
+
 // --- Admin Products ---
 
 interface AdminProductsParams {

@@ -2,8 +2,14 @@
 
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Store, CreditCard, Truck, Bell, Shield, Building2, Plus, Check, X as XIcon } from 'lucide-react';
-import { getAdminTenants, createAdminTenant, updateAdminTenant, type Tenant } from '@/lib/api/admin';
+import {
+  Store, CreditCard, Truck, Bell, Shield, Building2, Plus, Check, X as XIcon,
+  Plug, Loader2, CheckCircle2, XCircle, Unplug,
+} from 'lucide-react';
+import {
+  getAdminTenants, createAdminTenant, updateAdminTenant, type Tenant,
+  getImportBrainStatus, connectImportBrain, disconnectImportBrain, saveImportBrainPlatformKey,
+} from '@/lib/api/admin';
 import { formatDate } from '@/lib/utils/formatters';
 
 interface SettingsSectionProps {
@@ -101,6 +107,7 @@ function Toggle({ label, description, checked, onChange }: ToggleProps) {
 const tabs = [
   { id: 'general', label: 'General', Icon: Store },
   { id: 'tenants', label: 'Tenants', Icon: Building2 },
+  { id: 'integrations', label: 'Integrations', Icon: Plug },
   { id: 'payments', label: 'Payments', Icon: CreditCard },
   { id: 'shipping', label: 'Shipping', Icon: Truck },
   { id: 'notifications', label: 'Notifications', Icon: Bell },
@@ -244,6 +251,341 @@ function TenantsTab() {
   );
 }
 
+function IntegrationsTab() {
+  const queryClient = useQueryClient();
+  const [confirmDisconnect, setConfirmDisconnect] = useState(false);
+  const [platformKeyInput, setPlatformKeyInput] = useState('');
+
+  const { data, isLoading } = useQuery({
+    queryKey: ['importbrain-status'],
+    queryFn: () => getImportBrainStatus(),
+  });
+
+  const status = data?.data;
+  const isConnected = status?.connected === true;
+
+  const saveKeyMutation = useMutation({
+    mutationFn: (key: string) => saveImportBrainPlatformKey(key),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['importbrain-status'] });
+      setPlatformKeyInput('');
+    },
+  });
+
+  const connectMutation = useMutation({
+    mutationFn: () => connectImportBrain(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['importbrain-status'] });
+    },
+  });
+
+  const disconnectMutation = useMutation({
+    mutationFn: () => disconnectImportBrain(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['importbrain-status'] });
+      setConfirmDisconnect(false);
+    },
+  });
+
+  return (
+    <div className="space-y-6">
+      <SettingsSection
+        title="ImportBrain"
+        description="Connect to ImportBrain to sync products, inventory, orders, and customers between your store and your operations hub."
+      >
+        {isLoading ? (
+          <div className="flex justify-center py-8">
+            <Loader2
+              size={20}
+              className="animate-spin"
+              style={{ color: 'var(--gold)' }}
+            />
+          </div>
+        ) : isConnected ? (
+          <div className="space-y-4">
+            {/* Connected status */}
+            <div
+              className="flex items-center gap-3 rounded-lg px-4 py-3"
+              style={{ background: 'var(--deep)' }}
+            >
+              <CheckCircle2 size={20} style={{ color: '#22c55e' }} />
+              <div className="flex-1">
+                <p className="text-sm font-medium" style={{ color: 'var(--white)' }}>
+                  Connected to ImportBrain
+                </p>
+                <p className="mt-0.5 text-xs" style={{ color: 'var(--muted)' }}>
+                  {status?.connectedAt
+                    ? `Since ${formatDate(status.connectedAt)}`
+                    : 'Active connection'}
+                </p>
+              </div>
+              <span
+                className="rounded-full px-2.5 py-0.5 text-xs font-medium"
+                style={{ background: 'rgba(34,197,94,0.1)', color: '#22c55e' }}
+              >
+                Active
+              </span>
+            </div>
+
+            {/* Connection details */}
+            <div className="grid gap-3 sm:grid-cols-2">
+              {status?.integrationId && (
+                <div
+                  className="rounded-lg px-4 py-3"
+                  style={{ background: 'var(--deep)' }}
+                >
+                  <p className="text-xs" style={{ color: 'var(--muted)' }}>Integration ID</p>
+                  <p
+                    className="mt-0.5 font-mono text-xs break-all"
+                    style={{ color: 'var(--white)' }}
+                  >
+                    {status.integrationId}
+                  </p>
+                </div>
+              )}
+              {status?.importbrainTenantId && (
+                <div
+                  className="rounded-lg px-4 py-3"
+                  style={{ background: 'var(--deep)' }}
+                >
+                  <p className="text-xs" style={{ color: 'var(--muted)' }}>ImportBrain Tenant</p>
+                  <p
+                    className="mt-0.5 font-mono text-xs break-all"
+                    style={{ color: 'var(--white)' }}
+                  >
+                    {status.importbrainTenantId}
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* What syncs */}
+            <div
+              className="rounded-lg px-4 py-3"
+              style={{ background: 'var(--deep)' }}
+            >
+              <p className="mb-2 text-xs font-medium" style={{ color: 'var(--muted)' }}>
+                What syncs automatically
+              </p>
+              <ul className="space-y-1.5 text-xs" style={{ color: 'var(--white)' }}>
+                {[
+                  'Orders placed here are pushed to ImportBrain',
+                  'Product updates from ImportBrain arrive via webhooks',
+                  'Stock changes in ImportBrain sync to your store',
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2">
+                    <CheckCircle2 size={12} className="mt-0.5 shrink-0" style={{ color: '#22c55e' }} />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Disconnect */}
+            {confirmDisconnect ? (
+              <div
+                className="rounded-lg border px-4 py-3"
+                style={{ borderColor: '#ef4444', background: 'rgba(239,68,68,0.05)' }}
+              >
+                <p className="text-sm font-medium" style={{ color: '#ef4444' }}>
+                  Are you sure you want to disconnect?
+                </p>
+                <p className="mt-1 text-xs" style={{ color: 'var(--muted)' }}>
+                  Orders and product syncing will stop immediately.
+                </p>
+                <div className="mt-3 flex items-center gap-2">
+                  <button
+                    onClick={() => disconnectMutation.mutate()}
+                    disabled={disconnectMutation.isPending}
+                    className="flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium text-white transition-colors disabled:opacity-50"
+                    style={{ background: '#ef4444' }}
+                  >
+                    {disconnectMutation.isPending ? (
+                      <Loader2 size={14} className="animate-spin" />
+                    ) : (
+                      <Unplug size={14} />
+                    )}
+                    Disconnect
+                  </button>
+                  <button
+                    onClick={() => setConfirmDisconnect(false)}
+                    className="rounded-lg border px-4 py-2 text-sm font-medium transition-colors hover:bg-white/5"
+                    style={{ borderColor: 'var(--border)', color: 'var(--muted)' }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                onClick={() => setConfirmDisconnect(true)}
+                className="flex items-center gap-1.5 rounded-lg border px-4 py-2 text-sm font-medium transition-colors hover:bg-white/5"
+                style={{ borderColor: 'var(--border)', color: '#ef4444' }}
+              >
+                <Unplug size={14} />
+                Disconnect ImportBrain
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {/* Not connected */}
+            <div
+              className="flex items-center gap-3 rounded-lg px-4 py-3"
+              style={{ background: 'var(--deep)' }}
+            >
+              <XCircle size={20} style={{ color: 'var(--muted)' }} />
+              <div className="flex-1">
+                <p className="text-sm font-medium" style={{ color: 'var(--white)' }}>
+                  Not connected
+                </p>
+                <p className="mt-0.5 text-xs" style={{ color: 'var(--muted)' }}>
+                  Connect to start syncing products and orders with ImportBrain
+                </p>
+              </div>
+            </div>
+
+            {/* What you get */}
+            <div
+              className="rounded-lg px-4 py-3"
+              style={{ background: 'var(--deep)' }}
+            >
+              <p className="mb-2 text-xs font-medium" style={{ color: 'var(--muted)' }}>
+                What connecting enables
+              </p>
+              <ul className="space-y-1.5 text-xs" style={{ color: 'var(--white)' }}>
+                {[
+                  'Automatic order sync — sales here appear in ImportBrain instantly',
+                  'Product catalog pull — import products from ImportBrain',
+                  'Real-time stock updates — inventory stays in sync',
+                  'Webhook notifications — product changes push to your store',
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2">
+                    <Check size={12} className="mt-0.5 shrink-0" style={{ color: 'var(--gold)' }} />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Step 1: Platform Key */}
+            <div
+              className="rounded-lg border px-4 py-3"
+              style={{
+                borderColor: status?.hasPlatformKey ? '#22c55e' : 'var(--gold)',
+                background: 'var(--deep)',
+              }}
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <span
+                  className="flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold"
+                  style={{
+                    background: status?.hasPlatformKey ? 'rgba(34,197,94,0.15)' : 'rgba(240,165,0,0.15)',
+                    color: status?.hasPlatformKey ? '#22c55e' : 'var(--gold)',
+                  }}
+                >
+                  {status?.hasPlatformKey ? '✓' : '1'}
+                </span>
+                <p className="text-xs font-semibold" style={{ color: 'var(--white)' }}>
+                  {status?.hasPlatformKey ? 'Platform key saved' : 'Paste platform key from ImportBrain'}
+                </p>
+              </div>
+
+              {status?.hasPlatformKey ? (
+                <p className="text-xs" style={{ color: 'var(--muted)' }}>
+                  Platform key is configured. You can proceed to connect.
+                </p>
+              ) : (
+                <>
+                  <p className="text-xs mb-2" style={{ color: 'var(--muted)' }}>
+                    Go to ImportBrain &rarr; Integrations &rarr; Setup Guide, generate a platform key, and paste it here.
+                  </p>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={platformKeyInput}
+                      onChange={(e) => setPlatformKeyInput(e.target.value)}
+                      placeholder="pk_..."
+                      className="flex-1 rounded-lg border px-3 py-2 text-sm font-mono outline-none transition-colors focus:border-[var(--gold)]"
+                      style={{
+                        background: 'var(--card)',
+                        borderColor: 'var(--border)',
+                        color: 'var(--white)',
+                      }}
+                    />
+                    <button
+                      onClick={() => saveKeyMutation.mutate(platformKeyInput)}
+                      disabled={!platformKeyInput.trim() || saveKeyMutation.isPending}
+                      className="flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50"
+                      style={{ background: 'var(--gold)', color: 'var(--black)' }}
+                    >
+                      {saveKeyMutation.isPending ? (
+                        <Loader2 size={14} className="animate-spin" />
+                      ) : (
+                        <Check size={14} />
+                      )}
+                      Save
+                    </button>
+                  </div>
+                  {saveKeyMutation.isError && (
+                    <p className="mt-2 text-xs" style={{ color: '#ef4444' }}>
+                      Failed to save platform key.
+                    </p>
+                  )}
+                </>
+              )}
+            </div>
+
+            {/* Step 2: Connect */}
+            <div
+              className="rounded-lg border px-4 py-3"
+              style={{
+                borderColor: 'var(--border)',
+                background: 'var(--deep)',
+                opacity: status?.hasPlatformKey ? 1 : 0.5,
+              }}
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <span
+                  className="flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold"
+                  style={{
+                    background: 'rgba(240,165,0,0.15)',
+                    color: 'var(--gold)',
+                  }}
+                >
+                  2
+                </span>
+                <p className="text-xs font-semibold" style={{ color: 'var(--white)' }}>
+                  Connect to ImportBrain
+                </p>
+              </div>
+              <button
+                onClick={() => connectMutation.mutate()}
+                disabled={connectMutation.isPending || !status?.hasPlatformKey}
+                className="flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold transition-colors disabled:opacity-50"
+                style={{ background: 'var(--gold)', color: 'var(--black)' }}
+              >
+                {connectMutation.isPending ? (
+                  <Loader2 size={16} className="animate-spin" />
+                ) : (
+                  <Plug size={16} />
+                )}
+                Connect to ImportBrain
+              </button>
+            </div>
+
+            {connectMutation.isError && (
+              <p className="text-xs" style={{ color: '#ef4444' }}>
+                Failed to connect. Ensure ImportBrain is reachable and the platform key is valid.
+              </p>
+            )}
+          </div>
+        )}
+      </SettingsSection>
+    </div>
+  );
+}
+
 export default function AdminSettingsPage() {
   const [activeTab, setActiveTab] = useState<TabId>('general');
 
@@ -326,6 +668,9 @@ export default function AdminSettingsPage() {
 
       {/* Tenants */}
       {activeTab === 'tenants' && <TenantsTab />}
+
+      {/* Integrations */}
+      {activeTab === 'integrations' && <IntegrationsTab />}
 
       {/* Payments */}
       {activeTab === 'payments' && (
