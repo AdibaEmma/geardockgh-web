@@ -1,13 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useProducts } from '@/hooks/use-products';
 import { ProductGrid } from '@/components/shop/ProductGrid';
 import { ProductFilters } from '@/components/shop/ProductFilters';
 import type { Product } from '@/types';
 
-export default function ProductsPage() {
+function ProductsContent() {
   const searchParams = useSearchParams();
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState<string | null>(searchParams.get('category'));
@@ -117,5 +117,13 @@ export default function ProductsPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense>
+      <ProductsContent />
+    </Suspense>
   );
 }
