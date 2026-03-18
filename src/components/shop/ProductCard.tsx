@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { ShoppingCart } from 'lucide-react';
-import { formatPesewas } from '@/lib/utils/formatters';
+import { formatPesewas, formatDate } from '@/lib/utils/formatters';
 import { useCartStore } from '@/stores/cart-store';
 import { useToastStore } from '@/stores/toast-store';
 import type { Product } from '@/types';
@@ -27,6 +27,18 @@ export function ProductCard({ product }: ProductCardProps) {
       name: product.name,
       pricePesewas: product.pricePesewas,
       image: firstImage,
+      isPreorder: product.isPreorder,
+      depositPesewas: product.isPreorder
+        ? (() => {
+            if (product.preorderDepositType === 'percentage' && product.preorderDepositValue != null) {
+              return Math.round((product.pricePesewas * product.preorderDepositValue) / 100);
+            }
+            if (product.preorderDepositType === 'fixed' && product.preorderDepositValue != null) {
+              return product.preorderDepositValue;
+            }
+            return product.pricePesewas;
+          })()
+        : product.pricePesewas,
     });
     addToast({ type: 'success', message: `${product.name} added to cart` });
   };
@@ -62,12 +74,15 @@ export function ProductCard({ product }: ProductCardProps) {
         )}
 
         {product.isPreorder && (
-          <span className="absolute left-3 top-3 rounded-full px-2.5 py-1 text-xs font-medium bg-[var(--teal)]/20 text-[var(--teal)]">
-            Pre-order
+          <span
+            className="absolute left-3 top-3 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider shadow-md"
+            style={{ background: '#F59E0B', color: '#000' }}
+          >
+            Pre-Order
           </span>
         )}
 
-        {product.comparePricePesewas && product.comparePricePesewas > product.pricePesewas && (
+        {!product.isPreorder && product.comparePricePesewas && product.comparePricePesewas > product.pricePesewas && (
           <span className="absolute right-3 top-3 rounded-full bg-red-500/20 px-2.5 py-1 text-xs font-medium text-red-400">
             Sale
           </span>
@@ -118,6 +133,15 @@ export function ProductCard({ product }: ProductCardProps) {
             <ShoppingCart size={18} />
           </button>
         </div>
+
+        {product.isPreorder && product.preorderDepositType && product.preorderDepositValue != null && (
+          <p className="mt-1.5 text-xs" style={{ color: '#F59E0B' }}>
+            {product.preorderDepositType === 'percentage'
+              ? `${product.preorderDepositValue}% deposit`
+              : `${formatPesewas(product.preorderDepositValue)} deposit`}
+            {product.estArrivalDate && ` · ETA ${formatDate(product.estArrivalDate)}`}
+          </p>
+        )}
 
         {!product.isPreorder && product.stockCount <= 5 && product.stockCount > 0 && (
           <p className="mt-2 text-xs text-orange-400">

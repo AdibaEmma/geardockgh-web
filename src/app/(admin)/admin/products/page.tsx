@@ -1,13 +1,16 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Pencil, Trash2, Search, Package } from 'lucide-react';
+import { useSearchParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { Plus, Pencil, Trash2, Search, Package, Eye, Globe, GlobeLock } from 'lucide-react';
 import {
   getAdminProducts,
   createAdminProduct,
   updateAdminProduct,
   deleteAdminProduct,
+  toggleAdminProductPublish,
 } from '@/lib/api/admin';
 import { Button } from '@/components/ui/Button';
 import { ProductFormModal } from '@/components/admin/ProductFormModal';
@@ -21,6 +24,8 @@ type StatusFilter = '' | 'published' | 'draft';
 export default function AdminProductsPage() {
   const queryClient = useQueryClient();
   const addToast = useToastStore((s) => s.addToast);
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
   const [page, setPage] = useState(1);
   const [searchInput, setSearchInput] = useState('');
@@ -46,11 +51,21 @@ export default function AdminProductsPage() {
       }),
   });
 
-  const result = data?.data as
-    | { data: Product[]; meta: { total: number; page: number; limit: number; totalPages: number } }
-    | undefined;
-  const products = result?.data ?? [];
-  const meta = result?.meta;
+  const products = (data?.data ?? []) as Product[];
+  const meta = data?.meta as { total: number; page: number; limit: number; totalPages: number } | undefined;
+
+  // Auto-open edit modal from query param (e.g. ?edit=product-id)
+  const editParam = searchParams.get('edit');
+  useEffect(() => {
+    if (editParam && products.length > 0 && !modalOpen) {
+      const target = products.find((p) => p.id === editParam);
+      if (target) {
+        setEditingProduct(target);
+        setModalOpen(true);
+        router.replace('/admin/products', { scroll: false });
+      }
+    }
+  }, [editParam, products, modalOpen, router]);
 
   // Mutations
   const { mutate: doCreate, isPending: isCreating } = useMutation({
@@ -82,6 +97,15 @@ export default function AdminProductsPage() {
       setDeleteTarget(null);
     },
     onError: () => addToast({ type: 'error', message: 'Failed to delete product' }),
+  });
+
+  const { mutate: doTogglePublish } = useMutation({
+    mutationFn: toggleAdminProductPublish,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-products'] });
+      addToast({ type: 'success', message: 'Product status updated' });
+    },
+    onError: () => addToast({ type: 'error', message: 'Failed to update product' }),
   });
 
   const closeModal = () => {
@@ -334,20 +358,29 @@ export default function AdminProductsPage() {
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      <span
-                        className="inline-flex rounded-full px-2 py-0.5 text-xs font-medium"
+                      <button
+                        onClick={() => doTogglePublish(product.id)}
+                        className="inline-flex rounded-full px-2 py-0.5 text-xs font-medium transition-opacity hover:opacity-80"
                         style={{
                           background: product.isPublished
                             ? 'rgba(0,201,167,0.1)'
                             : 'rgba(239,68,68,0.1)',
                           color: product.isPublished ? 'var(--teal)' : '#ef4444',
                         }}
+                        title={product.isPublished ? 'Click to unpublish' : 'Click to publish'}
                       >
                         {product.isPublished ? 'Published' : 'Draft'}
-                      </span>
+                      </button>
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
+                        <Link
+                          href={`/admin/products/${product.id}`}
+                          className="rounded-md p-1.5 transition-colors hover:bg-white/10"
+                          title="View"
+                        >
+                          <Eye size={14} style={{ color: 'var(--gold)' }} />
+                        </Link>
                         <button
                           onClick={() => {
                             setEditingProduct(product);
@@ -357,6 +390,17 @@ export default function AdminProductsPage() {
                           title="Edit"
                         >
                           <Pencil size={14} style={{ color: 'var(--muted)' }} />
+                        </button>
+                        <button
+                          onClick={() => doTogglePublish(product.id)}
+                          className="rounded-md p-1.5 transition-colors hover:bg-white/10"
+                          title={product.isPublished ? 'Unpublish' : 'Publish'}
+                        >
+                          {product.isPublished ? (
+                            <GlobeLock size={14} style={{ color: '#ef4444' }} />
+                          ) : (
+                            <Globe size={14} style={{ color: 'var(--teal)' }} />
+                          )}
                         </button>
                         <button
                           onClick={() => setDeleteTarget(product)}

@@ -12,7 +12,8 @@ export function ShopHeader() {
   const [cartOpen, setCartOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const user = useAuthStore((s) => s.user);
-  const itemCount = useCartStore((s) => s.itemCount);
+  const items = useCartStore((s) => s.items);
+  const count = items.reduce((sum, item) => sum + item.quantity, 0);
   const { mutate: logout } = useLogout();
 
   return (
@@ -57,9 +58,9 @@ export function ShopHeader() {
             >
               <ShoppingCart size={18} />
               <span>Cart</span>
-              {itemCount() > 0 && (
+              {count > 0 && (
                 <span className="absolute -right-2.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-[var(--gold)] font-[family-name:var(--font-space-mono)] text-[10px] font-bold text-[var(--deep)]">
-                  {itemCount()}
+                  {count}
                 </span>
               )}
             </button>
@@ -115,9 +116,9 @@ export function ShopHeader() {
               style={{ color: 'var(--muted)' }}
             >
               <ShoppingCart size={20} />
-              {itemCount() > 0 && (
+              {count > 0 && (
                 <span className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-[var(--gold)] font-[family-name:var(--font-space-mono)] text-[10px] font-bold text-[var(--deep)]">
-                  {itemCount()}
+                  {count}
                 </span>
               )}
             </button>

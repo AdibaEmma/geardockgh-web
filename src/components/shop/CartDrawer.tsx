@@ -18,7 +18,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   const removeItem = useCartStore((s) => s.removeItem);
   const updateQuantity = useCartStore((s) => s.updateQuantity);
   const clearCart = useCartStore((s) => s.clearCart);
-  const totalPesewas = useCartStore((s) => s.totalPesewas);
+  const total = items.reduce((sum, item) => sum + item.pricePesewas * item.quantity, 0);
   const user = useAuthStore((s) => s.user);
   const drawerRef = useRef<HTMLDivElement>(null);
 
@@ -220,7 +220,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 className="font-[family-name:var(--font-syne)] text-lg font-bold"
                 style={{ color: 'var(--gold)' }}
               >
-                {formatPesewas(totalPesewas())}
+                {formatPesewas(total)}
               </span>
             </div>
 

@@ -9,11 +9,13 @@ import type { Product } from '@/types';
 export default function ProductsPage() {
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState<string | null>(null);
+  const [isPreorder, setIsPreorder] = useState<boolean | null>(null);
   const [page, setPage] = useState(1);
 
   const { data, isLoading } = useProducts({
     search: search || undefined,
     category: category ?? undefined,
+    isPreorder: isPreorder ?? undefined,
     page,
     limit: 20,
   });
@@ -49,6 +51,30 @@ export default function ProductsPage() {
             setPage(1);
           }}
         />
+      </div>
+
+      <div className="mt-4 flex gap-2">
+        {[
+          { label: 'All', value: null },
+          { label: 'Pre-Order', value: true },
+          { label: 'In Stock', value: false },
+        ].map((tab) => (
+          <button
+            key={tab.label}
+            onClick={() => {
+              setIsPreorder(tab.value);
+              setPage(1);
+            }}
+            className="rounded-full border px-4 py-1.5 text-xs font-medium transition-colors"
+            style={{
+              borderColor: isPreorder === tab.value ? '#F59E0B' : 'var(--border)',
+              color: isPreorder === tab.value ? '#F59E0B' : 'var(--muted)',
+              background: isPreorder === tab.value ? 'rgba(245, 158, 11, 0.1)' : 'transparent',
+            }}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
 
       <div className="mt-6">

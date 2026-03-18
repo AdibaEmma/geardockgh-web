@@ -160,6 +160,17 @@ export async function disconnectImportBrain() {
   return apiClient.delete('/admin/integrations/importbrain/disconnect');
 }
 
+export async function deleteImportBrainConnection() {
+  return apiClient.delete('/admin/integrations/importbrain/connection');
+}
+
+export async function updateImportBrainPlatformKey(platformKey: string) {
+  return apiClient.post<{ success: boolean }>(
+    '/admin/integrations/importbrain/platform-key/update',
+    { platformKey },
+  );
+}
+
 // --- Admin Products ---
 
 interface AdminProductsParams {
@@ -172,6 +183,10 @@ interface AdminProductsParams {
 
 export async function getAdminProducts(params?: AdminProductsParams) {
   return apiClient.get<{ data: Product[]; meta: { total: number; page: number; limit: number; totalPages: number } }>('/admin/products', { params });
+}
+
+export async function getAdminProductById(id: string) {
+  return apiClient.get<Product>(`/admin/products/${id}`);
 }
 
 export async function createAdminProduct(data: {
@@ -206,4 +221,8 @@ export async function updateAdminProduct(id: string, data: Partial<{
 
 export async function deleteAdminProduct(id: string) {
   return apiClient.delete(`/admin/products/${id}`);
+}
+
+export async function toggleAdminProductPublish(id: string) {
+  return apiClient.patch<Product>(`/admin/products/${id}/toggle-publish`);
 }

@@ -36,16 +36,17 @@ export const STATUS_COLORS: Record<string, string> = {
 };
 
 export const CATEGORIES = [
-  { value: 'desks-furniture', label: 'Desks & Furniture', icon: '🪑' },
   { value: 'laptops-computers', label: 'Laptops & Computers', icon: '💻' },
   { value: 'monitors-displays', label: 'Monitors & Displays', icon: '🖥️' },
   { value: 'audio-headphones', label: 'Audio & Headphones', icon: '🎧' },
   { value: 'keyboards-mice', label: 'Keyboards & Mice', icon: '⌨️' },
-  { value: 'accessories', label: 'Accessories', icon: '🔌' },
-  { value: 'lighting', label: 'Lighting', icon: '💡' },
+  { value: 'power-energy', label: 'Power & Energy', icon: '🔋' },
+  { value: 'desks-furniture', label: 'Desks & Furniture', icon: '🪑' },
   { value: 'cameras-video', label: 'Cameras & Video', icon: '📷' },
-  { value: 'storage-networking', label: 'Storage & Networking', icon: '💾' },
   { value: 'gaming-consoles', label: 'Gaming Consoles', icon: '🎮' },
   { value: 'gaming-accessories', label: 'Gaming Accessories', icon: '🕹️' },
+  { value: 'storage-networking', label: 'Storage & Networking', icon: '💾' },
+  { value: 'lighting', label: 'Lighting', icon: '💡' },
+  { value: 'accessories', label: 'Accessories', icon: '🔌' },
   { value: 'other', label: 'Other', icon: '📦' },
 ];

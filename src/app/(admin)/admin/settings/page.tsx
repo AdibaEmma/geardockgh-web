@@ -9,6 +9,7 @@ import {
 import {
   getAdminTenants, createAdminTenant, updateAdminTenant, type Tenant,
   getImportBrainStatus, connectImportBrain, disconnectImportBrain, saveImportBrainPlatformKey,
+  deleteImportBrainConnection, updateImportBrainPlatformKey,
 } from '@/lib/api/admin';
 import { formatDate } from '@/lib/utils/formatters';
 
@@ -254,7 +255,11 @@ function TenantsTab() {
 function IntegrationsTab() {
   const queryClient = useQueryClient();
   const [confirmDisconnect, setConfirmDisconnect] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const [platformKeyInput, setPlatformKeyInput] = useState('');
+  const [editingKey, setEditingKey] = useState(false);
+  const [updateKeyInput, setUpdateKeyInput] = useState('');
+  const [changingKeyNotConnected, setChangingKeyNotConnected] = useState(false);
 
   const { data, isLoading } = useQuery({
     queryKey: ['importbrain-status'],
@@ -269,6 +274,7 @@ function IntegrationsTab() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['importbrain-status'] });
       setPlatformKeyInput('');
+      setChangingKeyNotConnected(false);
     },
   });
 
@@ -284,6 +290,23 @@ function IntegrationsTab() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['importbrain-status'] });
       setConfirmDisconnect(false);
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: () => deleteImportBrainConnection(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['importbrain-status'] });
+      setConfirmDelete(false);
+    },
+  });
+
+  const updateKeyMutation = useMutation({
+    mutationFn: (key: string) => updateImportBrainPlatformKey(key),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['importbrain-status'] });
+      setEditingKey(false);
+      setUpdateKeyInput('');
     },
   });
 
@@ -381,7 +404,61 @@ function IntegrationsTab() {
               </ul>
             </div>
 
-            {/* Disconnect */}
+            {/* Update Platform Key */}
+            {editingKey ? (
+              <div
+                className="rounded-lg border px-4 py-3"
+                style={{ borderColor: 'var(--gold)', background: 'var(--deep)' }}
+              >
+                <p className="mb-2 text-xs font-semibold" style={{ color: 'var(--white)' }}>
+                  Update Platform Key
+                </p>
+                <p className="mb-2 text-xs" style={{ color: 'var(--muted)' }}>
+                  Paste the new platform key from ImportBrain. This will take effect on the next sync.
+                </p>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={updateKeyInput}
+                    onChange={(e) => setUpdateKeyInput(e.target.value)}
+                    placeholder="pk_..."
+                    className="flex-1 rounded-lg border px-3 py-2 text-sm font-mono outline-none transition-colors focus:border-[var(--gold)]"
+                    style={{
+                      background: 'var(--card)',
+                      borderColor: 'var(--border)',
+                      color: 'var(--white)',
+                    }}
+                  />
+                  <button
+                    onClick={() => updateKeyMutation.mutate(updateKeyInput)}
+                    disabled={!updateKeyInput.trim() || updateKeyMutation.isPending}
+                    className="flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50"
+                    style={{ background: 'var(--gold)', color: 'var(--black)' }}
+                  >
+                    {updateKeyMutation.isPending ? (
+                      <Loader2 size={14} className="animate-spin" />
+                    ) : (
+                      <Check size={14} />
+                    )}
+                    Update
+                  </button>
+                  <button
+                    onClick={() => { setEditingKey(false); setUpdateKeyInput(''); }}
+                    className="rounded-lg border px-4 py-2 text-sm font-medium transition-colors hover:bg-white/5"
+                    style={{ borderColor: 'var(--border)', color: 'var(--muted)' }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+                {updateKeyMutation.isError && (
+                  <p className="mt-2 text-xs" style={{ color: '#ef4444' }}>
+                    Failed to update platform key.
+                  </p>
+                )}
+              </div>
+            ) : null}
+
+            {/* Disconnect / Delete / Update Key actions */}
             {confirmDisconnect ? (
               <div
                 className="rounded-lg border px-4 py-3"
@@ -391,7 +468,7 @@ function IntegrationsTab() {
                   Are you sure you want to disconnect?
                 </p>
                 <p className="mt-1 text-xs" style={{ color: 'var(--muted)' }}>
-                  Orders and product syncing will stop immediately.
+                  Orders and product syncing will stop immediately. The platform key will be preserved for reconnection.
                 </p>
                 <div className="mt-3 flex items-center gap-2">
                   <button
@@ -416,15 +493,69 @@ function IntegrationsTab() {
                   </button>
                 </div>
               </div>
-            ) : (
-              <button
-                onClick={() => setConfirmDisconnect(true)}
-                className="flex items-center gap-1.5 rounded-lg border px-4 py-2 text-sm font-medium transition-colors hover:bg-white/5"
-                style={{ borderColor: 'var(--border)', color: '#ef4444' }}
+            ) : confirmDelete ? (
+              <div
+                className="rounded-lg border px-4 py-3"
+                style={{ borderColor: '#ef4444', background: 'rgba(239,68,68,0.05)' }}
               >
-                <Unplug size={14} />
-                Disconnect ImportBrain
-              </button>
+                <p className="text-sm font-medium" style={{ color: '#ef4444' }}>
+                  Delete this connection entirely?
+                </p>
+                <p className="mt-1 text-xs" style={{ color: 'var(--muted)' }}>
+                  This will disconnect from ImportBrain and remove all connection data including the platform key. You will need to reconfigure from scratch.
+                </p>
+                <div className="mt-3 flex items-center gap-2">
+                  <button
+                    onClick={() => deleteMutation.mutate()}
+                    disabled={deleteMutation.isPending}
+                    className="flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium text-white transition-colors disabled:opacity-50"
+                    style={{ background: '#ef4444' }}
+                  >
+                    {deleteMutation.isPending ? (
+                      <Loader2 size={14} className="animate-spin" />
+                    ) : (
+                      <XIcon size={14} />
+                    )}
+                    Delete Connection
+                  </button>
+                  <button
+                    onClick={() => setConfirmDelete(false)}
+                    className="rounded-lg border px-4 py-2 text-sm font-medium transition-colors hover:bg-white/5"
+                    style={{ borderColor: 'var(--border)', color: 'var(--muted)' }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                {!editingKey && (
+                  <button
+                    onClick={() => setEditingKey(true)}
+                    className="flex items-center gap-1.5 rounded-lg border px-4 py-2 text-sm font-medium transition-colors hover:bg-white/5"
+                    style={{ borderColor: 'var(--border)', color: 'var(--gold)' }}
+                  >
+                    <Shield size={14} />
+                    Update Key
+                  </button>
+                )}
+                <button
+                  onClick={() => setConfirmDisconnect(true)}
+                  className="flex items-center gap-1.5 rounded-lg border px-4 py-2 text-sm font-medium transition-colors hover:bg-white/5"
+                  style={{ borderColor: 'var(--border)', color: '#ef4444' }}
+                >
+                  <Unplug size={14} />
+                  Disconnect
+                </button>
+                <button
+                  onClick={() => setConfirmDelete(true)}
+                  className="flex items-center gap-1.5 rounded-lg border px-4 py-2 text-sm font-medium transition-colors hover:bg-white/5"
+                  style={{ borderColor: 'var(--border)', color: '#ef4444' }}
+                >
+                  <XIcon size={14} />
+                  Delete
+                </button>
+              </div>
             )}
           </div>
         ) : (
@@ -491,10 +622,20 @@ function IntegrationsTab() {
                 </p>
               </div>
 
-              {status?.hasPlatformKey ? (
-                <p className="text-xs" style={{ color: 'var(--muted)' }}>
-                  Platform key is configured. You can proceed to connect.
-                </p>
+              {status?.hasPlatformKey && !changingKeyNotConnected ? (
+                <div className="flex items-center justify-between">
+                  <p className="text-xs" style={{ color: 'var(--muted)' }}>
+                    Platform key is configured. You can proceed to connect.
+                  </p>
+                  <button
+                    onClick={() => setChangingKeyNotConnected(true)}
+                    className="ml-3 flex items-center gap-1 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors hover:bg-white/5"
+                    style={{ borderColor: 'var(--border)', color: 'var(--gold)' }}
+                  >
+                    <Shield size={12} />
+                    Change Key
+                  </button>
+                </div>
               ) : (
                 <>
                   <p className="text-xs mb-2" style={{ color: 'var(--muted)' }}>
@@ -588,6 +729,8 @@ function IntegrationsTab() {
 
 export default function AdminSettingsPage() {
   const [activeTab, setActiveTab] = useState<TabId>('general');
+
+  const [saving, setSaving] = useState(false);
 
   // Local form state (not persisted — placeholder for future API integration)
   const [storeName, setStoreName] = useState('GearDockGH');
@@ -783,10 +926,21 @@ export default function AdminSettingsPage() {
       {/* Save button */}
       <div className="flex justify-end">
         <button
-          className="rounded-lg px-6 py-2.5 text-sm font-semibold transition-colors"
+          onClick={() => {
+            setSaving(true);
+            setTimeout(() => {
+              setSaving(false);
+              // TODO: wire to real save API
+            }, 800);
+          }}
+          disabled={saving}
+          className="flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold transition-colors disabled:opacity-60"
           style={{ background: 'var(--gold)', color: 'var(--black)' }}
         >
-          Save Changes
+          {saving && (
+            <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+          )}
+          {saving ? 'Saving...' : 'Save Changes'}
         </button>
       </div>
     </div>

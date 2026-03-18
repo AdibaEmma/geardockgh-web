@@ -8,6 +8,8 @@ interface CartItem {
   pricePesewas: number;
   quantity: number;
   image: string | null;
+  isPreorder: boolean;
+  depositPesewas: number;
 }
 
 interface CartState {
@@ -21,6 +23,9 @@ interface CartActions {
   clearCart: () => void;
   totalPesewas: () => number;
   itemCount: () => number;
+  depositTotalPesewas: () => number;
+  regularTotalPesewas: () => number;
+  hasPreorderItems: () => boolean;
 }
 
 type CartStore = CartState & CartActions;
@@ -79,6 +84,19 @@ export const useCartStore = create<CartStore>()(
 
       itemCount: () =>
         get().items.reduce((sum, item) => sum + item.quantity, 0),
+
+      depositTotalPesewas: () =>
+        get().items
+          .filter((item) => item.isPreorder)
+          .reduce((sum, item) => sum + item.depositPesewas * item.quantity, 0),
+
+      regularTotalPesewas: () =>
+        get().items
+          .filter((item) => !item.isPreorder)
+          .reduce((sum, item) => sum + item.pricePesewas * item.quantity, 0),
+
+      hasPreorderItems: () =>
+        get().items.some((item) => item.isPreorder),
     }),
     {
       name: 'geardockgh-cart',

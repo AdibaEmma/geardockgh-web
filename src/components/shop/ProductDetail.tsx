@@ -8,6 +8,8 @@ import { useCartStore } from '@/stores/cart-store';
 import { useToastStore } from '@/stores/toast-store';
 import { formatPesewas, formatDate } from '@/lib/utils/formatters';
 import { Button } from '@/components/ui/Button';
+import { PreorderBadge } from '@/components/shop/PreorderBadge';
+import { PreorderInfo, calculateDeposit } from '@/components/shop/PreorderInfo';
 import type { Product, ProductVariant } from '@/types';
 
 interface ProductDetailProps {
@@ -74,6 +76,10 @@ export function ProductDetail({ slug }: ProductDetailProps) {
           : product.name,
         pricePesewas: activePrice,
         image: images[0] ?? null,
+        isPreorder: product.isPreorder,
+        depositPesewas: product.isPreorder
+          ? calculateDeposit(product, 1)
+          : activePrice,
       },
       quantity,
     );
@@ -227,11 +233,10 @@ export function ProductDetail({ slug }: ProductDetailProps) {
           {/* Stock Status */}
           <div className="mt-4">
             {product.isPreorder ? (
-              <span className="text-sm text-[var(--teal)]">
-                Pre-order available
-                {product.estArrivalDate &&
-                  ` — Est. arrival ${formatDate(product.estArrivalDate)}`}
-              </span>
+              <div className="space-y-3">
+                <PreorderBadge size="md" />
+                <PreorderInfo product={product} quantity={quantity} />
+              </div>
             ) : isOutOfStock ? (
               <span className="text-sm text-red-400">Out of stock</span>
             ) : activeStock <= 5 ? (
@@ -276,9 +281,10 @@ export function ProductDetail({ slug }: ProductDetailProps) {
               className="flex-1 gap-2"
               disabled={isOutOfStock}
               onClick={handleAddToCart}
+              style={product.isPreorder ? { background: '#F59E0B', color: '#000' } : undefined}
             >
               <ShoppingCart size={18} />
-              {isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
+              {isOutOfStock ? 'Out of Stock' : product.isPreorder ? 'Pre-Order Now' : 'Add to Cart'}
             </Button>
           </div>
 

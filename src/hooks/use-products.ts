@@ -8,6 +8,7 @@ interface UseProductsParams {
   limit?: number;
   category?: string;
   search?: string;
+  isPreorder?: boolean;
 }
 
 export function useProducts(params?: UseProductsParams) {

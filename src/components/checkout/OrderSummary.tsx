@@ -1,15 +1,30 @@
 'use client';
 
-import { ShoppingBag } from 'lucide-react';
+import { ShoppingBag, Truck, Info } from 'lucide-react';
 import { useCartStore } from '@/stores/cart-store';
 import { formatPesewas } from '@/lib/utils/formatters';
+
+const FREE_DELIVERY_MIN_PESEWAS = 10000; // GH₵100 minimum for free delivery
 
 export function OrderSummary() {
   const items = useCartStore((s) => s.items);
   const totalPesewas = useCartStore((s) => s.totalPesewas);
+  const depositTotal = useCartStore((s) => s.depositTotalPesewas);
+  const regularTotal = useCartStore((s) => s.regularTotalPesewas);
+  const hasPreorderItems = useCartStore((s) => s.hasPreorderItems);
 
-  const deliveryFee = 0; // Free delivery for now
-  const total = totalPesewas() + deliveryFee;
+  const hasPreorder = hasPreorderItems();
+  const regularItemsTotal = regularTotal();
+  const preorderDepositsTotal = depositTotal();
+  const hasRegularItems = items.some((i) => !i.isPreorder);
+
+  // Delivery fee applies to regular items only
+  const qualifiesForFreeDelivery = regularItemsTotal >= FREE_DELIVERY_MIN_PESEWAS;
+  const deliveryFee = !hasRegularItems ? 0 : qualifiesForFreeDelivery ? 0 : 2500; // GH₵25 flat rate
+
+  const dueToday = hasPreorder
+    ? regularItemsTotal + preorderDepositsTotal + deliveryFee
+    : totalPesewas() + deliveryFee;
 
   return (
     <div
@@ -23,6 +38,7 @@ export function OrderSummary() {
         Order Summary
       </h3>
 
+      {/* Cart items */}
       <div className="space-y-3">
         {items.map((item) => (
           <div
@@ -44,26 +60,31 @@ export function OrderSummary() {
               )}
             </div>
             <div className="flex-1 min-w-0">
-              <p
-                className="truncate text-sm"
-                style={{ color: 'var(--white)' }}
-              >
+              <p className="truncate text-sm" style={{ color: 'var(--white)' }}>
                 {item.name}
               </p>
-              <p className="text-xs" style={{ color: 'var(--muted)' }}>
-                Qty: {item.quantity}
-              </p>
+              <div className="flex items-center gap-2">
+                <p className="text-xs" style={{ color: 'var(--muted)' }}>
+                  Qty: {item.quantity}
+                </p>
+                {item.isPreorder && (
+                  <span
+                    className="rounded px-1.5 py-0.5 text-[9px] font-bold uppercase"
+                    style={{ background: '#F59E0B', color: '#000' }}
+                  >
+                    Pre-Order
+                  </span>
+                )}
+              </div>
             </div>
-            <p
-              className="text-sm font-semibold"
-              style={{ color: 'var(--white)' }}
-            >
+            <p className="text-sm font-semibold" style={{ color: 'var(--white)' }}>
               {formatPesewas(item.pricePesewas * item.quantity)}
             </p>
           </div>
         ))}
       </div>
 
+      {/* Totals */}
       <div
         className="mt-4 border-t pt-4 space-y-2"
         style={{ borderColor: 'var(--border)' }}
@@ -74,29 +95,77 @@ export function OrderSummary() {
             {formatPesewas(totalPesewas())}
           </span>
         </div>
-        <div className="flex justify-between text-sm">
-          <span style={{ color: 'var(--muted)' }}>Delivery</span>
-          <span style={{ color: 'var(--teal)' }}>
-            {deliveryFee === 0 ? 'Free' : formatPesewas(deliveryFee)}
-          </span>
-        </div>
+
+        {/* Delivery for regular items */}
+        {hasRegularItems && (
+          <div className="flex justify-between text-sm">
+            <span style={{ color: 'var(--muted)' }}>Delivery</span>
+            <span style={{ color: 'var(--teal)' }}>
+              {deliveryFee === 0 ? 'Free in Bolgatanga' : formatPesewas(deliveryFee)}
+            </span>
+          </div>
+        )}
+
+        {/* Pre-order breakdown */}
+        {hasPreorder && (
+          <>
+            {hasRegularItems && (
+              <div className="flex justify-between text-sm">
+                <span style={{ color: 'var(--muted)' }}>Regular items</span>
+                <span style={{ color: 'var(--white)' }}>{formatPesewas(regularItemsTotal)}</span>
+              </div>
+            )}
+            <div className="flex justify-between text-sm">
+              <span style={{ color: '#F59E0B' }}>Pre-order deposit{items.filter((i) => i.isPreorder).length > 1 ? 's' : ''}</span>
+              <span style={{ color: '#F59E0B' }}>{formatPesewas(preorderDepositsTotal)}</span>
+            </div>
+            {totalPesewas() - regularItemsTotal - preorderDepositsTotal > 0 && (
+              <div className="flex justify-between text-xs">
+                <span style={{ color: 'var(--muted)' }}>Balance on arrival</span>
+                <span style={{ color: 'var(--muted)' }}>
+                  {formatPesewas(totalPesewas() - regularItemsTotal - preorderDepositsTotal)}
+                </span>
+              </div>
+            )}
+
+            {/* Pre-order shipping notice */}
+            <div
+              className="mt-2 flex items-start gap-2 rounded-lg px-3 py-2.5"
+              style={{ background: 'rgba(245, 158, 11, 0.08)', border: '1px solid rgba(245, 158, 11, 0.2)' }}
+            >
+              <Truck size={14} className="mt-0.5 shrink-0" style={{ color: '#F59E0B' }} />
+              <p className="text-xs leading-relaxed" style={{ color: '#F59E0B' }}>
+                Shipping for pre-order items will be calculated and charged separately when your goods arrive.
+              </p>
+            </div>
+          </>
+        )}
+
+        {/* Due today */}
         <div
           className="flex justify-between border-t pt-2"
           style={{ borderColor: 'var(--border)' }}
         >
-          <span
-            className="font-semibold"
-            style={{ color: 'var(--white)' }}
-          >
-            Total
+          <span className="font-semibold" style={{ color: 'var(--white)' }}>
+            {hasPreorder ? 'Due Today' : 'Total'}
           </span>
           <span
             className="font-[family-name:var(--font-syne)] text-lg font-bold"
             style={{ color: 'var(--gold)' }}
           >
-            {formatPesewas(total)}
+            {formatPesewas(dueToday)}
           </span>
         </div>
+
+        {/* Free delivery note for non-preorder */}
+        {!hasPreorder && deliveryFee === 0 && hasRegularItems && (
+          <div className="flex items-center gap-1.5 pt-1">
+            <Info size={12} style={{ color: 'var(--teal)' }} />
+            <p className="text-[10px]" style={{ color: 'var(--muted)' }}>
+              Free delivery within Bolgatanga on orders over {formatPesewas(FREE_DELIVERY_MIN_PESEWAS)}
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

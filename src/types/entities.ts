@@ -22,6 +22,7 @@ export type PaymentProvider = 'PAYSTACK' | 'MOMO' | 'BANK_TRANSFER';
 // Product
 export interface Product {
   id: string;
+  importbrainProductId: string | null;
   name: string;
   slug: string;
   description: string | null;
@@ -31,6 +32,10 @@ export interface Product {
   isPreorder: boolean;
   isPublished: boolean;
   estArrivalDate: string | null;
+  preorderDepositType: string | null;
+  preorderDepositValue: number | null;
+  preorderMinUnits: number | null;
+  preorderSlotsTaken: number;
   category: string | null;
   imagesJson: string | null;
   specsJson: string | null;
@@ -80,6 +85,8 @@ export interface Preorder {
   quantity: number;
   depositPesewas: number;
   totalPesewas: number;
+  balancePesewas: number;
+  paystackBalanceReference: string | null;
   estArrivalDate: string | null;
   status: PreorderStatus;
   createdAt: string;
