@@ -86,27 +86,31 @@ export function FeaturedProducts() {
             const images = parseImages(product);
             const firstImage = images[0] ?? null;
             const categoryLabel = getCategoryLabel(product.category);
+            const isFeaturedCard = i === 0 && products.length > 2;
 
             return (
               <Link
                 href={`/products/${product.slug}`}
-                className={`product-card reveal-element${i === 0 && products.length > 2 ? ' featured-card' : ''}`}
+                className={`product-card reveal-element${isFeaturedCard ? ' featured-card' : ''}`}
                 key={product.id}
               >
                 <div className="product-action">&rarr;</div>
 
                 {/* Product image */}
-                {firstImage ? (
-                  <div
-                    style={{
-                      width: '100%',
-                      aspectRatio: '4/3',
-                      borderRadius: 12,
-                      overflow: 'hidden',
-                      marginBottom: 16,
-                      background: 'var(--deep)',
-                    }}
-                  >
+                <div
+                  style={{
+                    width: '100%',
+                    aspectRatio: isFeaturedCard ? '3/2' : '16/10',
+                    borderRadius: 12,
+                    overflow: 'hidden',
+                    marginBottom: 16,
+                    background: '#0a0a0a',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  {firstImage ? (
                     <img
                       src={firstImage}
                       alt={product.name}
@@ -114,37 +118,30 @@ export function FeaturedProducts() {
                         width: '100%',
                         height: '100%',
                         objectFit: 'contain',
+                        padding: 12,
+                        mixBlendMode: 'normal',
                       }}
                     />
-                  </div>
-                ) : (
-                  <div
-                    style={{
-                      width: '100%',
-                      aspectRatio: '4/3',
-                      borderRadius: 12,
-                      marginBottom: 16,
-                      background: 'var(--deep)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
+                  ) : (
                     <Package size={48} style={{ color: 'var(--border)' }} />
-                  </div>
-                )}
+                  )}
+                </div>
 
                 {/* Badges */}
-                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 10 }}>
                   {product.isPreorder && (
                     <span
-                      className="product-badge"
                       style={{
+                        display: 'inline-block',
+                        fontFamily: 'var(--font-mono)',
+                        fontSize: 10,
+                        letterSpacing: 1.5,
+                        textTransform: 'uppercase',
+                        padding: '4px 10px',
                         background: '#F59E0B',
                         color: '#000',
-                        border: 'none',
                         fontWeight: 700,
-                        marginBottom: 0,
+                        borderRadius: 2,
                       }}
                     >
                       Pre-Order
