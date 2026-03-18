@@ -171,6 +171,17 @@ export async function updateImportBrainPlatformKey(platformKey: string) {
   );
 }
 
+export interface SyncResult {
+  created: number;
+  updated: number;
+  skipped: number;
+  total: number;
+}
+
+export async function syncImportBrainProducts() {
+  return apiClient.post<SyncResult>('/admin/integrations/importbrain/sync');
+}
+
 // --- Admin Products ---
 
 interface AdminProductsParams {

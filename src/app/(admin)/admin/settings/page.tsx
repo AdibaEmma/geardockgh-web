@@ -4,12 +4,13 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Store, CreditCard, Truck, Bell, Shield, Building2, Plus, Check, X as XIcon,
-  Plug, Loader2, CheckCircle2, XCircle, Unplug,
+  Plug, Loader2, CheckCircle2, XCircle, Unplug, RefreshCw,
 } from 'lucide-react';
 import {
   getAdminTenants, createAdminTenant, updateAdminTenant, type Tenant,
   getImportBrainStatus, connectImportBrain, disconnectImportBrain, saveImportBrainPlatformKey,
-  deleteImportBrainConnection, updateImportBrainPlatformKey,
+  deleteImportBrainConnection, updateImportBrainPlatformKey, syncImportBrainProducts,
+  type SyncResult,
 } from '@/lib/api/admin';
 import { formatDate } from '@/lib/utils/formatters';
 
@@ -310,6 +311,16 @@ function IntegrationsTab() {
     },
   });
 
+  const [syncResult, setSyncResult] = useState<SyncResult | null>(null);
+  const syncMutation = useMutation({
+    mutationFn: () => syncImportBrainProducts(),
+    onSuccess: (res) => {
+      const data = res.data as SyncResult;
+      setSyncResult(data);
+      queryClient.invalidateQueries({ queryKey: ['admin-products'] });
+    },
+  });
+
   return (
     <div className="space-y-6">
       <SettingsSection
@@ -402,6 +413,57 @@ function IntegrationsTab() {
                   </li>
                 ))}
               </ul>
+            </div>
+
+            {/* Sync Products */}
+            <div
+              className="rounded-lg border px-4 py-3"
+              style={{ borderColor: 'var(--border)', background: 'var(--deep)' }}
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-semibold" style={{ color: 'var(--white)' }}>
+                    Pull Products from ImportBrain
+                  </p>
+                  <p className="mt-0.5 text-xs" style={{ color: 'var(--muted)' }}>
+                    Fetch all products from ImportBrain and sync to your store catalog.
+                  </p>
+                </div>
+                <button
+                  onClick={() => { setSyncResult(null); syncMutation.mutate(); }}
+                  disabled={syncMutation.isPending}
+                  className="flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50"
+                  style={{ background: 'var(--gold)', color: 'var(--black)' }}
+                >
+                  {syncMutation.isPending ? (
+                    <Loader2 size={14} className="animate-spin" />
+                  ) : (
+                    <RefreshCw size={14} />
+                  )}
+                  {syncMutation.isPending ? 'Syncing...' : 'Sync Products'}
+                </button>
+              </div>
+
+              {syncResult && (
+                <div
+                  className="mt-3 flex items-center gap-4 rounded-lg px-3 py-2"
+                  style={{ background: 'rgba(34,197,94,0.08)' }}
+                >
+                  <CheckCircle2 size={16} style={{ color: '#22c55e' }} />
+                  <div className="flex gap-4 text-xs" style={{ color: 'var(--white)' }}>
+                    <span><strong>{syncResult.created}</strong> created</span>
+                    <span><strong>{syncResult.updated}</strong> updated</span>
+                    <span style={{ color: 'var(--muted)' }}>{syncResult.skipped} skipped</span>
+                    <span style={{ color: 'var(--muted)' }}>{syncResult.total} total</span>
+                  </div>
+                </div>
+              )}
+
+              {syncMutation.isError && (
+                <p className="mt-2 text-xs" style={{ color: '#ef4444' }}>
+                  Sync failed. Ensure ImportBrain is reachable.
+                </p>
+              )}
             </div>
 
             {/* Update Platform Key */}
