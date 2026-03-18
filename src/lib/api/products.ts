@@ -16,3 +16,7 @@ export async function getProducts(params?: GetProductsParams) {
 export async function getProduct(slug: string) {
   return apiClient.get<Product>(`/products/${slug}`);
 }
+
+export async function getFeaturedProducts() {
+  return apiClient.get<Product[]>('/products/featured');
+}

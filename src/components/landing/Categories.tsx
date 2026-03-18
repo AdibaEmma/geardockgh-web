@@ -65,6 +65,16 @@ const CATEGORIES: Category[] = [
     startingFrom: 'GH\u20B5 90',
   },
   {
+    icon: '\uD83D\uDD0B',
+    iconLabel: 'Battery',
+    title: 'Power & Energy',
+    slug: 'power-energy',
+    description:
+      'Portable power stations, UPS systems, solar panels, and power banks to keep your gear running anywhere.',
+    count: '// POWER & ENERGY',
+    startingFrom: 'GH\u20B5 200',
+  },
+  {
     icon: '\uD83D\uDCF7',
     iconLabel: 'Camera',
     title: 'Cameras & Video',
@@ -162,7 +172,7 @@ export function Categories() {
 
   return (
     <section className="section" id="categories">
-      <div className="section-tag">// 12 CATEGORIES</div>
+      <div className="section-tag">// 13 CATEGORIES</div>
       <h2 className="section-title">
         Everything<br />your workspace needs.
       </h2>

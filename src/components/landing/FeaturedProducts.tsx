@@ -1,110 +1,47 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { Package } from 'lucide-react';
+import { getFeaturedProducts } from '@/lib/api/products';
+import { formatPesewas } from '@/lib/utils/formatters';
+import { CATEGORIES } from '@/lib/utils/constants';
+import type { Product } from '@/types';
 
-interface Product {
-  emoji: string;
-  emojiLabel: string;
-  badge: string;
-  name: string;
-  slug: string;
-  nameHtml?: boolean;
-  description: string;
-  price: string;
-  comparePrice?: string;
-  priceUnit?: string;
-  rating: number;
-  reviewCount: number;
-  featured?: boolean;
+function getCategoryLabel(slug: string | null): string | null {
+  if (!slug) return null;
+  return CATEGORIES.find((c) => c.value === slug)?.label ?? slug;
 }
 
-const PRODUCTS: Product[] = [
-  {
-    emoji: '\uD83C\uDFA7',
-    emojiLabel: 'Headphones',
-    badge: 'Best Seller',
-    name: 'Sony WH-1000XM5 Noise-Cancelling',
-    slug: 'sony-wh-1000xm5',
-    nameHtml: true,
-    description:
-      "Industry-leading ANC. 30hr battery. Perfect for deep work in Bolgatanga heat or Tamale bustle.",
-    price: 'GH\u20B5 2,400',
-    comparePrice: 'GH\u20B5 3,100',
-    priceUnit: '/ unit',
-    rating: 5,
-    reviewCount: 47,
-    featured: true,
-  },
-  {
-    emoji: '\uD83D\uDCF8',
-    emojiLabel: 'Camera',
-    badge: 'Creator Pick',
-    name: 'Ring Light Pro 18"',
-    slug: 'ring-light-pro-18',
-    description: 'Adjustable CCT + remote. Great for reels, YouTube, or Zoom.',
-    price: 'GH\u20B5 680',
-    comparePrice: 'GH\u20B5 850',
-    rating: 5,
-    reviewCount: 24,
-  },
-  {
-    emoji: '\u2328\uFE0F',
-    emojiLabel: 'Keyboard',
-    badge: 'New Arrival',
-    name: 'Mechanical Keyboard TKL',
-    slug: 'mechanical-keyboard-tkl',
-    description: 'Red switches, RGB backlit, compact tenkeyless layout.',
-    price: 'GH\u20B5 520',
-    rating: 4,
-    reviewCount: 18,
-  },
-  {
-    emoji: '\uD83D\uDDA5\uFE0F',
-    emojiLabel: 'Desktop computer',
-    badge: 'Remote Fav',
-    name: 'Laptop Stand \u2014 Foldable',
-    slug: 'laptop-stand-foldable',
-    description: 'Ergonomic aluminum. Works with any 10\u201317\u201D laptop.',
-    price: 'GH\u20B5 180',
-    comparePrice: 'GH\u20B5 240',
-    rating: 5,
-    reviewCount: 63,
-  },
-];
-
-function Stars({ count }: { count: number }) {
-  return (
-    <div className="product-rating">
-      <div className="stars">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <div className={`star${i < count ? '' : ' empty'}`} key={i} />
-        ))}
-      </div>
-      <span className="review-count">({PRODUCTS.find((p) => p.rating === count)?.reviewCount})</span>
-    </div>
-  );
-}
-
-function ProductStars({ rating, reviewCount }: { rating: number; reviewCount: number }) {
-  return (
-    <div className="product-rating">
-      <div className="stars">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <div className={`star${i < rating ? '' : ' empty'}`} key={i} />
-        ))}
-      </div>
-      <span className="review-count">({reviewCount})</span>
-    </div>
-  );
+function parseImages(product: Product): string[] {
+  if (product.imagesJson) {
+    try { return JSON.parse(product.imagesJson); } catch { /* fall through */ }
+  }
+  return [];
 }
 
 export function FeaturedProducts() {
   const gridRef = useRef<HTMLDivElement>(null);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchFeatured = async () => {
+      try {
+        const response = await getFeaturedProducts();
+        setProducts((response.data ?? []) as Product[]);
+      } catch {
+        // Silently fail
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchFeatured();
+  }, []);
 
   useEffect(() => {
     const grid = gridRef.current;
-    if (!grid) return;
+    if (!grid || isLoading) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -114,14 +51,15 @@ export function FeaturedProducts() {
           }
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
     const cards = grid.querySelectorAll('.product-card');
     cards.forEach((card) => observer.observe(card));
-
     return () => observer.disconnect();
-  }, []);
+  }, [isLoading, products]);
+
+  if (!isLoading && products.length === 0) return null;
 
   return (
     <section className="featured" id="featured">
@@ -129,42 +67,122 @@ export function FeaturedProducts() {
       <h2 className="section-title">
         Top gear,<br />hand-selected.
       </h2>
-      <div className="products-grid" ref={gridRef}>
-        {PRODUCTS.map((product) => (
-          <Link
-            href={`/products/${product.slug}`}
-            className={`product-card reveal-element${product.featured ? ' featured-card' : ''}`}
-            key={product.name}
-          >
-            <div className="product-action">&rarr;</div>
-            <span
-              className="product-emoji"
-              role="img"
-              aria-label={product.emojiLabel}
+
+      {isLoading ? (
+        <div className="products-grid">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div
+              key={i}
+              className="product-card reveal-element visible"
+              style={{ opacity: 0.4 }}
             >
-              {product.emoji}
-            </span>
-            <div className="product-badge">{product.badge}</div>
-            <ProductStars rating={product.rating} reviewCount={product.reviewCount} />
-            <div className="product-name">
-              {product.nameHtml ? (
-                <>
-                  Sony WH-1000XM5<br />Noise-Cancelling
-                </>
-              ) : (
-                product.name
-              )}
+              <div style={{ height: 240, background: 'var(--deep)', borderRadius: 12 }} />
             </div>
-            <div className="product-desc">{product.description}</div>
-            <div className="product-price">
-              {product.price}
-              {product.comparePrice && (
-                <span className="product-compare-price">{product.comparePrice}</span>
-              )}
-            </div>
-          </Link>
-        ))}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <div className="products-grid" ref={gridRef}>
+          {products.map((product, i) => {
+            const images = parseImages(product);
+            const firstImage = images[0] ?? null;
+            const categoryLabel = getCategoryLabel(product.category);
+
+            return (
+              <Link
+                href={`/products/${product.slug}`}
+                className={`product-card reveal-element${i === 0 && products.length > 2 ? ' featured-card' : ''}`}
+                key={product.id}
+              >
+                <div className="product-action">&rarr;</div>
+
+                {/* Product image */}
+                {firstImage ? (
+                  <div
+                    style={{
+                      width: '100%',
+                      aspectRatio: '4/3',
+                      borderRadius: 12,
+                      overflow: 'hidden',
+                      marginBottom: 16,
+                      background: 'var(--deep)',
+                    }}
+                  >
+                    <img
+                      src={firstImage}
+                      alt={product.name}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'contain',
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <div
+                    style={{
+                      width: '100%',
+                      aspectRatio: '4/3',
+                      borderRadius: 12,
+                      marginBottom: 16,
+                      background: 'var(--deep)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Package size={48} style={{ color: 'var(--border)' }} />
+                  </div>
+                )}
+
+                {/* Badges */}
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
+                  {product.isPreorder && (
+                    <span
+                      className="product-badge"
+                      style={{
+                        background: '#F59E0B',
+                        color: '#000',
+                        border: 'none',
+                        fontWeight: 700,
+                        marginBottom: 0,
+                      }}
+                    >
+                      Pre-Order
+                    </span>
+                  )}
+                  {categoryLabel && (
+                    <div className="product-badge" style={{ marginBottom: 0 }}>
+                      {categoryLabel}
+                    </div>
+                  )}
+                </div>
+
+                <div className="product-name">{product.name}</div>
+
+                {product.description && (
+                  <div className="product-desc">
+                    {product.description.length > 120
+                      ? product.description.slice(0, 120) + '...'
+                      : product.description}
+                  </div>
+                )}
+
+                <div className="product-price">
+                  {formatPesewas(product.pricePesewas)}
+                  {!product.isPreorder &&
+                    product.comparePricePesewas &&
+                    product.comparePricePesewas > product.pricePesewas && (
+                      <span className="product-compare-price">
+                        {formatPesewas(product.comparePricePesewas)}
+                      </span>
+                    )}
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      )}
+
       <div className="view-all-cta">
         <Link href="/products" className="view-all-link">
           View All Products &rarr;

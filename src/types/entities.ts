@@ -31,6 +31,7 @@ export interface Product {
   stockCount: number;
   isPreorder: boolean;
   isPublished: boolean;
+  isFeatured: boolean;
   estArrivalDate: string | null;
   preorderDepositType: string | null;
   preorderDepositValue: number | null;

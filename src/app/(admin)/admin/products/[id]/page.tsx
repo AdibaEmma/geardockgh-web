@@ -16,8 +16,9 @@ import {
   Clock,
   Globe,
   Hash,
+  Star,
 } from 'lucide-react';
-import { getAdminProductById, toggleAdminProductPublish } from '@/lib/api/admin';
+import { getAdminProductById, toggleAdminProductPublish, toggleAdminProductFeatured } from '@/lib/api/admin';
 import { formatPesewas, formatDate, formatDatetime } from '@/lib/utils/formatters';
 import { CATEGORIES } from '@/lib/utils/constants';
 import { useToastStore } from '@/stores/toast-store';
@@ -50,6 +51,19 @@ export default function AdminProductDetailPage({ params }: PageProps) {
       });
     },
     onError: () => addToast({ type: 'error', message: 'Failed to update product' }),
+  });
+
+  const toggleFeatured = useMutation({
+    mutationFn: () => toggleAdminProductFeatured(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-product', id] });
+      queryClient.invalidateQueries({ queryKey: ['admin-products'] });
+      addToast({
+        type: 'success',
+        message: product?.isFeatured ? 'Product unfeatured' : 'Product featured',
+      });
+    },
+    onError: () => addToast({ type: 'error', message: 'Failed to update featured status' }),
   });
 
   if (isLoading) {
@@ -156,6 +170,15 @@ export default function AdminProductDetailPage({ params }: PageProps) {
           >
             {product.isPublished ? <EyeOff size={14} /> : <Eye size={14} />}
             {product.isPublished ? 'Unpublish' : 'Publish'}
+          </button>
+          <button
+            onClick={() => toggleFeatured.mutate()}
+            disabled={toggleFeatured.isPending}
+            className="flex items-center gap-1.5 rounded-lg border px-4 py-2 text-sm font-medium transition-colors hover:bg-white/5 disabled:opacity-50"
+            style={{ borderColor: 'var(--border)', color: product.isFeatured ? '#F59E0B' : 'var(--muted)' }}
+          >
+            <Star size={14} fill={product.isFeatured ? '#F59E0B' : 'none'} />
+            {product.isFeatured ? 'Unfeature' : 'Feature'}
           </button>
           <Link
             href={`/admin/products?edit=${id}`}

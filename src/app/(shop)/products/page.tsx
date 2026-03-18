@@ -1,14 +1,16 @@
 'use client';
 
 import { useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useProducts } from '@/hooks/use-products';
 import { ProductGrid } from '@/components/shop/ProductGrid';
 import { ProductFilters } from '@/components/shop/ProductFilters';
 import type { Product } from '@/types';
 
 export default function ProductsPage() {
+  const searchParams = useSearchParams();
   const [search, setSearch] = useState('');
-  const [category, setCategory] = useState<string | null>(null);
+  const [category, setCategory] = useState<string | null>(searchParams.get('category'));
   const [isPreorder, setIsPreorder] = useState<boolean | null>(null);
   const [page, setPage] = useState(1);
 

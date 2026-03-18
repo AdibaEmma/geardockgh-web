@@ -237,3 +237,7 @@ export async function deleteAdminProduct(id: string) {
 export async function toggleAdminProductPublish(id: string) {
   return apiClient.patch<Product>(`/admin/products/${id}/toggle-publish`);
 }
+
+export async function toggleAdminProductFeatured(id: string) {
+  return apiClient.patch<Product>(`/admin/products/${id}/toggle-featured`);
+}

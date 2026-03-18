@@ -4,13 +4,14 @@ import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Plus, Pencil, Trash2, Search, Package, Eye, Globe, GlobeLock } from 'lucide-react';
+import { Plus, Pencil, Trash2, Search, Package, Eye, Globe, GlobeLock, Star } from 'lucide-react';
 import {
   getAdminProducts,
   createAdminProduct,
   updateAdminProduct,
   deleteAdminProduct,
   toggleAdminProductPublish,
+  toggleAdminProductFeatured,
 } from '@/lib/api/admin';
 import { Button } from '@/components/ui/Button';
 import { ProductFormModal } from '@/components/admin/ProductFormModal';
@@ -106,6 +107,15 @@ export default function AdminProductsPage() {
       addToast({ type: 'success', message: 'Product status updated' });
     },
     onError: () => addToast({ type: 'error', message: 'Failed to update product' }),
+  });
+
+  const { mutate: doToggleFeatured } = useMutation({
+    mutationFn: toggleAdminProductFeatured,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-products'] });
+      addToast({ type: 'success', message: 'Featured status updated' });
+    },
+    onError: () => addToast({ type: 'error', message: 'Failed to update featured status' }),
   });
 
   const closeModal = () => {
@@ -374,6 +384,17 @@ export default function AdminProductsPage() {
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
+                        <button
+                          onClick={(e) => { e.stopPropagation(); doToggleFeatured(product.id); }}
+                          className="rounded-md p-1.5 transition-colors hover:bg-white/10"
+                          title={product.isFeatured ? 'Remove from featured' : 'Add to featured'}
+                        >
+                          <Star
+                            size={14}
+                            style={{ color: product.isFeatured ? '#F59E0B' : 'var(--muted)' }}
+                            fill={product.isFeatured ? '#F59E0B' : 'none'}
+                          />
+                        </button>
                         <Link
                           href={`/admin/products/${product.id}`}
                           className="rounded-md p-1.5 transition-colors hover:bg-white/10"
