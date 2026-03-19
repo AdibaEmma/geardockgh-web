@@ -76,7 +76,7 @@ export function ProductCard({ product }: ProductCardProps) {
         {product.isPreorder && (
           <span
             className="absolute left-3 top-3 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider shadow-md"
-            style={{ background: '#F59E0B', color: '#000' }}
+            style={{ background: 'var(--gold)', color: 'var(--black)' }}
           >
             Pre-Order
           </span>
@@ -135,7 +135,7 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
 
         {product.isPreorder && product.preorderDepositType && product.preorderDepositValue != null && (
-          <p className="mt-1.5 text-xs" style={{ color: '#F59E0B' }}>
+          <p className="mt-1.5 text-xs" style={{ color: 'var(--gold)' }}>
             {product.preorderDepositType === 'percentage'
               ? `${product.preorderDepositValue}% deposit`
               : `${formatPesewas(product.preorderDepositValue)} deposit`}

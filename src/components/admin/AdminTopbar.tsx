@@ -3,6 +3,7 @@
 import { usePathname } from 'next/navigation';
 import { Menu } from 'lucide-react';
 import { useUIStore } from '@/stores/ui-store';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 const pageTitles: Record<string, string> = {
   '/admin': 'Dashboard',
@@ -38,7 +39,7 @@ export function AdminTopbar() {
         {/* Mobile menu trigger */}
         <button
           onClick={() => setMobileOpen(true)}
-          className="rounded-lg p-1.5 transition-colors hover:bg-white/5 lg:hidden"
+          className="rounded-lg p-1.5 transition-colors hover:bg-[var(--hover-bg)] lg:hidden"
           style={{ color: 'var(--muted)' }}
         >
           <Menu size={20} />
@@ -53,6 +54,7 @@ export function AdminTopbar() {
         </h2>
 
         <div className="flex-1" />
+        <ThemeToggle />
       </div>
     </header>
   );

@@ -231,7 +231,7 @@ function TenantsTab() {
             </button>
             <button
               onClick={() => { setShowCreate(false); setNewId(''); setNewName(''); }}
-              className="flex items-center gap-1.5 rounded-lg border px-4 py-2 text-sm font-medium transition-colors hover:bg-white/5"
+              className="flex items-center gap-1.5 rounded-lg border px-4 py-2 text-sm font-medium transition-colors hover:bg-[var(--hover-bg)]"
               style={{ borderColor: 'var(--border)', color: 'var(--muted)' }}
             >
               <XIcon size={14} />
@@ -506,7 +506,7 @@ function IntegrationsTab() {
                   </button>
                   <button
                     onClick={() => { setEditingKey(false); setUpdateKeyInput(''); }}
-                    className="rounded-lg border px-4 py-2 text-sm font-medium transition-colors hover:bg-white/5"
+                    className="rounded-lg border px-4 py-2 text-sm font-medium transition-colors hover:bg-[var(--hover-bg)]"
                     style={{ borderColor: 'var(--border)', color: 'var(--muted)' }}
                   >
                     Cancel
@@ -548,7 +548,7 @@ function IntegrationsTab() {
                   </button>
                   <button
                     onClick={() => setConfirmDisconnect(false)}
-                    className="rounded-lg border px-4 py-2 text-sm font-medium transition-colors hover:bg-white/5"
+                    className="rounded-lg border px-4 py-2 text-sm font-medium transition-colors hover:bg-[var(--hover-bg)]"
                     style={{ borderColor: 'var(--border)', color: 'var(--muted)' }}
                   >
                     Cancel
@@ -582,7 +582,7 @@ function IntegrationsTab() {
                   </button>
                   <button
                     onClick={() => setConfirmDelete(false)}
-                    className="rounded-lg border px-4 py-2 text-sm font-medium transition-colors hover:bg-white/5"
+                    className="rounded-lg border px-4 py-2 text-sm font-medium transition-colors hover:bg-[var(--hover-bg)]"
                     style={{ borderColor: 'var(--border)', color: 'var(--muted)' }}
                   >
                     Cancel
@@ -594,7 +594,7 @@ function IntegrationsTab() {
                 {!editingKey && (
                   <button
                     onClick={() => setEditingKey(true)}
-                    className="flex items-center gap-1.5 rounded-lg border px-4 py-2 text-sm font-medium transition-colors hover:bg-white/5"
+                    className="flex items-center gap-1.5 rounded-lg border px-4 py-2 text-sm font-medium transition-colors hover:bg-[var(--hover-bg)]"
                     style={{ borderColor: 'var(--border)', color: 'var(--gold)' }}
                   >
                     <Shield size={14} />
@@ -603,7 +603,7 @@ function IntegrationsTab() {
                 )}
                 <button
                   onClick={() => setConfirmDisconnect(true)}
-                  className="flex items-center gap-1.5 rounded-lg border px-4 py-2 text-sm font-medium transition-colors hover:bg-white/5"
+                  className="flex items-center gap-1.5 rounded-lg border px-4 py-2 text-sm font-medium transition-colors hover:bg-[var(--hover-bg)]"
                   style={{ borderColor: 'var(--border)', color: '#ef4444' }}
                 >
                   <Unplug size={14} />
@@ -611,7 +611,7 @@ function IntegrationsTab() {
                 </button>
                 <button
                   onClick={() => setConfirmDelete(true)}
-                  className="flex items-center gap-1.5 rounded-lg border px-4 py-2 text-sm font-medium transition-colors hover:bg-white/5"
+                  className="flex items-center gap-1.5 rounded-lg border px-4 py-2 text-sm font-medium transition-colors hover:bg-[var(--hover-bg)]"
                   style={{ borderColor: 'var(--border)', color: '#ef4444' }}
                 >
                   <XIcon size={14} />
@@ -691,7 +691,7 @@ function IntegrationsTab() {
                   </p>
                   <button
                     onClick={() => setChangingKeyNotConnected(true)}
-                    className="ml-3 flex items-center gap-1 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors hover:bg-white/5"
+                    className="ml-3 flex items-center gap-1 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors hover:bg-[var(--hover-bg)]"
                     style={{ borderColor: 'var(--border)', color: 'var(--gold)' }}
                   >
                     <Shield size={12} />
@@ -861,7 +861,7 @@ export default function AdminSettingsPage() {
                 </p>
               </div>
               <button
-                className="rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors hover:bg-white/5"
+                className="rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors hover:bg-[var(--hover-bg)]"
                 style={{ borderColor: 'var(--border)', color: 'var(--white)' }}
               >
                 Change

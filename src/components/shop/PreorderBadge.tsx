@@ -8,7 +8,7 @@ export function PreorderBadge({ size = 'sm' }: PreorderBadgeProps) {
       className={`inline-flex items-center rounded-full font-bold uppercase tracking-wider shadow-md ${
         size === 'sm' ? 'px-2.5 py-0.5 text-[10px]' : 'px-3 py-1 text-xs'
       }`}
-      style={{ background: '#F59E0B', color: '#000' }}
+      style={{ background: 'var(--gold)', color: 'var(--black)' }}
     >
       Pre-Order
     </span>

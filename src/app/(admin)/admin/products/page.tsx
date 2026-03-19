@@ -391,8 +391,8 @@ export default function AdminProductsPage() {
                         >
                           <Star
                             size={14}
-                            style={{ color: product.isFeatured ? '#F59E0B' : 'var(--muted)' }}
-                            fill={product.isFeatured ? '#F59E0B' : 'none'}
+                            style={{ color: product.isFeatured ? 'var(--gold)' : 'var(--muted)' }}
+                            fill={product.isFeatured ? 'var(--gold)' : 'none'}
                           />
                         </button>
                         <Link

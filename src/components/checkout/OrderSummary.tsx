@@ -70,7 +70,7 @@ export function OrderSummary() {
                 {item.isPreorder && (
                   <span
                     className="rounded px-1.5 py-0.5 text-[9px] font-bold uppercase"
-                    style={{ background: '#F59E0B', color: '#000' }}
+                    style={{ background: 'var(--gold)', color: 'var(--black)' }}
                   >
                     Pre-Order
                   </span>
@@ -116,8 +116,8 @@ export function OrderSummary() {
               </div>
             )}
             <div className="flex justify-between text-sm">
-              <span style={{ color: '#F59E0B' }}>Pre-order deposit{items.filter((i) => i.isPreorder).length > 1 ? 's' : ''}</span>
-              <span style={{ color: '#F59E0B' }}>{formatPesewas(preorderDepositsTotal)}</span>
+              <span style={{ color: 'var(--gold)' }}>Pre-order deposit{items.filter((i) => i.isPreorder).length > 1 ? 's' : ''}</span>
+              <span style={{ color: 'var(--gold)' }}>{formatPesewas(preorderDepositsTotal)}</span>
             </div>
             {totalPesewas() - regularItemsTotal - preorderDepositsTotal > 0 && (
               <div className="flex justify-between text-xs">
@@ -133,8 +133,8 @@ export function OrderSummary() {
               className="mt-2 flex items-start gap-2 rounded-lg px-3 py-2.5"
               style={{ background: 'rgba(245, 158, 11, 0.08)', border: '1px solid rgba(245, 158, 11, 0.2)' }}
             >
-              <Truck size={14} className="mt-0.5 shrink-0" style={{ color: '#F59E0B' }} />
-              <p className="text-xs leading-relaxed" style={{ color: '#F59E0B' }}>
+              <Truck size={14} className="mt-0.5 shrink-0" style={{ color: 'var(--gold)' }} />
+              <p className="text-xs leading-relaxed" style={{ color: 'var(--gold)' }}>
                 Shipping for pre-order items will be calculated and charged separately when your goods arrive.
               </p>
             </div>

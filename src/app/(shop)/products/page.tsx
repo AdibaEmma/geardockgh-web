@@ -69,8 +69,8 @@ function ProductsContent() {
             }}
             className="rounded-full border px-4 py-1.5 text-xs font-medium transition-colors"
             style={{
-              borderColor: isPreorder === tab.value ? '#F59E0B' : 'var(--border)',
-              color: isPreorder === tab.value ? '#F59E0B' : 'var(--muted)',
+              borderColor: isPreorder === tab.value ? 'var(--gold)' : 'var(--border)',
+              color: isPreorder === tab.value ? 'var(--gold)' : 'var(--muted)',
               background: isPreorder === tab.value ? 'rgba(245, 158, 11, 0.1)' : 'transparent',
             }}
           >

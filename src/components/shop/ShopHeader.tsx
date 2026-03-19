@@ -7,6 +7,7 @@ import { useAuthStore } from '@/stores/auth-store';
 import { useCartStore } from '@/stores/cart-store';
 import { useLogout } from '@/hooks/use-auth';
 import { CartDrawer } from './CartDrawer';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 export function ShopHeader() {
   const [cartOpen, setCartOpen] = useState(false);
@@ -30,18 +31,19 @@ export function ShopHeader() {
           <Link
             href="/"
             className="flex items-center gap-2 font-[family-name:var(--font-syne)] text-lg font-bold"
-            style={{ color: 'var(--gold)' }}
+            style={{ color: 'var(--teal)' }}
           >
             <img
               src="/images/branding/geardockgh-logo-nobg.png"
               alt=""
               className="h-16 w-16 -my-4 -ml-2 -mr-3 object-contain"
             />
-            GearDockGH
+            GearDock<span style={{ color: 'var(--gold)' }}>GH</span>
           </Link>
 
           {/* Desktop Nav */}
           <nav className="hidden items-center gap-6 md:flex">
+            <ThemeToggle />
             <Link
               href="/products"
               className="text-sm transition-colors hover:text-[var(--gold)]"
@@ -87,7 +89,7 @@ export function ShopHeader() {
                 </Link>
                 <button
                   onClick={() => logout()}
-                  className="rounded-lg p-1.5 transition-colors hover:bg-white/5"
+                  className="rounded-lg p-1.5 transition-colors hover:bg-[var(--hover-bg)]"
                   style={{ color: 'var(--muted)' }}
                   title="Logout"
                 >
@@ -110,6 +112,7 @@ export function ShopHeader() {
 
           {/* Mobile: Cart + Menu */}
           <div className="flex items-center gap-3 md:hidden">
+            <ThemeToggle />
             <button
               onClick={() => setCartOpen(true)}
               className="relative"

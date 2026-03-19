@@ -6,7 +6,7 @@ import type { Preorder, PreorderStatus } from '@/types';
 
 const STATUS_CONFIG: Record<PreorderStatus, { label: string; color: string; bg: string }> = {
   RESERVED: { label: 'Reserved', color: '#9CA3AF', bg: 'rgba(156, 163, 175, 0.1)' },
-  DEPOSIT_PAID: { label: 'Deposit Paid', color: '#F59E0B', bg: 'rgba(245, 158, 11, 0.1)' },
+  DEPOSIT_PAID: { label: 'Deposit Paid', color: 'var(--gold)', bg: 'rgba(245, 158, 11, 0.1)' },
   FULLY_PAID: { label: 'Fully Paid', color: '#10B981', bg: 'rgba(16, 185, 129, 0.1)' },
   READY_TO_SHIP: { label: 'Ready to Ship', color: '#8B5CF6', bg: 'rgba(139, 92, 246, 0.1)' },
   FULFILLED: { label: 'Fulfilled', color: '#059669', bg: 'rgba(5, 150, 105, 0.1)' },
@@ -64,7 +64,7 @@ export function PreorderCard({ preorder }: PreorderCardProps) {
       </div>
 
       {preorder.estArrivalDate && (
-        <p className="mt-2 text-xs" style={{ color: '#F59E0B' }}>
+        <p className="mt-2 text-xs" style={{ color: 'var(--gold)' }}>
           Est. arrival: {formatDate(preorder.estArrivalDate)}
         </p>
       )}

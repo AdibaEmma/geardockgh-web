@@ -281,7 +281,7 @@ export function ProductDetail({ slug }: ProductDetailProps) {
               className="flex-1 gap-2"
               disabled={isOutOfStock}
               onClick={handleAddToCart}
-              style={product.isPreorder ? { background: '#F59E0B', color: '#000' } : undefined}
+              style={product.isPreorder ? { background: 'var(--gold)', color: 'var(--black)' } : undefined}
             >
               <ShoppingCart size={18} />
               {isOutOfStock ? 'Out of Stock' : product.isPreorder ? 'Pre-Order Now' : 'Add to Cart'}

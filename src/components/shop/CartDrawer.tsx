@@ -71,7 +71,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
           </h2>
           <button
             onClick={onClose}
-            className="rounded-lg p-1.5 transition-colors hover:bg-white/5"
+            className="rounded-lg p-1.5 transition-colors hover:bg-[var(--hover-bg)]"
             style={{ color: 'var(--muted)' }}
           >
             <X size={20} />
@@ -161,7 +161,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                               item.quantity - 1,
                             )
                           }
-                          className="rounded p-1 transition-colors hover:bg-white/5"
+                          className="rounded p-1 transition-colors hover:bg-[var(--hover-bg)]"
                           style={{ color: 'var(--muted)' }}
                         >
                           <Minus size={14} />
@@ -180,7 +180,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                               item.quantity + 1,
                             )
                           }
-                          className="rounded p-1 transition-colors hover:bg-white/5"
+                          className="rounded p-1 transition-colors hover:bg-[var(--hover-bg)]"
                           style={{ color: 'var(--muted)' }}
                         >
                           <Plus size={14} />

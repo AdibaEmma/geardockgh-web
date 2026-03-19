@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ShoppingBag } from 'lucide-react';
 import { useCartStore } from '@/stores/cart-store';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 const NAV_ITEMS = [
   { href: '/products', label: 'Shop' },
@@ -60,6 +61,7 @@ export function Navbar() {
         </ul>
 
         <div className="nav-actions">
+          <ThemeToggle />
           <Link href="/cart" className="nav-cart" aria-label="Shopping cart">
             <ShoppingBag size={18} />
             {itemCount > 0 && <span className="cart-badge">{itemCount}</span>}

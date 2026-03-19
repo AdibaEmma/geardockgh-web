@@ -40,7 +40,7 @@ export function PreorderInfo({ product, quantity = 1 }: PreorderInfoProps) {
       {product.estArrivalDate && (
         <div className="flex items-center justify-between text-sm">
           <span style={{ color: 'var(--muted)' }}>Estimated Arrival</span>
-          <span className="font-medium" style={{ color: '#F59E0B' }}>
+          <span className="font-medium" style={{ color: 'var(--gold)' }}>
             {formatDate(product.estArrivalDate)}
           </span>
         </div>
@@ -71,7 +71,7 @@ export function PreorderInfo({ product, quantity = 1 }: PreorderInfoProps) {
             <span className="text-xs" style={{ color: 'var(--muted)' }}>
               Pre-order progress
             </span>
-            <span className="text-xs font-medium" style={{ color: '#F59E0B' }}>
+            <span className="text-xs font-medium" style={{ color: 'var(--gold)' }}>
               {product.preorderSlotsTaken} / {product.preorderMinUnits} units
             </span>
           </div>
@@ -83,7 +83,7 @@ export function PreorderInfo({ product, quantity = 1 }: PreorderInfoProps) {
               className="h-full rounded-full transition-all duration-500"
               style={{
                 width: `${progress}%`,
-                background: '#F59E0B',
+                background: 'var(--gold)',
               }}
             />
           </div>

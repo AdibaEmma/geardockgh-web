@@ -162,7 +162,7 @@ export default function AdminProductDetailPage({ params }: PageProps) {
           <button
             onClick={() => togglePublish.mutate()}
             disabled={togglePublish.isPending}
-            className="flex items-center gap-1.5 rounded-lg border px-4 py-2 text-sm font-medium transition-colors hover:bg-white/5 disabled:opacity-50"
+            className="flex items-center gap-1.5 rounded-lg border px-4 py-2 text-sm font-medium transition-colors hover:bg-[var(--hover-bg)] disabled:opacity-50"
             style={{
               borderColor: 'var(--border)',
               color: product.isPublished ? '#ef4444' : 'var(--teal)',
@@ -174,10 +174,10 @@ export default function AdminProductDetailPage({ params }: PageProps) {
           <button
             onClick={() => toggleFeatured.mutate()}
             disabled={toggleFeatured.isPending}
-            className="flex items-center gap-1.5 rounded-lg border px-4 py-2 text-sm font-medium transition-colors hover:bg-white/5 disabled:opacity-50"
-            style={{ borderColor: 'var(--border)', color: product.isFeatured ? '#F59E0B' : 'var(--muted)' }}
+            className="flex items-center gap-1.5 rounded-lg border px-4 py-2 text-sm font-medium transition-colors hover:bg-[var(--hover-bg)] disabled:opacity-50"
+            style={{ borderColor: 'var(--border)', color: product.isFeatured ? 'var(--gold)' : 'var(--muted)' }}
           >
-            <Star size={14} fill={product.isFeatured ? '#F59E0B' : 'none'} />
+            <Star size={14} fill={product.isFeatured ? 'var(--gold)' : 'none'} />
             {product.isFeatured ? 'Unfeature' : 'Feature'}
           </button>
           <Link
@@ -317,7 +317,7 @@ export default function AdminProductDetailPage({ params }: PageProps) {
                 borderColor: 'rgba(245, 158, 11, 0.3)',
               }}
             >
-              <h3 className="mb-3 text-sm font-semibold" style={{ color: '#F59E0B' }}>
+              <h3 className="mb-3 text-sm font-semibold" style={{ color: 'var(--gold)' }}>
                 Pre-Order Settings
               </h3>
               <div className="space-y-3">
@@ -349,7 +349,7 @@ export default function AdminProductDetailPage({ params }: PageProps) {
                     icon={Calendar}
                     label="ETA"
                     value={formatDate(product.estArrivalDate)}
-                    valueColor="#F59E0B"
+                    valueColor="var(--gold)"
                   />
                 )}
               </div>

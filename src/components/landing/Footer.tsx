@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { getSocialLinks, getConnectLinks } from '@/lib/social-links';
+import { SocialIcon } from '@/components/ui/SocialIcon';
 
 const SHOP_LINKS = [
   { href: '/products?category=laptops-computers', label: 'Laptops & Computers' },
@@ -83,7 +84,7 @@ export function Footer() {
               rel="noopener noreferrer"
               aria-label={`Follow GearDockGH on ${social.label}`}
             >
-              {social.text}
+              <SocialIcon name={social.icon} />
             </a>
           ))}
         </div>

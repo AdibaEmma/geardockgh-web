@@ -155,7 +155,7 @@ export default function CartPage() {
                             item.quantity - 1,
                           )
                         }
-                        className="px-3 py-1.5 transition-colors hover:bg-white/5"
+                        className="px-3 py-1.5 transition-colors hover:bg-[var(--hover-bg)]"
                         style={{ color: 'var(--muted)' }}
                       >
                         <Minus size={14} />
@@ -177,7 +177,7 @@ export default function CartPage() {
                             item.quantity + 1,
                           )
                         }
-                        className="px-3 py-1.5 transition-colors hover:bg-white/5"
+                        className="px-3 py-1.5 transition-colors hover:bg-[var(--hover-bg)]"
                         style={{ color: 'var(--muted)' }}
                       >
                         <Plus size={14} />

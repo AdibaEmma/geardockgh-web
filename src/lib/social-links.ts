@@ -1,23 +1,23 @@
 interface SocialLink {
   href: string;
   label: string;
-  text: string;
+  icon: string;
 }
 
-const SOCIAL_CONFIG: { envKey: string; label: string; text: string }[] = [
-  { envKey: 'NEXT_PUBLIC_SOCIAL_TWITTER', label: 'Twitter / X', text: '\uD835\uDD4F' },
-  { envKey: 'NEXT_PUBLIC_SOCIAL_INSTAGRAM', label: 'Instagram', text: 'IG' },
-  { envKey: 'NEXT_PUBLIC_SOCIAL_TIKTOK', label: 'TikTok', text: 'TT' },
-  { envKey: 'NEXT_PUBLIC_SOCIAL_WHATSAPP', label: 'WhatsApp', text: 'WA' },
-  { envKey: 'NEXT_PUBLIC_SOCIAL_FACEBOOK', label: 'Facebook', text: 'FB' },
+const SOCIAL_CONFIG: { envKey: string; label: string; icon: string }[] = [
+  { envKey: 'NEXT_PUBLIC_SOCIAL_TWITTER', label: 'Twitter / X', icon: 'x' },
+  { envKey: 'NEXT_PUBLIC_SOCIAL_INSTAGRAM', label: 'Instagram', icon: 'instagram' },
+  { envKey: 'NEXT_PUBLIC_SOCIAL_TIKTOK', label: 'TikTok', icon: 'tiktok' },
+  { envKey: 'NEXT_PUBLIC_SOCIAL_WHATSAPP', label: 'WhatsApp', icon: 'whatsapp' },
+  { envKey: 'NEXT_PUBLIC_SOCIAL_FACEBOOK', label: 'Facebook', icon: 'facebook' },
 ];
 
 export function getSocialLinks(): SocialLink[] {
   return SOCIAL_CONFIG
-    .map(({ envKey, label, text }) => ({
+    .map(({ envKey, label, icon }) => ({
       href: process.env[envKey] ?? '',
       label,
-      text,
+      icon,
     }))
     .filter((link) => link.href !== '');
 }

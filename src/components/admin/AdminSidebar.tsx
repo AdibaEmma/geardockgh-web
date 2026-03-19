@@ -82,13 +82,13 @@ export function AdminSidebar() {
           <>
             <span
               className="font-[family-name:var(--font-syne)] text-xl font-bold"
-              style={{ color: 'var(--gold)' }}
+              style={{ color: 'var(--teal)' }}
             >
               G
             </span>
             <button
               onClick={() => setCollapsed(false)}
-              className="hidden rounded-md p-1 transition-colors hover:bg-white/5 lg:block"
+              className="hidden rounded-md p-1 transition-colors hover:bg-[var(--hover-bg)] lg:block"
               style={{ color: 'var(--muted)' }}
               title="Expand sidebar"
             >
@@ -99,15 +99,15 @@ export function AdminSidebar() {
           <>
             <span
               className="font-[family-name:var(--font-syne)] text-lg font-bold"
-              style={{ color: 'var(--gold)' }}
+              style={{ color: 'var(--teal)' }}
             >
-              GearDockGH
+              GearDock<span style={{ color: 'var(--gold)' }}>GH</span>
             </span>
             <div className="flex items-center gap-1">
               {/* Desktop collapse */}
               <button
                 onClick={() => setCollapsed(true)}
-                className="hidden rounded-md p-1 transition-colors hover:bg-white/5 lg:block"
+                className="hidden rounded-md p-1 transition-colors hover:bg-[var(--hover-bg)] lg:block"
                 style={{ color: 'var(--muted)' }}
                 title="Collapse sidebar"
               >
@@ -130,7 +130,7 @@ export function AdminSidebar() {
       <div className="px-3 pt-4">
         <Link
           href="/"
-          className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs transition-colors hover:bg-white/5"
+          className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs transition-colors hover:bg-[var(--hover-bg)]"
           style={{ color: 'var(--muted)' }}
           title={collapsed ? 'Back to Store' : undefined}
         >
@@ -196,7 +196,7 @@ export function AdminSidebar() {
         <button
           onClick={() => logout()}
           title={collapsed ? 'Logout' : undefined}
-          className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors hover:bg-white/5"
+          className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors hover:bg-[var(--hover-bg)]"
           style={{ color: 'var(--muted)' }}
         >
           <LogOut size={20} className="shrink-0" />

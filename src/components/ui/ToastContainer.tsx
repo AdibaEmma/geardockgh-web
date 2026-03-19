@@ -56,7 +56,7 @@ function ToastItem({ id, type, message }: ToastItemProps) {
       </p>
       <button
         onClick={handleClose}
-        className="flex-shrink-0 rounded p-0.5 transition-colors hover:bg-white/5"
+        className="flex-shrink-0 rounded p-0.5 transition-colors hover:bg-[var(--hover-bg)]"
         style={{ color: 'var(--muted)' }}
       >
         <X size={14} />

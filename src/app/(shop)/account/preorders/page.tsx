@@ -55,8 +55,8 @@ export default function PreordersPage() {
             }}
             className="flex-shrink-0 rounded-full border px-4 py-1.5 text-xs font-medium transition-colors"
             style={{
-              borderColor: status === tab.value ? '#F59E0B' : 'var(--border)',
-              color: status === tab.value ? '#F59E0B' : 'var(--muted)',
+              borderColor: status === tab.value ? 'var(--gold)' : 'var(--border)',
+              color: status === tab.value ? 'var(--gold)' : 'var(--muted)',
               background: status === tab.value ? 'rgba(245, 158, 11, 0.1)' : 'transparent',
             }}
           >
