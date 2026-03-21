@@ -43,7 +43,7 @@ export function OrderSummary() {
       <div className="space-y-3">
         {items.map((item) => (
           <div
-            key={`${item.productId}-${item.variantId}`}
+            key={`${item.productId}-${item.variantId}-${item.selectedOptions?.map((o) => o.value).join('-') ?? ''}`}
             className="flex items-center gap-3"
           >
             <div
@@ -64,6 +64,11 @@ export function OrderSummary() {
               <p className="truncate text-sm" style={{ color: 'var(--white)' }}>
                 {item.name}
               </p>
+              {item.selectedOptions && item.selectedOptions.length > 0 && (
+                <p className="text-xs" style={{ color: 'var(--muted)' }}>
+                  {item.selectedOptions.map((o) => o.value).join(' · ')}
+                </p>
+              )}
               <div className="flex items-center gap-2">
                 <p className="text-xs" style={{ color: 'var(--muted)' }}>
                   Qty: {item.quantity}
@@ -79,7 +84,7 @@ export function OrderSummary() {
               </div>
             </div>
             <p className="text-sm font-semibold" style={{ color: 'var(--white)' }}>
-              {formatPesewas(item.pricePesewas * item.quantity)}
+              {formatPesewas((item.pricePesewas + (item.selectedOptions ?? []).reduce((s, o) => s + (o.priceDelta ?? 0), 0)) * item.quantity)}
             </p>
           </div>
         ))}

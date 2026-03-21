@@ -39,6 +39,7 @@ export function ProductCard({ product }: ProductCardProps) {
             return product.pricePesewas;
           })()
         : product.pricePesewas,
+      selectedOptions: [],
     });
     addToast({ type: 'success', message: `${product.name} added to cart` });
   };

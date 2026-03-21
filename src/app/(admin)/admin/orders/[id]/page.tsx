@@ -3,14 +3,14 @@
 import { use } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
-import { ArrowLeft, ShoppingBag, MapPin, User } from 'lucide-react';
+import { ArrowLeft, ShoppingBag, MapPin, User, MessageSquare } from 'lucide-react';
 import { getAdminOrder, updateOrderStatus } from '@/lib/api/admin';
 import { OrderStatusBadge } from '@/components/orders/OrderStatusBadge';
 import { OrderTimeline } from '@/components/orders/OrderTimeline';
 import { Button } from '@/components/ui/Button';
 import { useToastStore } from '@/stores/toast-store';
 import { formatPesewas, formatDate } from '@/lib/utils/formatters';
-import type { Order, OrderStatus } from '@/types';
+import type { Order, OrderStatus, SelectedOption } from '@/types';
 
 const allStatuses: OrderStatus[] = [
   'PENDING_PAYMENT',
@@ -60,6 +60,7 @@ export default function AdminOrderDetailPage({ params }: AdminOrderDetailProps) 
     | (Order & {
         customer?: { firstName: string; lastName: string; email: string; phone?: string };
         shippingAddress?: { street: string; city: string; region: string };
+        notes?: string | null;
       })
     | undefined;
 
@@ -126,6 +127,25 @@ export default function AdminOrderDetailPage({ params }: AdminOrderDetailProps) 
                     <p className="text-xs" style={{ color: 'var(--muted)' }}>
                       Qty: {item.quantity} x {formatPesewas(item.unitPricePesewas)}
                     </p>
+                    {item.selectedOptionsJson && (() => {
+                      try {
+                        const opts: SelectedOption[] = JSON.parse(item.selectedOptionsJson);
+                        if (opts.length === 0) return null;
+                        return (
+                          <div className="mt-0.5 flex flex-wrap gap-1">
+                            {opts.map((o) => (
+                              <span
+                                key={o.name}
+                                className="rounded px-1.5 py-0.5 text-[10px]"
+                                style={{ background: 'var(--deep)', color: 'var(--muted)' }}
+                              >
+                                {o.name}: {o.value}
+                              </span>
+                            ))}
+                          </div>
+                        );
+                      } catch { return null; }
+                    })()}
                   </div>
                   <span className="text-sm font-semibold" style={{ color: 'var(--white)' }}>
                     {formatPesewas(item.unitPricePesewas * item.quantity)}
@@ -194,6 +214,30 @@ export default function AdminOrderDetailPage({ params }: AdminOrderDetailProps) 
               <p className="text-sm" style={{ color: 'var(--muted)' }}>
                 {order.shippingAddress.street}, {order.shippingAddress.city},{' '}
                 {order.shippingAddress.region}
+              </p>
+            </div>
+          )}
+
+          {/* Customer Notes */}
+          {order.notes && (
+            <div
+              className="rounded-xl border p-6"
+              style={{ background: 'var(--card)', borderColor: 'var(--border)' }}
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <MessageSquare size={16} style={{ color: 'var(--gold)' }} />
+                <h3
+                  className="font-[family-name:var(--font-syne)] font-bold"
+                  style={{ color: 'var(--white)' }}
+                >
+                  Customer Notes
+                </h3>
+              </div>
+              <p
+                className="text-sm whitespace-pre-wrap"
+                style={{ color: 'var(--muted)' }}
+              >
+                {order.notes}
               </p>
             </div>
           )}

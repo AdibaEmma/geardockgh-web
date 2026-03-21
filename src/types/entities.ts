@@ -19,6 +19,25 @@ export type PreorderStatus =
 export type PaymentStatus = 'PENDING' | 'SUCCESS' | 'FAILED' | 'REFUNDED';
 export type PaymentProvider = 'PAYSTACK' | 'MOMO' | 'BANK_TRANSFER';
 
+// Product Options
+export interface ProductOptionValue {
+  label: string;
+  hex?: string;
+  priceDelta?: number;
+}
+
+export interface ProductOption {
+  name: string;
+  type: 'color' | 'text';
+  values: ProductOptionValue[];
+}
+
+export interface SelectedOption {
+  name: string;
+  value: string;
+  priceDelta?: number;
+}
+
 // Product
 export interface Product {
   id: string;
@@ -42,6 +61,7 @@ export interface Product {
   category: string | null;
   imagesJson: string | null;
   specsJson: string | null;
+  optionsJson: string | null;
   variants: ProductVariant[];
   createdAt: string;
   updatedAt: string;
@@ -64,6 +84,7 @@ export interface Order {
   subtotalPesewas: number;
   deliveryFee: number;
   discountPesewas: number;
+  notes?: string | null;
   items: OrderItem[];
   payments: Payment[];
   createdAt: string;
@@ -78,6 +99,7 @@ export interface OrderItem {
   variant: ProductVariant | null;
   quantity: number;
   unitPricePesewas: number;
+  selectedOptionsJson: string | null;
 }
 
 // Preorder

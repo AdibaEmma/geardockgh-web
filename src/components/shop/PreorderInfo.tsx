@@ -5,16 +5,19 @@ import type { Product } from '@/types';
 interface PreorderInfoProps {
   product: Product;
   quantity?: number;
+  optionsDeltaPesewas?: number;
 }
 
-function calculateDeposit(product: Product, quantity: number): number {
+function calculateDeposit(product: Product, quantity: number, optionsDelta = 0): number {
+  const unitPrice = product.pricePesewas + optionsDelta;
+
   if (!product.preorderDepositType || product.preorderDepositValue == null) {
-    return product.pricePesewas * quantity;
+    return unitPrice * quantity;
   }
 
   if (product.preorderDepositType === 'percentage') {
     return Math.round(
-      (product.pricePesewas * product.preorderDepositValue * quantity) / 100
+      (unitPrice * product.preorderDepositValue * quantity) / 100
     );
   }
 
@@ -22,9 +25,9 @@ function calculateDeposit(product: Product, quantity: number): number {
   return product.preorderDepositValue * quantity;
 }
 
-export function PreorderInfo({ product, quantity = 1 }: PreorderInfoProps) {
-  const totalPesewas = product.pricePesewas * quantity;
-  const depositPesewas = calculateDeposit(product, quantity);
+export function PreorderInfo({ product, quantity = 1, optionsDeltaPesewas = 0 }: PreorderInfoProps) {
+  const totalPesewas = (product.pricePesewas + optionsDeltaPesewas) * quantity;
+  const depositPesewas = calculateDeposit(product, quantity, optionsDeltaPesewas);
   const balancePesewas = totalPesewas - depositPesewas;
 
   const hasMinUnits = product.preorderMinUnits != null && product.preorderMinUnits > 0;

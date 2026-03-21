@@ -10,7 +10,7 @@ import { formatPesewas, formatDate } from '@/lib/utils/formatters';
 import { Button } from '@/components/ui/Button';
 import { PreorderBadge } from '@/components/shop/PreorderBadge';
 import { PreorderInfo, calculateDeposit } from '@/components/shop/PreorderInfo';
-import type { Product, ProductVariant } from '@/types';
+import type { Product, ProductVariant, ProductOption, ProductOptionValue } from '@/types';
 
 interface ProductDetailProps {
   slug: string;
@@ -25,6 +25,7 @@ export function ProductDetail({ slug }: ProductDetailProps) {
   const [quantity, setQuantity] = useState(1);
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [selections, setSelections] = useState<Record<string, ProductOptionValue>>({});
 
   if (isLoading) {
     return (
@@ -61,25 +62,49 @@ export function ProductDetail({ slug }: ProductDetailProps) {
 
   const images = product.imagesJson ? (JSON.parse(product.imagesJson) as string[]) : [];
   const specs = product.specsJson ? (JSON.parse(product.specsJson) as Record<string, string>) : {};
+  const options: ProductOption[] = product.optionsJson
+    ? (JSON.parse(product.optionsJson) as ProductOption[])
+    : [];
 
-  const activePrice = selectedVariant?.pricePesewas ?? product.pricePesewas;
+  const optionsDelta = Object.values(selections).reduce(
+    (sum, v) => sum + (v.priceDelta ?? 0),
+    0,
+  );
+  const activePrice =
+    (selectedVariant?.pricePesewas ?? product.pricePesewas) + optionsDelta;
   const activeStock = selectedVariant?.stockCount ?? product.stockCount;
   const isOutOfStock = !product.isPreorder && activeStock === 0;
 
+  // Check if all required options are selected
+  const missingOptions = options.filter((o) => !selections[o.name]);
+  const allOptionsSelected = options.length === 0 || missingOptions.length === 0;
+
   const handleAddToCart = () => {
+    const selectedOpts = Object.entries(selections).map(([name, val]) => ({
+      name,
+      value: val.label,
+      priceDelta: val.priceDelta,
+    }));
+
+    const optionLabels = selectedOpts.map((o) => o.value).join(' · ');
+    const displayName = optionLabels
+      ? `${product.name} - ${optionLabels}`
+      : selectedVariant
+        ? `${product.name} - ${selectedVariant.name}`
+        : product.name;
+
     addItem(
       {
         productId: product.id,
         variantId: selectedVariant?.id ?? null,
-        name: selectedVariant
-          ? `${product.name} - ${selectedVariant.name}`
-          : product.name,
-        pricePesewas: activePrice,
+        name: displayName,
+        pricePesewas: selectedVariant?.pricePesewas ?? product.pricePesewas,
         image: images[0] ?? null,
         isPreorder: product.isPreorder,
         depositPesewas: product.isPreorder
-          ? calculateDeposit(product, 1)
+          ? calculateDeposit(product, 1, optionsDelta)
           : activePrice,
+        selectedOptions: selectedOpts,
       },
       quantity,
     );
@@ -230,12 +255,86 @@ export function ProductDetail({ slug }: ProductDetailProps) {
             </div>
           )}
 
+          {/* Product Options */}
+          {options.map((option) => (
+            <div key={option.name} className="mt-5">
+              <label
+                className="mb-2 block text-sm font-medium"
+                style={{ color: 'var(--white)' }}
+              >
+                {option.type === 'color' && selections[option.name]
+                  ? `Color: ${selections[option.name].label}`
+                  : option.name}
+              </label>
+
+              {option.type === 'color' ? (
+                <div className="flex flex-wrap gap-2.5">
+                  {option.values.map((val: ProductOptionValue) => {
+                    const isSelected = selections[option.name]?.label === val.label;
+                    return (
+                      <button
+                        key={val.label}
+                        onClick={() =>
+                          setSelections((prev) => ({ ...prev, [option.name]: val }))
+                        }
+                        className="relative h-9 w-9 rounded-full transition-all"
+                        style={{
+                          background: val.hex ?? '#888',
+                          boxShadow: isSelected
+                            ? '0 0 0 2px var(--deep), 0 0 0 4px var(--gold)'
+                            : '0 0 0 1px var(--border)',
+                        }}
+                        title={
+                          val.priceDelta
+                            ? `${val.label} (+${formatPesewas(val.priceDelta)})`
+                            : val.label
+                        }
+                      />
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="flex flex-wrap gap-2">
+                  {option.values.map((val: ProductOptionValue) => {
+                    const isSelected = selections[option.name]?.label === val.label;
+                    return (
+                      <button
+                        key={val.label}
+                        onClick={() =>
+                          setSelections((prev) => ({ ...prev, [option.name]: val }))
+                        }
+                        className="rounded-lg border px-3 py-2 text-sm transition-all"
+                        style={{
+                          borderColor: isSelected ? 'var(--gold)' : 'var(--border)',
+                          color: isSelected ? 'var(--gold)' : 'var(--white)',
+                          background: isSelected
+                            ? 'rgba(245, 158, 11, 0.08)'
+                            : 'transparent',
+                        }}
+                      >
+                        {val.label}
+                        {val.priceDelta ? (
+                          <span
+                            className="ml-1 text-xs"
+                            style={{ color: 'var(--muted)' }}
+                          >
+                            (+{formatPesewas(val.priceDelta)})
+                          </span>
+                        ) : null}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          ))}
+
           {/* Stock Status */}
           <div className="mt-4">
             {product.isPreorder ? (
               <div className="space-y-3">
                 <PreorderBadge size="md" />
-                <PreorderInfo product={product} quantity={quantity} />
+                <PreorderInfo product={product} quantity={quantity} optionsDeltaPesewas={optionsDelta} />
               </div>
             ) : isOutOfStock ? (
               <span className="text-sm text-red-400">Out of stock</span>
@@ -279,12 +378,18 @@ export function ProductDetail({ slug }: ProductDetailProps) {
             <Button
               size="lg"
               className="flex-1 gap-2"
-              disabled={isOutOfStock}
+              disabled={isOutOfStock || !allOptionsSelected}
               onClick={handleAddToCart}
               style={product.isPreorder ? { background: 'var(--gold)', color: 'var(--black)' } : undefined}
             >
               <ShoppingCart size={18} />
-              {isOutOfStock ? 'Out of Stock' : product.isPreorder ? 'Pre-Order Now' : 'Add to Cart'}
+              {isOutOfStock
+                ? 'Out of Stock'
+                : !allOptionsSelected
+                  ? `Select ${missingOptions.map((o) => o.name).join(', ')}`
+                  : product.isPreorder
+                    ? 'Pre-Order Now'
+                    : 'Add to Cart'}
             </Button>
           </div>
 

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import type { SelectedOption } from '@/types';
 
 interface CartItem {
   productId: string;
@@ -10,16 +11,32 @@ interface CartItem {
   image: string | null;
   isPreorder: boolean;
   depositPesewas: number;
+  selectedOptions: SelectedOption[];
 }
 
 interface CartState {
   items: CartItem[];
 }
 
+function optionsKey(options?: SelectedOption[]): string {
+  if (!options || options.length === 0) return '';
+  return JSON.stringify(
+    options.map((o) => ({ name: o.name, value: o.value })).sort((a, b) => a.name.localeCompare(b.name)),
+  );
+}
+
+function itemMatches(item: CartItem, productId: string, variantId: string | null, selOptions?: SelectedOption[]): boolean {
+  return (
+    item.productId === productId &&
+    item.variantId === variantId &&
+    optionsKey(item.selectedOptions) === optionsKey(selOptions)
+  );
+}
+
 interface CartActions {
   addItem: (item: Omit<CartItem, 'quantity'>, quantity?: number) => void;
-  removeItem: (productId: string, variantId: string | null) => void;
-  updateQuantity: (productId: string, variantId: string | null, quantity: number) => void;
+  removeItem: (productId: string, variantId: string | null, selectedOptions?: SelectedOption[]) => void;
+  updateQuantity: (productId: string, variantId: string | null, quantity: number, selectedOptions?: SelectedOption[]) => void;
   clearCart: () => void;
   totalPesewas: () => number;
   itemCount: () => number;
@@ -30,47 +47,53 @@ interface CartActions {
 
 type CartStore = CartState & CartActions;
 
+function effectivePrice(item: CartItem): number {
+  const optionsDelta = (item.selectedOptions ?? []).reduce((sum, o) => sum + (o.priceDelta ?? 0), 0);
+  return item.pricePesewas + optionsDelta;
+}
+
 export const useCartStore = create<CartStore>()(
   persist(
     (set, get) => ({
       items: [],
 
       addItem: (item, quantity = 1) => {
+        const selOptions = item.selectedOptions ?? [];
         set((state) => {
-          const existing = state.items.find(
-            (i) => i.productId === item.productId && i.variantId === item.variantId,
+          const existing = state.items.find((i) =>
+            itemMatches(i, item.productId, item.variantId, selOptions),
           );
 
           if (existing) {
             return {
               items: state.items.map((i) =>
-                i.productId === item.productId && i.variantId === item.variantId
+                itemMatches(i, item.productId, item.variantId, selOptions)
                   ? { ...i, quantity: i.quantity + quantity }
                   : i,
               ),
             };
           }
 
-          return { items: [...state.items, { ...item, quantity }] };
+          return { items: [...state.items, { ...item, selectedOptions: selOptions, quantity }] };
         });
       },
 
-      removeItem: (productId, variantId) => {
+      removeItem: (productId, variantId, selectedOptions = []) => {
         set((state) => ({
           items: state.items.filter(
-            (i) => !(i.productId === productId && i.variantId === variantId),
+            (i) => !itemMatches(i, productId, variantId, selectedOptions),
           ),
         }));
       },
 
-      updateQuantity: (productId, variantId, quantity) => {
+      updateQuantity: (productId, variantId, quantity, selectedOptions = []) => {
         if (quantity <= 0) {
-          get().removeItem(productId, variantId);
+          get().removeItem(productId, variantId, selectedOptions);
           return;
         }
         set((state) => ({
           items: state.items.map((i) =>
-            i.productId === productId && i.variantId === variantId
+            itemMatches(i, productId, variantId, selectedOptions)
               ? { ...i, quantity }
               : i,
           ),
@@ -80,7 +103,7 @@ export const useCartStore = create<CartStore>()(
       clearCart: () => set({ items: [] }),
 
       totalPesewas: () =>
-        get().items.reduce((sum, item) => sum + item.pricePesewas * item.quantity, 0),
+        get().items.reduce((sum, item) => sum + effectivePrice(item) * item.quantity, 0),
 
       itemCount: () =>
         get().items.reduce((sum, item) => sum + item.quantity, 0),
@@ -93,7 +116,7 @@ export const useCartStore = create<CartStore>()(
       regularTotalPesewas: () =>
         get().items
           .filter((item) => !item.isPreorder)
-          .reduce((sum, item) => sum + item.pricePesewas * item.quantity, 0),
+          .reduce((sum, item) => sum + effectivePrice(item) * item.quantity, 0),
 
       hasPreorderItems: () =>
         get().items.some((item) => item.isPreorder),

@@ -91,7 +91,7 @@ export default function CartPage() {
           <div className="space-y-4">
             {items.map((item) => (
               <div
-                key={`${item.productId}-${item.variantId}`}
+                key={`${item.productId}-${item.variantId}-${item.selectedOptions?.map((o) => o.value).join('-') ?? ''}`}
                 className="flex gap-4 rounded-xl border p-4"
                 style={{
                   borderColor: 'var(--border)',
@@ -129,15 +129,20 @@ export default function CartPage() {
                       >
                         {item.name}
                       </p>
+                      {item.selectedOptions && item.selectedOptions.length > 0 && (
+                        <p className="text-xs" style={{ color: 'var(--muted)' }}>
+                          {item.selectedOptions.map((o) => o.value).join(' · ')}
+                        </p>
+                      )}
                       <p
                         className="mt-0.5 text-sm font-semibold"
                         style={{ color: 'var(--gold)' }}
                       >
-                        {formatPesewas(item.pricePesewas)}
+                        {formatPesewas(item.pricePesewas + (item.selectedOptions?.reduce((s, o) => s + (o.priceDelta ?? 0), 0) ?? 0))}
                       </p>
                     </div>
                     <button
-                      onClick={() => removeItem(item.productId, item.variantId)}
+                      onClick={() => removeItem(item.productId, item.variantId, item.selectedOptions)}
                       className="rounded-lg p-1.5 text-red-400 transition-colors hover:bg-red-500/10"
                       title="Remove item"
                     >
@@ -157,6 +162,7 @@ export default function CartPage() {
                             item.productId,
                             item.variantId,
                             item.quantity - 1,
+                            item.selectedOptions,
                           )
                         }
                         className="px-3 py-1.5 transition-colors hover:bg-[var(--hover-bg)]"
@@ -179,6 +185,7 @@ export default function CartPage() {
                             item.productId,
                             item.variantId,
                             item.quantity + 1,
+                            item.selectedOptions,
                           )
                         }
                         className="px-3 py-1.5 transition-colors hover:bg-[var(--hover-bg)]"
@@ -193,7 +200,7 @@ export default function CartPage() {
                       className="font-[family-name:var(--font-space-mono)] text-sm font-semibold"
                       style={{ color: 'var(--white)' }}
                     >
-                      {formatPesewas(item.pricePesewas * item.quantity)}
+                      {formatPesewas((item.pricePesewas + (item.selectedOptions?.reduce((s, o) => s + (o.priceDelta ?? 0), 0) ?? 0)) * item.quantity)}
                     </span>
                   </div>
                 </div>

@@ -5,11 +5,13 @@ interface CreateOrderItem {
   productId: string;
   variantId?: string;
   quantity: number;
+  selectedOptions?: string;
 }
 
 interface CreateOrderRequest {
   items: CreateOrderItem[];
   addressId?: string;
+  notes?: string;
 }
 
 interface GetOrdersParams {

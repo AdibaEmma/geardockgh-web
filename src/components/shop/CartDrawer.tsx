@@ -19,7 +19,10 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   const removeItem = useCartStore((s) => s.removeItem);
   const updateQuantity = useCartStore((s) => s.updateQuantity);
   const clearCart = useCartStore((s) => s.clearCart);
-  const total = items.reduce((sum, item) => sum + item.pricePesewas * item.quantity, 0);
+  const total = items.reduce((sum, item) => {
+    const optionsDelta = (item.selectedOptions ?? []).reduce((s, o) => s + (o.priceDelta ?? 0), 0);
+    return sum + (item.pricePesewas + optionsDelta) * item.quantity;
+  }, 0);
   const user = useAuthStore((s) => s.user);
   const drawerRef = useRef<HTMLDivElement>(null);
 
@@ -107,7 +110,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
             <div className="space-y-4">
               {items.map((item) => (
                 <div
-                  key={`${item.productId}-${item.variantId}`}
+                  key={`${item.productId}-${item.variantId}-${item.selectedOptions?.map((o) => o.value).join('-') ?? ''}`}
                   className="flex gap-4 rounded-lg border p-3"
                   style={{
                     borderColor: 'var(--border)',
@@ -144,11 +147,16 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                       >
                         {item.name}
                       </p>
+                      {item.selectedOptions && item.selectedOptions.length > 0 && (
+                        <p className="text-xs" style={{ color: 'var(--muted)' }}>
+                          {item.selectedOptions.map((o) => o.value).join(' · ')}
+                        </p>
+                      )}
                       <p
                         className="text-sm font-semibold"
                         style={{ color: 'var(--gold)' }}
                       >
-                        {formatPesewas(item.pricePesewas)}
+                        {formatPesewas(item.pricePesewas + (item.selectedOptions?.reduce((s, o) => s + (o.priceDelta ?? 0), 0) ?? 0))}
                       </p>
                     </div>
 
@@ -160,6 +168,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                               item.productId,
                               item.variantId,
                               item.quantity - 1,
+                              item.selectedOptions,
                             )
                           }
                           className="rounded p-1 transition-colors hover:bg-[var(--hover-bg)]"
@@ -179,6 +188,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                               item.productId,
                               item.variantId,
                               item.quantity + 1,
+                              item.selectedOptions,
                             )
                           }
                           className="rounded p-1 transition-colors hover:bg-[var(--hover-bg)]"
@@ -190,7 +200,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
 
                       <button
                         onClick={() =>
-                          removeItem(item.productId, item.variantId)
+                          removeItem(item.productId, item.variantId, item.selectedOptions)
                         }
                         className="rounded p-1 text-red-400 transition-colors hover:bg-red-500/10"
                       >

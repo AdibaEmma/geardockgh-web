@@ -5,8 +5,9 @@ import { X } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { ImageUploader } from '@/components/admin/ImageUploader';
+import { OptionsEditor } from '@/components/admin/OptionsEditor';
 import { CATEGORIES } from '@/lib/utils/constants';
-import type { Product } from '@/types';
+import type { Product, ProductOption } from '@/types';
 
 interface ProductFormData {
   name: string;
@@ -20,6 +21,7 @@ interface ProductFormData {
   isPreorder: boolean;
   preorderSlotTarget: string;
   images: string[];
+  options: ProductOption[];
 }
 
 interface ProductFormModalProps {
@@ -37,6 +39,7 @@ interface ProductFormModalProps {
     preorderSlotTarget?: number | null;
     category?: string;
     imagesJson?: string;
+    optionsJson?: string;
   }) => void;
   product?: Product | null;
   isSubmitting?: boolean;
@@ -54,6 +57,7 @@ const emptyForm: ProductFormData = {
   isPreorder: false,
   preorderSlotTarget: '',
   images: [],
+  options: [],
 };
 
 export function ProductFormModal({ open, onClose, onSubmit, product, isSubmitting }: ProductFormModalProps) {
@@ -66,6 +70,12 @@ export function ProductFormModal({ open, onClose, onSubmit, product, isSubmittin
       if (product.imagesJson) {
         try {
           existingImages = JSON.parse(product.imagesJson);
+        } catch { /* ignore parse errors */ }
+      }
+      let existingOptions: ProductOption[] = [];
+      if (product.optionsJson) {
+        try {
+          existingOptions = JSON.parse(product.optionsJson);
         } catch { /* ignore parse errors */ }
       }
       setForm({
@@ -84,6 +94,7 @@ export function ProductFormModal({ open, onClose, onSubmit, product, isSubmittin
         isPreorder: product.isPreorder,
         preorderSlotTarget: product.preorderSlotTarget != null ? String(product.preorderSlotTarget) : '',
         images: existingImages,
+        options: existingOptions,
       });
     } else {
       setForm(emptyForm);
@@ -134,6 +145,7 @@ export function ProductFormModal({ open, onClose, onSubmit, product, isSubmittin
         : null,
       category: form.category || undefined,
       imagesJson: form.images.length > 0 ? JSON.stringify(form.images) : undefined,
+      optionsJson: form.options.length > 0 ? JSON.stringify(form.options) : undefined,
     });
   };
 
@@ -284,6 +296,12 @@ export function ProductFormModal({ open, onClose, onSubmit, product, isSubmittin
               ))}
             </select>
           </div>
+
+          {/* Product Options */}
+          <OptionsEditor
+            options={form.options}
+            onChange={(options) => setForm((prev) => ({ ...prev, options }))}
+          />
 
           {/* Toggles */}
           <div className="flex flex-col gap-3">
