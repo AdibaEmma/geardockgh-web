@@ -13,6 +13,7 @@ interface ProductFormData {
   description: string;
   priceGhs: string;
   comparePriceGhs: string;
+  costPriceGhs: string;
   stockCount: string;
   category: string;
   isPublished: boolean;
@@ -29,6 +30,7 @@ interface ProductFormModalProps {
     description?: string;
     pricePesewas: number;
     comparePricePesewas?: number;
+    costPricePesewas?: number;
     stockCount?: number;
     isPreorder?: boolean;
     isPublished?: boolean;
@@ -45,6 +47,7 @@ const emptyForm: ProductFormData = {
   description: '',
   priceGhs: '',
   comparePriceGhs: '',
+  costPriceGhs: '',
   stockCount: '0',
   category: '',
   isPublished: false,
@@ -71,6 +74,9 @@ export function ProductFormModal({ open, onClose, onSubmit, product, isSubmittin
         priceGhs: (product.pricePesewas / 100).toFixed(2),
         comparePriceGhs: product.comparePricePesewas
           ? (product.comparePricePesewas / 100).toFixed(2)
+          : '',
+        costPriceGhs: product.costPricePesewas
+          ? (product.costPricePesewas / 100).toFixed(2)
           : '',
         stockCount: String(product.stockCount),
         category: product.category ?? '',
@@ -116,6 +122,9 @@ export function ProductFormModal({ open, onClose, onSubmit, product, isSubmittin
       pricePesewas: Math.round(Number(form.priceGhs) * 100),
       comparePricePesewas: form.comparePriceGhs
         ? Math.round(Number(form.comparePriceGhs) * 100)
+        : undefined,
+      costPricePesewas: form.costPriceGhs
+        ? Math.round(Number(form.costPriceGhs) * 100)
         : undefined,
       stockCount: form.stockCount ? Number(form.stockCount) : undefined,
       isPreorder: form.isPreorder,
@@ -226,6 +235,17 @@ export function ProductFormModal({ open, onClose, onSubmit, product, isSubmittin
               error={errors.comparePriceGhs}
             />
           </div>
+
+          {/* Cost Price */}
+          <Input
+            label="Cost Price (GHS)"
+            type="number"
+            step="0.01"
+            min="0"
+            value={form.costPriceGhs}
+            onChange={(e) => handleChange('costPriceGhs', e.target.value)}
+            placeholder="0.00 — enables Profit Calculator"
+          />
 
           {/* Stock */}
           <Input

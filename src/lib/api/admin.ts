@@ -205,6 +205,7 @@ export async function createAdminProduct(data: {
   description?: string;
   pricePesewas: number;
   comparePricePesewas?: number;
+  costPricePesewas?: number;
   stockCount?: number;
   isPreorder?: boolean;
   isPublished?: boolean;
@@ -220,6 +221,7 @@ export async function updateAdminProduct(id: string, data: Partial<{
   description: string;
   pricePesewas: number;
   comparePricePesewas: number;
+  costPricePesewas: number;
   stockCount: number;
   isPreorder: boolean;
   isPublished: boolean;
