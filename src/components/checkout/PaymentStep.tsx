@@ -7,20 +7,20 @@ import { useCheckoutStore } from '@/stores/checkout-store';
 const paymentMethods = [
   {
     key: 'PAYSTACK' as const,
-    label: 'Card Payment',
-    description: 'Pay with Visa, Mastercard via Paystack',
+    label: 'Debit / Credit Card',
+    description: 'Visa, Mastercard & other cards',
     Icon: CreditCard,
   },
   {
     key: 'MOMO' as const,
     label: 'Mobile Money',
-    description: 'Pay with MTN MoMo, Vodafone Cash, AirtelTigo',
+    description: 'MTN MoMo, Telecel Cash & AirtelTigo Money',
     Icon: Smartphone,
   },
   {
     key: 'BANK_TRANSFER' as const,
     label: 'Bank Transfer',
-    description: 'Direct bank transfer',
+    description: 'Pay directly from your bank account',
     Icon: Building2,
   },
 ];

@@ -25,10 +25,11 @@ export default function CheckoutPage() {
   }, [isHydrated, user, router]);
 
   useEffect(() => {
-    if (items.length === 0 && isHydrated) {
+    // Only redirect to products if cart is empty and we're not mid-checkout
+    if (items.length === 0 && isHydrated && step === 'address') {
       router.push('/products');
     }
-  }, [items.length, isHydrated, router]);
+  }, [items.length, isHydrated, step, router]);
 
   if (!isHydrated || !user || items.length === 0) {
     return (

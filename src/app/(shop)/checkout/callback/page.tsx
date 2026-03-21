@@ -4,6 +4,8 @@ import { Suspense, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useVerifyPayment } from '@/hooks/use-payments';
 import { useToastStore } from '@/stores/toast-store';
+import { useCartStore } from '@/stores/cart-store';
+import { useCheckoutStore } from '@/stores/checkout-store';
 import { CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 
@@ -33,6 +35,9 @@ function PaymentCallbackContent() {
   const router = useRouter();
   const addToast = useToastStore((s) => s.addToast);
 
+  const clearCart = useCartStore((s) => s.clearCart);
+  const resetCheckout = useCheckoutStore((s) => s.reset);
+
   const reference = searchParams.get('reference') ?? searchParams.get('trxref');
   const { data, isLoading, isError } = useVerifyPayment(reference);
 
@@ -41,13 +46,15 @@ function PaymentCallbackContent() {
 
   useEffect(() => {
     if (isSuccess && payment?.orderId) {
+      clearCart();
+      resetCheckout();
       addToast({ type: 'success', message: 'Payment successful!' });
       const timer = setTimeout(() => {
         router.push(`/orders/${payment.orderId}/confirmation`);
       }, 2000);
       return () => clearTimeout(timer);
     }
-  }, [isSuccess, payment?.orderId, router, addToast]);
+  }, [isSuccess, payment?.orderId, router, addToast, clearCart, resetCheckout]);
 
   if (!reference) {
     return (

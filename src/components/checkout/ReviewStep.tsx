@@ -9,7 +9,6 @@ import { useCreateOrder } from '@/hooks/use-orders';
 import { useInitializePayment } from '@/hooks/use-payments';
 import { useToastStore } from '@/stores/toast-store';
 import { formatPesewas } from '@/lib/utils/formatters';
-import { useRouter } from 'next/navigation';
 import type { Address, Order } from '@/types';
 
 const paymentIcons = {
@@ -19,13 +18,12 @@ const paymentIcons = {
 };
 
 const paymentLabels = {
-  PAYSTACK: 'Card Payment (Paystack)',
+  PAYSTACK: 'Debit / Credit Card',
   MOMO: 'Mobile Money',
   BANK_TRANSFER: 'Bank Transfer',
 };
 
 export function ReviewStep() {
-  const router = useRouter();
   const selectedAddressId = useCheckoutStore((s) => s.selectedAddressId);
   const paymentMethod = useCheckoutStore((s) => s.paymentMethod);
   const notes = useCheckoutStore((s) => s.notes);
@@ -59,35 +57,23 @@ export function ReviewStep() {
 
       const order = orderResponse.data as Order;
 
-      if (paymentMethod === 'PAYSTACK') {
-        const callbackUrl = `${window.location.origin}/checkout/callback`;
-        const paymentResponse = await initPayment({
-          orderId: order.id,
-          provider: 'PAYSTACK',
-          callbackUrl,
-        });
+      const callbackUrl = `${window.location.origin}/checkout/callback`;
+      const paymentResponse = await initPayment({
+        orderId: order.id,
+        provider: paymentMethod,
+        callbackUrl,
+      });
 
-        const paymentData = paymentResponse.data as {
-          authorizationUrl?: string;
-        };
+      const paymentData = (paymentResponse as any)?.data ?? paymentResponse;
 
-        if (paymentData.authorizationUrl) {
-          window.location.href = paymentData.authorizationUrl;
-          return;
-        }
+      if (paymentData.authorizationUrl) {
+        window.location.href = paymentData.authorizationUrl;
+        return;
       }
 
-      if (paymentMethod === 'MOMO' || paymentMethod === 'BANK_TRANSFER') {
-        await initPayment({
-          orderId: order.id,
-          provider: paymentMethod,
-        });
-      }
-
-      addToast({ type: 'success', message: 'Order placed successfully!' });
-      router.push(`/orders/${order.id}/confirmation`);
-    } catch {
-      // Error already handled in mutation hooks
+      addToast({ type: 'error', message: 'Payment initialization failed. Please try again.' });
+    } catch (error) {
+      console.error('[Checkout] Order/Payment error:', error);
     }
   };
 
@@ -208,7 +194,7 @@ export function ReviewStep() {
           onClick={handlePlaceOrder}
           isLoading={isProcessing}
         >
-          {paymentMethod === 'PAYSTACK' ? 'Pay Now' : 'Place Order'}
+          Pay Now
         </Button>
       </div>
     </div>

@@ -1,12 +1,9 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
 import { getOrders, getOrder, createOrder } from '@/lib/api/orders';
 import { apiClient } from '@/lib/api/client';
 import { useToastStore } from '@/stores/toast-store';
-import { useCartStore } from '@/stores/cart-store';
-import { useCheckoutStore } from '@/stores/checkout-store';
 import type { Order } from '@/types';
 
 interface UseOrdersParams {
@@ -31,10 +28,7 @@ export function useOrder(id: string) {
 }
 
 export function useCreateOrder() {
-  const router = useRouter();
   const addToast = useToastStore((s) => s.addToast);
-  const clearCart = useCartStore((s) => s.clearCart);
-  const resetCheckout = useCheckoutStore((s) => s.reset);
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -45,8 +39,6 @@ export function useCreateOrder() {
     }) => createOrder(data),
     onSuccess: (response) => {
       const order = response.data as Order;
-      clearCart();
-      resetCheckout();
       queryClient.invalidateQueries({ queryKey: ['orders'] });
       return order;
     },
