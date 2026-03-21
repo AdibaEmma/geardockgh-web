@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { ChevronRight, Search } from 'lucide-react';
-import { getAdminOrders, updateOrderStatus } from '@/lib/api/admin';
+import { getAdminOrders, updateOrderStatus, bulkUpdateOrderStatus } from '@/lib/api/admin';
 import { OrderStatusBadge } from '@/components/orders/OrderStatusBadge';
 import { Button } from '@/components/ui/Button';
 import { formatPesewas, formatDate } from '@/lib/utils/formatters';
@@ -21,11 +21,20 @@ const allStatuses: OrderStatus[] = [
   'REFUNDED',
 ];
 
+const nextStatusMap: Record<string, OrderStatus> = {
+  PENDING_PAYMENT: 'PAYMENT_CONFIRMED',
+  PAYMENT_CONFIRMED: 'PROCESSING',
+  PROCESSING: 'SHIPPED',
+  SHIPPED: 'DELIVERED',
+};
+
 export default function AdminOrdersPage() {
   const [statusFilter, setStatusFilter] = useState<string>('');
   const [page, setPage] = useState(1);
   const [searchInput, setSearchInput] = useState('');
   const [search, setSearch] = useState('');
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [bulkStatus, setBulkStatus] = useState<OrderStatus>('PROCESSING');
   const queryClient = useQueryClient();
   const addToast = useToastStore((s) => s.addToast);
 
@@ -33,6 +42,7 @@ export default function AdminOrdersPage() {
     e.preventDefault();
     setSearch(searchInput);
     setPage(1);
+    setSelectedIds(new Set());
   };
 
   const { data, isLoading } = useQuery({
@@ -57,6 +67,28 @@ export default function AdminOrdersPage() {
       addToast({ type: 'error', message: 'Failed to update status' });
     },
   });
+
+  const { mutate: bulkChange, isPending: isBulkUpdating } = useMutation({
+    mutationFn: (payload: { orderIds: string[]; status: string }) =>
+      bulkUpdateOrderStatus(payload),
+    onSuccess: (res) => {
+      queryClient.invalidateQueries({ queryKey: ['admin-orders'] });
+      const count = (res?.data as any)?.updatedCount ?? 0;
+      addToast({ type: 'success', message: `${count} order${count !== 1 ? 's' : ''} updated` });
+      setSelectedIds(new Set());
+    },
+    onError: () => {
+      addToast({ type: 'error', message: 'Failed to update orders' });
+    },
+  });
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  };
 
   const orders = (data?.data ?? []) as (Order & {
     customer?: { firstName: string; lastName: string; email: string };
@@ -103,6 +135,8 @@ export default function AdminOrdersPage() {
           onClick={() => {
             setStatusFilter('');
             setPage(1);
+            setSelectedIds(new Set());
+            setBulkStatus('PROCESSING');
           }}
           className="whitespace-nowrap rounded-full border px-3 py-1 text-xs font-medium"
           style={{
@@ -119,6 +153,8 @@ export default function AdminOrdersPage() {
             onClick={() => {
               setStatusFilter(s);
               setPage(1);
+              setSelectedIds(new Set());
+              setBulkStatus(nextStatusMap[s] ?? 'PROCESSING');
             }}
             className="whitespace-nowrap rounded-full border px-3 py-1 text-xs font-medium"
             style={{
@@ -131,6 +167,44 @@ export default function AdminOrdersPage() {
           </button>
         ))}
       </div>
+
+      {selectedIds.size > 0 && (
+        <div
+          className="mb-4 flex items-center gap-3 rounded-lg border px-4 py-3"
+          style={{ background: 'var(--card)', borderColor: 'var(--gold)' }}
+        >
+          <span className="text-sm font-medium" style={{ color: 'var(--white)' }}>
+            {selectedIds.size} order{selectedIds.size > 1 ? 's' : ''} selected
+          </span>
+          <select
+            value={bulkStatus}
+            onChange={(e) => setBulkStatus(e.target.value as OrderStatus)}
+            className="rounded border px-2 py-1 text-xs"
+            style={{ background: 'var(--deep)', color: 'var(--white)', borderColor: 'var(--border)' }}
+          >
+            {allStatuses.map((s) => (
+              <option key={s} value={s}>
+                {s.replace(/_/g, ' ')}
+              </option>
+            ))}
+          </select>
+          <button
+            onClick={() => bulkChange({ orderIds: Array.from(selectedIds), status: bulkStatus })}
+            disabled={isBulkUpdating}
+            className="rounded-lg px-4 py-1.5 text-sm font-medium transition-colors"
+            style={{ background: 'var(--gold)', color: 'var(--black)' }}
+          >
+            {isBulkUpdating ? 'Updating...' : 'Update'}
+          </button>
+          <button
+            onClick={() => setSelectedIds(new Set())}
+            className="text-xs"
+            style={{ color: 'var(--muted)' }}
+          >
+            Clear
+          </button>
+        </div>
+      )}
 
       {isLoading ? (
         <div className="flex items-center justify-center py-12">
@@ -147,6 +221,20 @@ export default function AdminOrdersPage() {
           <table className="w-full">
             <thead>
               <tr style={{ background: 'var(--card)' }}>
+                <th className="w-10 px-4 py-3">
+                  <input
+                    type="checkbox"
+                    checked={orders.length > 0 && selectedIds.size === orders.length}
+                    onChange={() => {
+                      if (selectedIds.size === orders.length) {
+                        setSelectedIds(new Set());
+                      } else {
+                        setSelectedIds(new Set(orders.map((o) => o.id)));
+                      }
+                    }}
+                    className="accent-[var(--gold)]"
+                  />
+                </th>
                 {['Order', 'Customer', 'Status', 'Total', 'Date', 'Actions'].map(
                   (h) => (
                     <th
@@ -167,6 +255,14 @@ export default function AdminOrdersPage() {
                   className="border-t"
                   style={{ borderColor: 'var(--border)' }}
                 >
+                  <td className="px-4 py-3">
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.has(order.id)}
+                      onChange={() => toggleSelect(order.id)}
+                      className="accent-[var(--gold)]"
+                    />
+                  </td>
                   <td className="px-4 py-3">
                     <span
                       className="font-[family-name:var(--font-space-mono)] text-sm font-bold"
@@ -243,7 +339,7 @@ export default function AdminOrdersPage() {
             variant="secondary"
             size="sm"
             disabled={page <= 1}
-            onClick={() => setPage((p) => p - 1)}
+            onClick={() => { setPage((p) => p - 1); setSelectedIds(new Set()); }}
           >
             Previous
           </Button>
@@ -254,7 +350,7 @@ export default function AdminOrdersPage() {
             variant="secondary"
             size="sm"
             disabled={page >= meta.totalPages}
-            onClick={() => setPage((p) => p + 1)}
+            onClick={() => { setPage((p) => p + 1); setSelectedIds(new Set()); }}
           >
             Next
           </Button>

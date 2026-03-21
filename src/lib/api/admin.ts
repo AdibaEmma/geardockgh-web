@@ -64,6 +64,10 @@ export async function updateOrderStatus(id: string, data: { status: string; note
   return apiClient.patch<Order>(`/admin/orders/${id}`, data);
 }
 
+export async function bulkUpdateOrderStatus(data: { orderIds: string[]; status: string }) {
+  return apiClient.patch<{ updatedCount: number }>('/admin/orders/bulk-status', data);
+}
+
 export interface AdminCustomer {
   id: string;
   firstName: string;
