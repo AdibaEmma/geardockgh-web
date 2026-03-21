@@ -2,10 +2,12 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Minus, Plus, ShoppingCart, Package } from 'lucide-react';
+import { ArrowLeft, Minus, Plus, ShoppingCart, Package, Bell, BellOff } from 'lucide-react';
 import { useProduct } from '@/hooks/use-products';
 import { useCartStore } from '@/stores/cart-store';
 import { useToastStore } from '@/stores/toast-store';
+import { useAuthStore } from '@/stores/auth-store';
+import { useStockNotification, useSubscribeStock, useUnsubscribeStock } from '@/hooks/use-stock-notification';
 import { formatPesewas, formatDate } from '@/lib/utils/formatters';
 import { Button } from '@/components/ui/Button';
 import { PreorderBadge } from '@/components/shop/PreorderBadge';
@@ -21,6 +23,13 @@ export function ProductDetail({ slug }: ProductDetailProps) {
   const product = data?.data as Product | undefined;
   const addItem = useCartStore((s) => s.addItem);
   const addToast = useToastStore((s) => s.addToast);
+  const user = useAuthStore((s) => s.user);
+
+  const productId = product?.id ?? '';
+  const { data: notifData } = useStockNotification(productId);
+  const isNotifySubscribed = !!(notifData?.data as any)?.subscribed;
+  const { mutate: subscribeStock, isPending: isSubscribing } = useSubscribeStock();
+  const { mutate: unsubscribeStock, isPending: isUnsubscribing } = useUnsubscribeStock();
 
   const [quantity, setQuantity] = useState(1);
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
@@ -349,49 +358,82 @@ export function ProductDetail({ slug }: ProductDetailProps) {
             )}
           </div>
 
-          {/* Quantity + Add to Cart */}
-          <div className="mt-6 flex items-center gap-4">
-            <div
-              className="flex items-center gap-3 rounded-lg border px-3 py-2"
-              style={{ borderColor: 'var(--border)' }}
-            >
-              <button
-                onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                style={{ color: 'var(--muted)' }}
-              >
-                <Minus size={16} />
-              </button>
-              <span
-                className="min-w-[2rem] text-center font-[family-name:var(--font-space-mono)] text-sm"
-                style={{ color: 'var(--white)' }}
-              >
-                {quantity}
-              </span>
-              <button
-                onClick={() => setQuantity((q) => q + 1)}
-                style={{ color: 'var(--muted)' }}
-              >
-                <Plus size={16} />
-              </button>
+          {/* Quantity + Add to Cart / Notify Me */}
+          {isOutOfStock && !product.isPreorder ? (
+            <div className="mt-6">
+              {user ? (
+                isNotifySubscribed ? (
+                  <button
+                    onClick={() => unsubscribeStock(product.id)}
+                    disabled={isUnsubscribing}
+                    className="flex w-full items-center justify-center gap-2 rounded-lg border px-4 py-3 text-sm font-medium transition-colors"
+                    style={{ borderColor: 'var(--border)', color: 'var(--muted)' }}
+                  >
+                    <BellOff size={16} />
+                    {isUnsubscribing ? 'Removing...' : "You'll be notified · Cancel"}
+                  </button>
+                ) : (
+                  <Button
+                    size="lg"
+                    className="w-full gap-2"
+                    onClick={() => subscribeStock(product.id)}
+                    isLoading={isSubscribing}
+                  >
+                    <Bell size={18} />
+                    Notify Me When Available
+                  </Button>
+                )
+              ) : (
+                <Link href="/login">
+                  <Button size="lg" className="w-full gap-2" variant="secondary">
+                    <Bell size={18} />
+                    Sign in to get notified
+                  </Button>
+                </Link>
+              )}
             </div>
+          ) : (
+            <div className="mt-6 flex items-center gap-4">
+              <div
+                className="flex items-center gap-3 rounded-lg border px-3 py-2"
+                style={{ borderColor: 'var(--border)' }}
+              >
+                <button
+                  onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                  style={{ color: 'var(--muted)' }}
+                >
+                  <Minus size={16} />
+                </button>
+                <span
+                  className="min-w-[2rem] text-center font-[family-name:var(--font-space-mono)] text-sm"
+                  style={{ color: 'var(--white)' }}
+                >
+                  {quantity}
+                </span>
+                <button
+                  onClick={() => setQuantity((q) => q + 1)}
+                  style={{ color: 'var(--muted)' }}
+                >
+                  <Plus size={16} />
+                </button>
+              </div>
 
-            <Button
-              size="lg"
-              className="flex-1 gap-2"
-              disabled={isOutOfStock || !allOptionsSelected}
-              onClick={handleAddToCart}
-              style={product.isPreorder ? { background: 'var(--gold)', color: 'var(--black)' } : undefined}
-            >
-              <ShoppingCart size={18} />
-              {isOutOfStock
-                ? 'Out of Stock'
-                : !allOptionsSelected
+              <Button
+                size="lg"
+                className="flex-1 gap-2"
+                disabled={!allOptionsSelected}
+                onClick={handleAddToCart}
+                style={product.isPreorder ? { background: 'var(--gold)', color: 'var(--black)' } : undefined}
+              >
+                <ShoppingCart size={18} />
+                {!allOptionsSelected
                   ? `Select ${missingOptions.map((o) => o.name).join(', ')}`
                   : product.isPreorder
                     ? 'Pre-Order Now'
                     : 'Add to Cart'}
-            </Button>
-          </div>
+              </Button>
+            </div>
+          )}
 
           {/* Specs */}
           {Object.keys(specs).length > 0 && (

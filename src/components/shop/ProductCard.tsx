@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ShoppingCart } from 'lucide-react';
+import { ShoppingCart, Bell } from 'lucide-react';
 import { formatPesewas, formatDate } from '@/lib/utils/formatters';
 import { useCartStore } from '@/stores/cart-store';
 import { useToastStore } from '@/stores/toast-store';
@@ -125,14 +125,24 @@ export function ProductCard({ product }: ProductCardProps) {
             )}
           </div>
 
-          <button
-            onClick={handleAddToCart}
-            className="rounded-lg p-2 transition-colors hover:bg-[var(--gold)]/10"
-            style={{ color: 'var(--gold)' }}
-            aria-label={`Add ${product.name} to cart`}
-          >
-            <ShoppingCart size={18} />
-          </button>
+          {!product.isPreorder && product.stockCount === 0 ? (
+            <div
+              className="rounded-lg p-2"
+              style={{ color: 'var(--muted)' }}
+              title="Notify me when available"
+            >
+              <Bell size={18} />
+            </div>
+          ) : (
+            <button
+              onClick={handleAddToCart}
+              className="rounded-lg p-2 transition-colors hover:bg-[var(--gold)]/10"
+              style={{ color: 'var(--gold)' }}
+              aria-label={`Add ${product.name} to cart`}
+            >
+              <ShoppingCart size={18} />
+            </button>
+          )}
         </div>
 
         {product.isPreorder && product.preorderDepositType && product.preorderDepositValue != null && (
