@@ -36,6 +36,7 @@ export const STATUS_COLORS: Record<string, string> = {
 };
 
 export const CATEGORIES = [
+  { value: 'phones-tablets', label: 'Phones & Tablets', icon: '📱' },
   { value: 'laptops-computers', label: 'Laptops & Computers', icon: '💻' },
   { value: 'monitors-displays', label: 'Monitors & Displays', icon: '🖥️' },
   { value: 'audio-headphones', label: 'Audio & Headphones', icon: '🎧' },

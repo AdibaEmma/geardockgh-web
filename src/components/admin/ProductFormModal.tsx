@@ -17,6 +17,7 @@ interface ProductFormData {
   category: string;
   isPublished: boolean;
   isPreorder: boolean;
+  preorderSlotTarget: string;
   images: string[];
 }
 
@@ -31,6 +32,7 @@ interface ProductFormModalProps {
     stockCount?: number;
     isPreorder?: boolean;
     isPublished?: boolean;
+    preorderSlotTarget?: number | null;
     category?: string;
     imagesJson?: string;
   }) => void;
@@ -47,6 +49,7 @@ const emptyForm: ProductFormData = {
   category: '',
   isPublished: false,
   isPreorder: false,
+  preorderSlotTarget: '',
   images: [],
 };
 
@@ -73,6 +76,7 @@ export function ProductFormModal({ open, onClose, onSubmit, product, isSubmittin
         category: product.category ?? '',
         isPublished: product.isPublished,
         isPreorder: product.isPreorder,
+        preorderSlotTarget: product.preorderSlotTarget != null ? String(product.preorderSlotTarget) : '',
         images: existingImages,
       });
     } else {
@@ -116,6 +120,9 @@ export function ProductFormModal({ open, onClose, onSubmit, product, isSubmittin
       stockCount: form.stockCount ? Number(form.stockCount) : undefined,
       isPreorder: form.isPreorder,
       isPublished: form.isPublished,
+      preorderSlotTarget: form.isPreorder && form.preorderSlotTarget
+        ? Number(form.preorderSlotTarget)
+        : null,
       category: form.category || undefined,
       imagesJson: form.images.length > 0 ? JSON.stringify(form.images) : undefined,
     });
@@ -283,6 +290,26 @@ export function ProductFormModal({ open, onClose, onSubmit, product, isSubmittin
               </span>
             </label>
           </div>
+
+          {/* Slot Target — only when pre-order is enabled */}
+          {form.isPreorder && (
+            <div
+              className="rounded-lg border p-4"
+              style={{ borderColor: 'rgba(245, 158, 11, 0.3)', background: 'rgba(245, 158, 11, 0.03)' }}
+            >
+              <Input
+                label="Slot Target (order alert threshold)"
+                type="number"
+                min="1"
+                value={form.preorderSlotTarget}
+                onChange={(e) => handleChange('preorderSlotTarget', e.target.value)}
+                placeholder="e.g. 20"
+              />
+              <p className="mt-1.5 text-xs" style={{ color: 'var(--muted)' }}>
+                You'll get an alert when pre-order slots reach this number so you can place an order with your supplier.
+              </p>
+            </div>
+          )}
 
           {/* Spacer */}
           <div className="flex-1" />

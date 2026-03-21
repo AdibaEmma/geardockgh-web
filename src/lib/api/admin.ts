@@ -241,3 +241,15 @@ export async function toggleAdminProductPublish(id: string) {
 export async function toggleAdminProductFeatured(id: string) {
   return apiClient.patch<Product>(`/admin/products/${id}/toggle-featured`);
 }
+
+export interface ProductAuditLog {
+  id: string;
+  action: string;
+  changes: string | null;
+  userId: string | null;
+  createdAt: string;
+}
+
+export async function getProductAuditLogs(id: string) {
+  return apiClient.get<ProductAuditLog[]>(`/admin/products/${id}/audit-logs`);
+}

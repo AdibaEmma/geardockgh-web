@@ -15,6 +15,16 @@ interface Category {
 
 const CATEGORIES: Category[] = [
   {
+    icon: '📱',
+    iconLabel: 'Phone',
+    title: 'Phones & Tablets',
+    slug: 'phones-tablets',
+    description:
+      'Smartphones, tablets, and mobile accessories for staying connected on the go.',
+    count: '// PHONES & TABLETS',
+    startingFrom: 'GH₵ 800',
+  },
+  {
     icon: '🪑',
     iconLabel: 'Desk',
     title: 'Desks & Furniture',

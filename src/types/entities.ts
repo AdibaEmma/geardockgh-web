@@ -28,6 +28,7 @@ export interface Product {
   description: string | null;
   pricePesewas: number;
   comparePricePesewas: number | null;
+  costPricePesewas: number | null;
   stockCount: number;
   isPreorder: boolean;
   isPublished: boolean;
@@ -37,6 +38,7 @@ export interface Product {
   preorderDepositValue: number | null;
   preorderMinUnits: number | null;
   preorderSlotsTaken: number;
+  preorderSlotTarget: number | null;
   category: string | null;
   imagesJson: string | null;
   specsJson: string | null;
