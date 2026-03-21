@@ -641,6 +641,7 @@ export default function AdminProductDetailPage({ params }: PageProps) {
 }
 
 const PESEWAS_FIELDS = new Set(['pricePesewas', 'comparePricePesewas', 'costPricePesewas', 'preorderDepositValue']);
+const JSON_FIELDS = new Set(['optionsJson', 'imagesJson', 'specsJson', 'selectedOptionsJson']);
 
 function formatAuditValue(value: unknown, field?: string): string {
   if (value === null || value === undefined) return '—';
@@ -652,7 +653,40 @@ function formatAuditValue(value: unknown, field?: string): string {
     return value.toLocaleString();
   }
   const str = String(value);
+  if (field && JSON_FIELDS.has(field)) {
+    return formatJsonFieldSummary(str, field);
+  }
   return str.length > 60 ? str.slice(0, 57) + '...' : str;
+}
+
+function formatJsonFieldSummary(jsonStr: string, field: string): string {
+  try {
+    const parsed = JSON.parse(jsonStr);
+    if (!Array.isArray(parsed)) return jsonStr.slice(0, 57) + '...';
+
+    if (field === 'optionsJson') {
+      return parsed
+        .map((opt: { name?: string; values?: { label?: string }[] }) => {
+          const values = opt.values?.map((v) => v.label).filter(Boolean).join(', ');
+          return values ? `${opt.name}: ${values}` : opt.name;
+        })
+        .join(' · ');
+    }
+
+    if (field === 'imagesJson') {
+      return `${parsed.length} image${parsed.length !== 1 ? 's' : ''}`;
+    }
+
+    if (field === 'specsJson') {
+      return parsed
+        .map((s: { key?: string; value?: string }) => `${s.key}: ${s.value}`)
+        .join(' · ');
+    }
+
+    return `${parsed.length} item${parsed.length !== 1 ? 's' : ''}`;
+  } catch {
+    return jsonStr.length > 60 ? jsonStr.slice(0, 57) + '...' : jsonStr;
+  }
 }
 
 function DetailRow({
