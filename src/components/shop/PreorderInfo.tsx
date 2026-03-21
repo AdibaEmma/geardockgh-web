@@ -1,4 +1,5 @@
 import { formatPesewas, formatDate } from '@/lib/utils/formatters';
+import { PreorderFeeNotice } from '@/components/shop/PreorderFeeNotice';
 import type { Product } from '@/types';
 
 interface PreorderInfoProps {
@@ -89,6 +90,8 @@ export function PreorderInfo({ product, quantity = 1 }: PreorderInfoProps) {
           </div>
         </div>
       )}
+
+      <PreorderFeeNotice />
     </div>
   );
 }

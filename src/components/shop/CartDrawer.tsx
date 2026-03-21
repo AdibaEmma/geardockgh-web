@@ -7,6 +7,7 @@ import { formatPesewas } from '@/lib/utils/formatters';
 import { useCartStore } from '@/stores/cart-store';
 import { useAuthStore } from '@/stores/auth-store';
 import { Button } from '@/components/ui/Button';
+import { PreorderFeeNotice } from '@/components/shop/PreorderFeeNotice';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -223,6 +224,10 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 {formatPesewas(total)}
               </span>
             </div>
+
+            {items.some((i) => i.isPreorder) && (
+              <PreorderFeeNotice variant="compact" className="mb-3" />
+            )}
 
             {user ? (
               <Link href="/checkout" onClick={onClose}>

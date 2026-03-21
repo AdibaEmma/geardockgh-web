@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { formatPesewas, formatDate } from '@/lib/utils/formatters';
+import { PreorderFeeNotice } from '@/components/shop/PreorderFeeNotice';
 import type { Preorder, PreorderStatus } from '@/types';
 
 const STATUS_CONFIG: Record<PreorderStatus, { label: string; color: string; bg: string }> = {
@@ -67,6 +68,10 @@ export function PreorderCard({ preorder }: PreorderCardProps) {
         <p className="mt-2 text-xs" style={{ color: 'var(--gold)' }}>
           Est. arrival: {formatDate(preorder.estArrivalDate)}
         </p>
+      )}
+
+      {preorder.status !== 'FULFILLED' && preorder.status !== 'CANCELLED' && (
+        <PreorderFeeNotice variant="compact" className="mt-2" />
       )}
 
       <p className="mt-1 text-xs" style={{ color: 'var(--muted)' }}>

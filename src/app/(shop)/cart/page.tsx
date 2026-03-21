@@ -7,6 +7,7 @@ import { useCartStore } from '@/stores/cart-store';
 import { useAuthStore } from '@/stores/auth-store';
 import { formatPesewas } from '@/lib/utils/formatters';
 import { Button } from '@/components/ui/Button';
+import { PreorderFeeNotice } from '@/components/shop/PreorderFeeNotice';
 
 export default function CartPage() {
   const router = useRouter();
@@ -16,7 +17,10 @@ export default function CartPage() {
   const clearCart = useCartStore((s) => s.clearCart);
   const totalPesewas = useCartStore((s) => s.totalPesewas);
   const itemCount = useCartStore((s) => s.itemCount);
+  const hasPreorderItems = useCartStore((s) => s.hasPreorderItems);
   const user = useAuthStore((s) => s.user);
+
+  const hasPreorder = hasPreorderItems();
 
   const handleCheckout = () => {
     if (!user) {
@@ -235,6 +239,8 @@ export default function CartPage() {
                 </span>
               </div>
             </div>
+
+            {hasPreorder && <PreorderFeeNotice />}
 
             <div
               className="my-4 border-t"

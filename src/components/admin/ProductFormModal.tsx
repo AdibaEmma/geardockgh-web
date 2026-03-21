@@ -215,7 +215,7 @@ export function ProductFormModal({ open, onClose, onSubmit, product, isSubmittin
           {/* Price row */}
           <div className="grid grid-cols-2 gap-4">
             <Input
-              label="Price (GHS) *"
+              label={form.isPreorder ? 'Pre-Order Price (GHS) *' : 'Price (GHS) *'}
               type="number"
               step="0.01"
               min="0"
@@ -317,6 +317,9 @@ export function ProductFormModal({ open, onClose, onSubmit, product, isSubmittin
               className="rounded-lg border p-4"
               style={{ borderColor: 'rgba(245, 158, 11, 0.3)', background: 'rgba(245, 158, 11, 0.03)' }}
             >
+              <p className="mb-3 text-xs leading-relaxed" style={{ color: 'var(--gold)' }}>
+                Set the price as your product cost + profit margin. Shipping, customs, and clearing fees are excluded and will be communicated to the customer separately when goods arrive.
+              </p>
               <Input
                 label="Slot Target (order alert threshold)"
                 type="number"

@@ -1,8 +1,9 @@
 'use client';
 
-import { ShoppingBag, Truck, Info } from 'lucide-react';
+import { ShoppingBag, Info } from 'lucide-react';
 import { useCartStore } from '@/stores/cart-store';
 import { formatPesewas } from '@/lib/utils/formatters';
+import { PreorderFeeNotice } from '@/components/shop/PreorderFeeNotice';
 
 const FREE_DELIVERY_MIN_PESEWAS = 10000; // GH₵100 minimum for free delivery
 
@@ -128,16 +129,7 @@ export function OrderSummary() {
               </div>
             )}
 
-            {/* Pre-order shipping notice */}
-            <div
-              className="mt-2 flex items-start gap-2 rounded-lg px-3 py-2.5"
-              style={{ background: 'rgba(245, 158, 11, 0.08)', border: '1px solid rgba(245, 158, 11, 0.2)' }}
-            >
-              <Truck size={14} className="mt-0.5 shrink-0" style={{ color: 'var(--gold)' }} />
-              <p className="text-xs leading-relaxed" style={{ color: 'var(--gold)' }}>
-                Shipping for pre-order items will be calculated and charged separately when your goods arrive.
-              </p>
-            </div>
+            <PreorderFeeNotice className="mt-2" />
           </>
         )}
 
