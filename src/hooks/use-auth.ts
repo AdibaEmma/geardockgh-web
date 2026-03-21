@@ -7,6 +7,13 @@ import { useAuthStore } from '@/stores/auth-store';
 import { useToastStore } from '@/stores/toast-store';
 import type { LoginRequest, RegisterRequest } from '@/types';
 
+function safeRedirect(path?: string): string {
+  if (!path) return '/products';
+  if (path.startsWith('//') || path.includes('://')) return '/products';
+  if (!path.startsWith('/')) return '/products';
+  return path;
+}
+
 export function useLogin(redirectTo?: string) {
   const router = useRouter();
   const setTokens = useAuthStore((s) => s.setTokens);
@@ -20,7 +27,7 @@ export function useLogin(redirectTo?: string) {
       setTokens(accessToken, refreshToken);
       setUser(user.user ?? user);
       addToast({ type: 'success', message: 'Welcome back!' });
-      router.push(redirectTo ?? '/products');
+      router.push(safeRedirect(redirectTo));
     },
     onError: (error: any) => {
       const message =
@@ -43,7 +50,7 @@ export function useRegister(redirectTo?: string) {
       setTokens(accessToken, refreshToken);
       setUser(user.user ?? user);
       addToast({ type: 'success', message: 'Account created successfully!' });
-      router.push(redirectTo ?? '/products');
+      router.push(safeRedirect(redirectTo));
     },
     onError: (error: any) => {
       const message =
