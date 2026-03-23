@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { ShoppingCart, User, LogOut, Menu, X } from 'lucide-react';
+import { ShoppingCart, User, LogOut, Menu, X, Shield } from 'lucide-react';
 import { useAuthStore } from '@/stores/auth-store';
 import { useCartStore } from '@/stores/cart-store';
 import { useLogout } from '@/hooks/use-auth';
@@ -16,6 +16,7 @@ export function ShopHeader() {
   const items = useCartStore((s) => s.items);
   const count = items.reduce((sum, item) => sum + item.quantity, 0);
   const { mutate: logout } = useLogout();
+  const isAdmin = user?.role === 'ADMIN';
 
   return (
     <>
@@ -75,6 +76,18 @@ export function ShopHeader() {
             >
               Orders
             </Link>
+
+            {/* Admin */}
+            {isAdmin && (
+              <Link
+                href="/admin"
+                className="flex items-center gap-1.5 text-sm font-medium transition-colors hover:text-[var(--gold)]"
+                style={{ color: 'var(--gold)' }}
+              >
+                <Shield size={16} />
+                Admin
+              </Link>
+            )}
 
             {/* Auth */}
             {user ? (
@@ -157,6 +170,17 @@ export function ShopHeader() {
               >
                 Orders
               </Link>
+              {isAdmin && (
+                <Link
+                  href="/admin"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-1.5 text-sm font-medium"
+                  style={{ color: 'var(--gold)' }}
+                >
+                  <Shield size={16} />
+                  Admin
+                </Link>
+              )}
               {user ? (
                 <>
                   <Link
