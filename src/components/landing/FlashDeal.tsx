@@ -57,8 +57,9 @@ export function FlashDeal() {
             <span className="stock-text">Only 7 left in stock</span>
           </div>
           <Link href="/products/sony-wh-1000xm5" className="btn-primary flash-cta">
-            Grab This Deal &rarr;
+            Pre-Order Now &mdash; Pay with MoMo &rarr;
           </Link>
+          <span className="flash-trust">7-day returns &middot; Verified import</span>
         </div>
         <div className="flash-right">
           <ProductImagePlaceholder name="Sony WH-1000XM5" className="flash-placeholder" />

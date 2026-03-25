@@ -15,6 +15,8 @@ export type {
   SelectedOption,
   Product,
   ProductVariant,
+  Bundle,
+  BundleItem,
   Order,
   OrderItem,
   Preorder,

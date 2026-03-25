@@ -6,6 +6,7 @@ export { TrustBar } from './TrustBar';
 export { Categories } from './Categories';
 export { FeaturedProducts } from './FeaturedProducts';
 export { FlashDeal } from './FlashDeal';
+export { PreorderBundles } from './PreorderBundles';
 export { HowItWorks } from './HowItWorks';
 export { Testimonials } from './Testimonials';
 export { WhyUs } from './WhyUs';

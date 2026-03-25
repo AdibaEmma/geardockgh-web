@@ -128,6 +128,34 @@ export interface Payment {
   paidAt: string | null;
 }
 
+// Bundle
+export interface BundleItem {
+  id: string;
+  productId: string;
+  product: Pick<Product, 'id' | 'name' | 'slug' | 'pricePesewas' | 'imagesJson' | 'category'>;
+  quantity: number;
+  isBonus: boolean;
+}
+
+export interface Bundle {
+  id: string;
+  name: string;
+  slug: string;
+  tagline: string | null;
+  description: string | null;
+  pricePesewas: number;
+  comparePricePesewas: number | null;
+  isPublished: boolean;
+  isFeatured: boolean;
+  isPreorder: boolean;
+  stockCount: number;
+  imageUrl: string | null;
+  category: string | null;
+  items: BundleItem[];
+  createdAt: string;
+  updatedAt: string;
+}
+
 // Address
 export interface Address {
   id: string;

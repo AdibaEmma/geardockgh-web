@@ -346,17 +346,50 @@ export function ProductDetail({ slug }: ProductDetailProps) {
               <div className="space-y-3">
                 <PreorderBadge size="md" />
                 <PreorderInfo product={product} quantity={quantity} optionsDeltaPesewas={optionsDelta} />
+                {product.preorderSlotTarget && (
+                  <div
+                    className="rounded-lg border px-3 py-2 text-xs"
+                    style={{ borderColor: 'var(--border)', color: 'var(--muted)' }}
+                  >
+                    <span className="font-medium" style={{ color: 'var(--gold)' }}>
+                      {product.preorderSlotTarget - product.preorderSlotsTaken} units available
+                    </span>
+                    {' '}&middot; Next shipment: ~6 weeks
+                  </div>
+                )}
               </div>
             ) : isOutOfStock ? (
               <span className="text-sm text-red-400">Out of stock</span>
             ) : activeStock <= 5 ? (
-              <span className="text-sm text-orange-400">
-                Only {activeStock} left in stock
-              </span>
+              <div className="space-y-1">
+                <span className="text-sm font-medium text-orange-400">
+                  Only {activeStock} left in stock
+                </span>
+                <div
+                  className="h-1.5 w-full max-w-[200px] rounded-full overflow-hidden"
+                  style={{ background: 'var(--border)' }}
+                >
+                  <div
+                    className="h-full rounded-full"
+                    style={{
+                      width: `${Math.max(10, (activeStock / 20) * 100)}%`,
+                      background: 'rgb(251, 146, 60)',
+                    }}
+                  />
+                </div>
+              </div>
             ) : (
-              <span className="text-sm" style={{ color: 'var(--teal)' }}>
-                In stock
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-sm" style={{ color: 'var(--teal)' }}>
+                  In stock
+                </span>
+                <span
+                  className="text-xs"
+                  style={{ color: 'var(--muted)' }}
+                >
+                  &middot; {activeStock} units available
+                </span>
+              </div>
             )}
           </div>
 
@@ -433,11 +466,21 @@ export function ProductDetail({ slug }: ProductDetailProps) {
                 {!allOptionsSelected
                   ? `Select ${missingOptions.map((o) => o.name).join(', ')}`
                   : product.isPreorder
-                    ? 'Pre-Order Now'
+                    ? 'Pre-Order Now — Pay with MoMo'
                     : 'Add to Cart'}
               </Button>
             </div>
           )}
+
+          {/* Trust messaging */}
+          <div
+            className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs"
+            style={{ color: 'var(--muted)' }}
+          >
+            <span>48h delivery in Bolgatanga</span>
+            <span>7-day easy returns</span>
+            <span>Verified imports only</span>
+          </div>
 
           {/* Specs */}
           {Object.keys(specs).length > 0 && (

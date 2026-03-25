@@ -46,9 +46,9 @@ export function Hero() {
         </h1>
 
         <p className="hero-sub">
-          <strong>GearDockGH</strong> imports premium gear for Ghana&apos;s
-          remote workers, content creators, gamers, and students. Top-tier
-          equipment. Delivered to your door.
+          <strong>GearDockGH</strong> helps Ghana&apos;s remote workers,
+          creators, and gamers get premium imported gear delivered to their
+          door &mdash; no stress, no customs, no waiting.
         </p>
 
         <div className="hero-price-callout">
@@ -58,10 +58,10 @@ export function Hero() {
 
         <div className="hero-actions">
           <Link href="/products" className="btn-primary">
-            Shop the Catalog &rarr;
+            Pre-Order My Setup &rarr;
           </Link>
-          <Link href="#how" className="btn-secondary">
-            How it works
+          <Link href="#bundles" className="btn-secondary">
+            See Bundles
             <svg
               width="14"
               height="14"
@@ -93,7 +93,7 @@ export function Hero() {
 
         <div className="hero-trust">
           <span className="trust-dot-live" />
-          <span>Trusted by 500+ remote workers across Ghana</span>
+          <span>200+ products curated &middot; 48h delivery in Bolgatanga &middot; MoMo accepted</span>
         </div>
       </div>
 
