@@ -39,7 +39,7 @@ export default function CartPage() {
           style={{ color: 'var(--border)' }}
         />
         <h1
-          className="mb-2 font-[family-name:var(--font-syne)] text-xl font-bold"
+          className="mb-2 font-[family-name:var(--font-outfit)] text-xl font-bold"
           style={{ color: 'var(--white)' }}
         >
           Your cart is empty
@@ -70,7 +70,7 @@ export default function CartPage() {
             Continue Shopping
           </Link>
           <h1
-            className="font-[family-name:var(--font-syne)] text-2xl font-bold"
+            className="font-[family-name:var(--font-outfit)] text-2xl font-bold"
             style={{ color: 'var(--white)' }}
           >
             Shopping Cart ({itemCount()})
@@ -92,7 +92,7 @@ export default function CartPage() {
             {items.map((item) => (
               <div
                 key={`${item.productId}-${item.variantId}-${item.selectedOptions?.map((o) => o.value).join('-') ?? ''}`}
-                className="flex gap-4 rounded-xl border p-4"
+                className="flex gap-4 rounded-xl border p-4 shadow-sm transition-all duration-200 hover:shadow-md"
                 style={{
                   borderColor: 'var(--border)',
                   background: 'var(--card)',
@@ -212,14 +212,15 @@ export default function CartPage() {
         {/* Order Summary Sidebar */}
         <div className="lg:col-span-1">
           <div
-            className="sticky top-24 rounded-xl border p-6"
+            className="sticky top-24 rounded-xl border p-6 shadow-md"
             style={{
               borderColor: 'var(--border)',
               background: 'var(--card)',
+              borderTop: '2px solid var(--gold)',
             }}
           >
             <h2
-              className="mb-4 font-[family-name:var(--font-syne)] text-lg font-bold"
+              className="mb-4 font-[family-name:var(--font-outfit)] text-lg font-bold"
               style={{ color: 'var(--white)' }}
             >
               Order Summary
@@ -256,13 +257,13 @@ export default function CartPage() {
 
             <div className="mb-6 flex items-center justify-between">
               <span
-                className="font-[family-name:var(--font-syne)] font-bold"
+                className="font-[family-name:var(--font-outfit)] font-bold"
                 style={{ color: 'var(--white)' }}
               >
                 Total
               </span>
               <span
-                className="font-[family-name:var(--font-syne)] text-xl font-bold"
+                className="font-[family-name:var(--font-outfit)] text-xl font-bold"
                 style={{ color: 'var(--gold)' }}
               >
                 {formatPesewas(totalPesewas())}

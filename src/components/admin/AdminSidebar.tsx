@@ -81,7 +81,7 @@ export function AdminSidebar() {
         {collapsed ? (
           <>
             <span
-              className="font-[family-name:var(--font-syne)] text-xl font-bold"
+              className="font-[family-name:var(--font-outfit)] text-xl font-bold"
               style={{ color: 'var(--teal)' }}
             >
               G
@@ -98,7 +98,7 @@ export function AdminSidebar() {
         ) : (
           <>
             <span
-              className="font-[family-name:var(--font-syne)] text-lg font-bold"
+              className="font-[family-name:var(--font-outfit)] text-lg font-bold"
               style={{ color: 'var(--teal)' }}
             >
               GearDock<span style={{ color: 'var(--gold)' }}>GH</span>

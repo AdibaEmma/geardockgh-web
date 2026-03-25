@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { ProductImagePlaceholder } from '@/components/ui/ProductImagePlaceholder';
 
 const SPECS = ['30h Battery', 'ANC', 'Bluetooth 5.3', 'USB-C'];
 
@@ -60,9 +61,7 @@ export function FlashDeal() {
           </Link>
         </div>
         <div className="flash-right">
-          <div className="flash-emoji" role="img" aria-label="Headphones">
-            &#x1F3A7;
-          </div>
+          <ProductImagePlaceholder name="Sony WH-1000XM5" className="flash-placeholder" />
           <div className="flash-badge">-23%</div>
         </div>
       </div>

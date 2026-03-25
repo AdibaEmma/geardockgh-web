@@ -80,7 +80,7 @@ export function ReviewStep() {
   return (
     <div className="space-y-4">
       <h3
-        className="font-[family-name:var(--font-syne)] text-lg font-bold"
+        className="font-[family-name:var(--font-outfit)] text-lg font-bold"
         style={{ color: 'var(--white)' }}
       >
         Review Order
@@ -88,8 +88,8 @@ export function ReviewStep() {
 
       {/* Address */}
       <div
-        className="rounded-lg border p-4"
-        style={{ borderColor: 'var(--border)' }}
+        className="rounded-lg border p-4 shadow-sm"
+        style={{ borderColor: 'var(--border)', background: 'var(--card)' }}
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -119,8 +119,8 @@ export function ReviewStep() {
 
       {/* Payment Method */}
       <div
-        className="rounded-lg border p-4"
-        style={{ borderColor: 'var(--border)' }}
+        className="rounded-lg border p-4 shadow-sm"
+        style={{ borderColor: 'var(--border)', background: 'var(--card)' }}
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -166,14 +166,14 @@ export function ReviewStep() {
 
       {/* Total */}
       <div
-        className="flex items-center justify-between rounded-lg border p-4"
-        style={{ borderColor: 'var(--border)', background: 'var(--card)' }}
+        className="flex items-center justify-between rounded-lg border p-4 shadow-sm"
+        style={{ borderColor: 'var(--border)', background: 'var(--card)', borderTop: '2px solid var(--gold)' }}
       >
         <span className="text-sm font-medium" style={{ color: 'var(--white)' }}>
           Total
         </span>
         <span
-          className="font-[family-name:var(--font-syne)] text-xl font-bold"
+          className="font-[family-name:var(--font-outfit)] text-xl font-bold"
           style={{ color: 'var(--gold)' }}
         >
           {formatPesewas(totalPesewas())}

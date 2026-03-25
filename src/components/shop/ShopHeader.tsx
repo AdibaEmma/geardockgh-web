@@ -21,9 +21,9 @@ export function ShopHeader() {
   return (
     <>
       <header
-        className="sticky top-0 z-40 border-b"
+        className="sticky top-0 z-40 border-b shadow-sm backdrop-blur-sm"
         style={{
-          background: 'var(--deep)',
+          background: 'color-mix(in srgb, var(--deep) 92%, transparent)',
           borderColor: 'var(--border)',
         }}
       >
@@ -31,7 +31,7 @@ export function ShopHeader() {
           {/* Logo */}
           <Link
             href="/"
-            className="flex items-center gap-2 font-[family-name:var(--font-syne)] text-lg font-bold"
+            className="flex items-center gap-2 font-[family-name:var(--font-outfit)] text-lg font-bold"
             style={{ color: 'var(--teal)' }}
           >
             <img
@@ -150,7 +150,7 @@ export function ShopHeader() {
         {/* Mobile Menu */}
         {mobileMenuOpen && (
           <div
-            className="border-t px-4 py-4 md:hidden"
+            className="animate-[slideDown_200ms_ease-out] border-t px-4 py-4 md:hidden"
             style={{ borderColor: 'var(--border)' }}
           >
             <div className="flex flex-col gap-3">

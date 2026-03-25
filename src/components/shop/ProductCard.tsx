@@ -1,7 +1,8 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
-import { ShoppingCart, Bell } from 'lucide-react';
+import { ShoppingCart, Bell, Loader2, Check } from 'lucide-react';
 import { formatPesewas, formatDate } from '@/lib/utils/formatters';
 import { useCartStore } from '@/stores/cart-store';
 import { useToastStore } from '@/stores/toast-store';
@@ -14,6 +15,7 @@ interface ProductCardProps {
 export function ProductCard({ product }: ProductCardProps) {
   const addItem = useCartStore((s) => s.addItem);
   const addToast = useToastStore((s) => s.addToast);
+  const [cartStatus, setCartStatus] = useState<'idle' | 'loading' | 'success'>('idle');
 
   const images = product.imagesJson ? JSON.parse(product.imagesJson) as string[] : [];
   const firstImage = images[0] ?? null;
@@ -21,6 +23,9 @@ export function ProductCard({ product }: ProductCardProps) {
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (cartStatus !== 'idle') return;
+
+    setCartStatus('loading');
     addItem({
       productId: product.id,
       variantId: null,
@@ -42,12 +47,14 @@ export function ProductCard({ product }: ProductCardProps) {
       selectedOptions: [],
     });
     addToast({ type: 'success', message: `${product.name} added to cart` });
+    setCartStatus('success');
+    setTimeout(() => setCartStatus('idle'), 2000);
   };
 
   return (
     <Link
       href={`/products/${product.slug}`}
-      className="group block overflow-hidden rounded-xl border transition-all duration-200 hover:border-[var(--gold)]/40"
+      className="group block overflow-hidden rounded-xl border shadow-sm transition-all duration-300 ease-out hover:-translate-y-1 hover:border-[var(--gold)]/40 hover:shadow-lg"
       style={{
         background: 'var(--card)',
         borderColor: 'var(--border)',
@@ -61,7 +68,7 @@ export function ProductCard({ product }: ProductCardProps) {
           <img
             src={firstImage}
             alt={product.name}
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
           />
         ) : (
           <div className="flex h-full items-center justify-center">
@@ -110,7 +117,7 @@ export function ProductCard({ product }: ProductCardProps) {
         <div className="flex items-center justify-between">
           <div className="flex items-baseline gap-2">
             <span
-              className="font-[family-name:var(--font-syne)] text-lg font-bold"
+              className="font-[family-name:var(--font-outfit)] text-lg font-bold"
               style={{ color: 'var(--gold)' }}
             >
               {formatPesewas(product.pricePesewas)}
@@ -136,11 +143,14 @@ export function ProductCard({ product }: ProductCardProps) {
           ) : (
             <button
               onClick={handleAddToCart}
-              className="rounded-lg p-2 transition-colors hover:bg-[var(--gold)]/10"
-              style={{ color: 'var(--gold)' }}
+              disabled={cartStatus !== 'idle'}
+              className="rounded-lg p-2 transition-colors hover:bg-[var(--gold)]/10 disabled:opacity-60"
+              style={{ color: cartStatus === 'success' ? 'var(--teal)' : 'var(--gold)' }}
               aria-label={`Add ${product.name} to cart`}
             >
-              <ShoppingCart size={18} />
+              {cartStatus === 'loading' && <Loader2 size={18} className="animate-spin" />}
+              {cartStatus === 'success' && <Check size={18} />}
+              {cartStatus === 'idle' && <ShoppingCart size={18} />}
             </button>
           )}
         </div>

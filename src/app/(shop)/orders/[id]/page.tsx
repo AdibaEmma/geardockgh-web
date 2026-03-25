@@ -59,7 +59,7 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1
-            className="font-[family-name:var(--font-syne)] text-2xl font-bold"
+            className="font-[family-name:var(--font-outfit)] text-2xl font-bold"
             style={{ color: 'var(--white)' }}
           >
             {order.orderNumber}
@@ -80,7 +80,7 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
             style={{ background: 'var(--card)', borderColor: 'var(--border)' }}
           >
             <h3
-              className="mb-4 font-[family-name:var(--font-syne)] font-bold"
+              className="mb-4 font-[family-name:var(--font-outfit)] font-bold"
               style={{ color: 'var(--white)' }}
             >
               Items
@@ -173,7 +173,7 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
                   Total
                 </span>
                 <span
-                  className="font-[family-name:var(--font-syne)] text-lg font-bold"
+                  className="font-[family-name:var(--font-outfit)] text-lg font-bold"
                   style={{ color: 'var(--gold)' }}
                 >
                   {formatPesewas(order.totalPesewas)}
@@ -194,7 +194,7 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
               <div className="flex items-center gap-2 mb-2">
                 <MapPin size={16} style={{ color: 'var(--gold)' }} />
                 <h3
-                  className="font-[family-name:var(--font-syne)] font-bold"
+                  className="font-[family-name:var(--font-outfit)] font-bold"
                   style={{ color: 'var(--white)' }}
                 >
                   Shipping Address
@@ -215,7 +215,7 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
             style={{ background: 'var(--card)', borderColor: 'var(--border)' }}
           >
             <h3
-              className="mb-4 font-[family-name:var(--font-syne)] font-bold"
+              className="mb-4 font-[family-name:var(--font-outfit)] font-bold"
               style={{ color: 'var(--white)' }}
             >
               Order Status

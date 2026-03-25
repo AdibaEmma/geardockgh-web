@@ -48,7 +48,7 @@ export default function OrderConfirmationPage({ params }: ConfirmationPageProps)
       </div>
 
       <h1
-        className="mb-2 font-[family-name:var(--font-syne)] text-3xl font-bold"
+        className="mb-2 font-[family-name:var(--font-outfit)] text-3xl font-bold"
         style={{ color: 'var(--white)' }}
       >
         Order Placed!
@@ -79,7 +79,7 @@ export default function OrderConfirmationPage({ params }: ConfirmationPageProps)
           <div className="flex justify-between text-sm">
             <span style={{ color: 'var(--muted)' }}>Total</span>
             <span
-              className="font-[family-name:var(--font-syne)] font-bold"
+              className="font-[family-name:var(--font-outfit)] font-bold"
               style={{ color: 'var(--gold)' }}
             >
               {formatPesewas(order.totalPesewas)}

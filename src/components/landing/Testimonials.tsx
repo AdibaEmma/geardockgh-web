@@ -3,7 +3,7 @@
 interface Testimonial {
   name: string;
   role: string;
-  emoji: string;
+  accent: 'gold' | 'teal';
   text: string;
   rating: number;
 }
@@ -12,28 +12,28 @@ const TESTIMONIALS: Testimonial[] = [
   {
     name: 'Kwame A.',
     role: 'Software Engineer, Bolgatanga',
-    emoji: '\uD83D\uDC68\u200D\uD83D\uDCBB',
+    accent: 'gold',
     text: 'The Sony headphones are a game-changer for my remote work. Arrived in 2 days. MoMo payment was seamless.',
     rating: 5,
   },
   {
     name: 'Ama D.',
     role: 'YouTube Creator, Kumasi',
-    emoji: '\uD83C\uDFAC',
+    accent: 'teal',
     text: 'Best ring light I\u2019ve found at this price. The quality is exactly what I needed for my studio setup.',
     rating: 5,
   },
   {
     name: 'Kofi M.',
     role: 'Student, Legon',
-    emoji: '\uD83D\uDCDA',
+    accent: 'gold',
     text: 'Affordable laptop stand that\u2019s sturdy and foldable. Perfect for my dorm room. Delivered right to campus.',
     rating: 4,
   },
   {
     name: 'Efua S.',
     role: 'Gamer & Streamer, Tema',
-    emoji: '\uD83C\uDFAE',
+    accent: 'teal',
     text: 'Finally a store that ships real gaming gear to Ghana. The mechanical keyboard feels premium.',
     rating: 5,
   },
@@ -49,12 +49,17 @@ function Stars({ count }: { count: number }) {
   );
 }
 
+function getInitials(name: string): string {
+  return name.split(' ').map(n => n[0]).join('');
+}
+
 function TestimonialCard({ t }: { t: Testimonial }) {
+  const initials = getInitials(t.name);
   return (
     <div className="testimonial-card">
       <div className="testimonial-header">
-        <div className="testimonial-avatar">
-          <span>{t.emoji}</span>
+        <div className={`testimonial-avatar testimonial-avatar--${t.accent}`}>
+          <span>{initials}</span>
         </div>
         <div>
           <div className="testimonial-name">{t.name}</div>

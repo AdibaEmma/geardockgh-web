@@ -10,7 +10,7 @@ export default function RegisterPage() {
   return (
     <div>
       <h2
-        className="mb-2 text-center font-[family-name:var(--font-syne)] text-xl font-semibold"
+        className="mb-2 text-center font-[family-name:var(--font-outfit)] text-xl font-semibold"
         style={{ color: 'var(--white)' }}
       >
         Create your account

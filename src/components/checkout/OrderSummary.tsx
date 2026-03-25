@@ -29,11 +29,11 @@ export function OrderSummary() {
 
   return (
     <div
-      className="rounded-xl border p-6"
-      style={{ background: 'var(--card)', borderColor: 'var(--border)' }}
+      className="rounded-xl border p-6 shadow-md"
+      style={{ background: 'var(--card)', borderColor: 'var(--border)', borderTop: '2px solid var(--gold)' }}
     >
       <h3
-        className="mb-4 font-[family-name:var(--font-syne)] text-lg font-bold"
+        className="mb-4 font-[family-name:var(--font-outfit)] text-lg font-bold"
         style={{ color: 'var(--white)' }}
       >
         Order Summary
@@ -147,7 +147,7 @@ export function OrderSummary() {
             {hasPreorder ? 'Due Today' : 'Total'}
           </span>
           <span
-            className="font-[family-name:var(--font-syne)] text-lg font-bold"
+            className="font-[family-name:var(--font-outfit)] text-lg font-bold"
             style={{ color: 'var(--gold)' }}
           >
             {formatPesewas(dueToday)}

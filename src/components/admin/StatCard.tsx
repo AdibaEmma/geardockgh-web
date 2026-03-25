@@ -22,7 +22,7 @@ export function StatCard({ label, value, subValue, Icon, color, trend }: StatCar
             {label}
           </p>
           <p
-            className="mt-2 font-[family-name:var(--font-syne)] text-2xl font-bold"
+            className="mt-2 font-[family-name:var(--font-outfit)] text-2xl font-bold"
             style={{ color: 'var(--white)' }}
           >
             {value}

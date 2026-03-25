@@ -48,14 +48,14 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
+        className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm animate-[fadeIn_200ms_ease-out]"
         onClick={onClose}
       />
 
       {/* Drawer */}
       <div
         ref={drawerRef}
-        className="fixed right-0 top-0 z-50 flex h-full w-full max-w-md flex-col border-l"
+        className="fixed right-0 top-0 z-50 flex h-full w-full max-w-md flex-col border-l shadow-2xl animate-[slideInRight_250ms_ease-out]"
         style={{
           background: 'var(--deep)',
           borderColor: 'var(--border)',
@@ -67,7 +67,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
           style={{ borderColor: 'var(--border)' }}
         >
           <h2
-            className="flex items-center gap-2 font-[family-name:var(--font-syne)] text-lg font-bold"
+            className="flex items-center gap-2 font-[family-name:var(--font-outfit)] text-lg font-bold"
             style={{ color: 'var(--white)' }}
           >
             <ShoppingBag size={20} />
@@ -111,7 +111,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               {items.map((item) => (
                 <div
                   key={`${item.productId}-${item.variantId}-${item.selectedOptions?.map((o) => o.value).join('-') ?? ''}`}
-                  className="flex gap-4 rounded-lg border p-3"
+                  className="flex gap-4 rounded-lg border p-3 shadow-sm"
                   style={{
                     borderColor: 'var(--border)',
                     background: 'var(--card)',
@@ -228,7 +228,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 Subtotal
               </span>
               <span
-                className="font-[family-name:var(--font-syne)] text-lg font-bold"
+                className="font-[family-name:var(--font-outfit)] text-lg font-bold"
                 style={{ color: 'var(--gold)' }}
               >
                 {formatPesewas(total)}

@@ -43,16 +43,22 @@ export default function OrdersPage() {
   const meta = data?.meta;
 
   return (
-    <div className="py-4">
+    <div className="py-6">
       <h1
-        className="mb-6 font-[family-name:var(--font-syne)] text-2xl font-bold"
+        className="mb-2 font-[family-name:var(--font-outfit)] text-2xl font-bold"
         style={{ color: 'var(--white)' }}
       >
         My Orders
       </h1>
+      <p className="mb-6 text-sm" style={{ color: 'var(--muted)' }}>
+        Track and manage your purchases
+      </p>
 
       {/* Status Tabs */}
-      <div className="mb-6 flex gap-2 overflow-x-auto pb-2">
+      <div
+        className="mb-6 flex gap-2 overflow-x-auto border-b pb-4"
+        style={{ borderColor: 'var(--border)' }}
+      >
         {statusTabs.map((tab) => (
           <button
             key={tab.key}
@@ -60,11 +66,12 @@ export default function OrdersPage() {
               setActiveTab(tab.key);
               setPage(1);
             }}
-            className="whitespace-nowrap rounded-full border px-4 py-1.5 text-xs font-medium transition-all"
+            className="whitespace-nowrap rounded-full border px-4 py-1.5 text-xs font-medium transition-all duration-200"
             style={{
               background: activeTab === tab.key ? 'var(--gold)' : 'transparent',
               color: activeTab === tab.key ? 'var(--deep)' : 'var(--muted)',
               borderColor: activeTab === tab.key ? 'var(--gold)' : 'var(--border)',
+              boxShadow: activeTab === tab.key ? '0 2px 8px rgba(240,165,0,0.25)' : 'none',
             }}
           >
             {tab.label}
@@ -81,17 +88,28 @@ export default function OrdersPage() {
           />
         </div>
       ) : orders.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16">
-          <Package size={48} className="mb-4" style={{ color: 'var(--border)' }} />
-          <p className="text-sm font-medium" style={{ color: 'var(--muted)' }}>
+        <div
+          className="flex flex-col items-center justify-center rounded-xl border py-20"
+          style={{ background: 'var(--card)', borderColor: 'var(--border)' }}
+        >
+          <div
+            className="mb-4 flex h-16 w-16 items-center justify-center rounded-full"
+            style={{ background: 'rgba(240,165,0,0.08)' }}
+          >
+            <Package size={28} style={{ color: 'var(--gold)' }} />
+          </div>
+          <p className="text-base font-semibold" style={{ color: 'var(--white)' }}>
             No orders yet
           </p>
-          <Button className="mt-4" onClick={() => router.push('/products')}>
+          <p className="mt-1 text-sm" style={{ color: 'var(--muted)' }}>
+            Your order history will appear here
+          </p>
+          <Button className="mt-6" onClick={() => router.push('/products')}>
             Start Shopping
           </Button>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-3.5">
           {orders.map((order) => (
             <OrderCard key={order.id} order={order} />
           ))}

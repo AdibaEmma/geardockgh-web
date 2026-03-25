@@ -1,8 +1,20 @@
 'use client';
 
-import { Search, X } from 'lucide-react';
+import {
+  Search, X,
+  Smartphone, Laptop, Monitor, Headphones, Keyboard, Battery,
+  Armchair, Camera, Gamepad2, Joystick, HardDrive, Lightbulb,
+  Cable, Package,
+} from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { CATEGORIES } from '@/lib/utils/constants';
 import { cn } from '@/lib/utils/cn';
+
+const ICON_MAP: Record<string, LucideIcon> = {
+  Smartphone, Laptop, Monitor, Headphones, Keyboard, Battery,
+  Armchair, Camera, Gamepad2, Joystick, HardDrive, Lightbulb,
+  Cable, Package,
+};
 
 interface ProductFiltersProps {
   search: string;
@@ -60,22 +72,26 @@ export function ProductFilters({
         >
           All
         </button>
-        {CATEGORIES.map((cat) => (
-          <button
-            key={cat.value}
-            onClick={() =>
-              onCategoryChange(selectedCategory === cat.value ? null : cat.value)
-            }
-            className={cn(
-              'rounded-full border px-3 py-1.5 text-xs font-medium transition-all',
-              selectedCategory === cat.value
-                ? 'border-[var(--gold)] bg-[var(--gold)]/10 text-[var(--gold)]'
-                : 'border-[var(--border)] text-[var(--muted)] hover:border-[var(--gold)]/40 hover:text-[var(--white)]',
-            )}
-          >
-            {cat.icon} {cat.label}
-          </button>
-        ))}
+        {CATEGORIES.map((cat) => {
+          const Icon = ICON_MAP[cat.icon];
+          return (
+            <button
+              key={cat.value}
+              onClick={() =>
+                onCategoryChange(selectedCategory === cat.value ? null : cat.value)
+              }
+              className={cn(
+                'inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-all',
+                selectedCategory === cat.value
+                  ? 'border-[var(--gold)] bg-[var(--gold)]/10 text-[var(--gold)]'
+                  : 'border-[var(--border)] text-[var(--muted)] hover:border-[var(--gold)]/40 hover:text-[var(--white)]',
+              )}
+            >
+              {Icon && <Icon size={14} />}
+              {cat.label}
+            </button>
+          );
+        })}
       </div>
     </div>
   );

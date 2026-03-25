@@ -36,18 +36,18 @@ export const STATUS_COLORS: Record<string, string> = {
 };
 
 export const CATEGORIES = [
-  { value: 'phones-tablets', label: 'Phones & Tablets', icon: '📱' },
-  { value: 'laptops-computers', label: 'Laptops & Computers', icon: '💻' },
-  { value: 'monitors-displays', label: 'Monitors & Displays', icon: '🖥️' },
-  { value: 'audio-headphones', label: 'Audio & Headphones', icon: '🎧' },
-  { value: 'keyboards-mice', label: 'Keyboards & Mice', icon: '⌨️' },
-  { value: 'power-energy', label: 'Power & Energy', icon: '🔋' },
-  { value: 'desks-furniture', label: 'Desks & Furniture', icon: '🪑' },
-  { value: 'cameras-video', label: 'Cameras & Video', icon: '📷' },
-  { value: 'gaming-consoles', label: 'Gaming Consoles', icon: '🎮' },
-  { value: 'gaming-accessories', label: 'Gaming Accessories', icon: '🕹️' },
-  { value: 'storage-networking', label: 'Storage & Networking', icon: '💾' },
-  { value: 'lighting', label: 'Lighting', icon: '💡' },
-  { value: 'accessories', label: 'Accessories', icon: '🔌' },
-  { value: 'other', label: 'Other', icon: '📦' },
-];
+  { value: 'phones-tablets', label: 'Phones & Tablets', icon: 'Smartphone' },
+  { value: 'laptops-computers', label: 'Laptops & Computers', icon: 'Laptop' },
+  { value: 'monitors-displays', label: 'Monitors & Displays', icon: 'Monitor' },
+  { value: 'audio-headphones', label: 'Audio & Headphones', icon: 'Headphones' },
+  { value: 'keyboards-mice', label: 'Keyboards & Mice', icon: 'Keyboard' },
+  { value: 'power-energy', label: 'Power & Energy', icon: 'Battery' },
+  { value: 'desks-furniture', label: 'Desks & Furniture', icon: 'Armchair' },
+  { value: 'cameras-video', label: 'Cameras & Video', icon: 'Camera' },
+  { value: 'gaming-consoles', label: 'Gaming Consoles', icon: 'Gamepad2' },
+  { value: 'gaming-accessories', label: 'Gaming Accessories', icon: 'Joystick' },
+  { value: 'storage-networking', label: 'Storage & Networking', icon: 'HardDrive' },
+  { value: 'lighting', label: 'Lighting', icon: 'Lightbulb' },
+  { value: 'accessories', label: 'Accessories', icon: 'Cable' },
+  { value: 'other', label: 'Other', icon: 'Package' },
+] as const;

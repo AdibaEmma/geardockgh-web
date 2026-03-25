@@ -47,7 +47,7 @@ export function AdminTopbar() {
 
         {/* Page title */}
         <h2
-          className="font-[family-name:var(--font-syne)] text-base font-semibold"
+          className="font-[family-name:var(--font-outfit)] text-base font-semibold"
           style={{ color: 'var(--white)' }}
         >
           {title}

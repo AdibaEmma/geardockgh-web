@@ -31,7 +31,7 @@ export function AddressSection() {
         <div className="flex items-center gap-2">
           <MapPin size={18} style={{ color: 'var(--gold)' }} />
           <h3
-            className="font-[family-name:var(--font-syne)] text-lg font-bold"
+            className="font-[family-name:var(--font-outfit)] text-lg font-bold"
             style={{ color: 'var(--white)' }}
           >
             Addresses

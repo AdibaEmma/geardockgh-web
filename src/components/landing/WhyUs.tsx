@@ -1,6 +1,9 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import type { LucideIcon } from 'lucide-react';
+import { ShieldCheck, Smartphone, RefreshCw } from 'lucide-react';
+import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
 
 interface Feature {
   num: string;
@@ -42,10 +45,10 @@ const TRUST_STATS = [
   { value: '48', suffix: 'h', label: 'Bolgatanga Delivery' },
 ];
 
-const TRUST_BADGES = [
-  '\u2705 Verified Imports',
-  '\uD83D\uDCF1 MoMo Accepted',
-  '\uD83D\uDD04 Easy Returns',
+const TRUST_BADGES: { icon: LucideIcon; label: string }[] = [
+  { icon: ShieldCheck, label: 'Verified Imports' },
+  { icon: Smartphone, label: 'MoMo Accepted' },
+  { icon: RefreshCw, label: 'Easy Returns' },
 ];
 
 export function WhyUs() {
@@ -97,7 +100,7 @@ export function WhyUs() {
             {TRUST_STATS.map((stat) => (
               <div className="trust-stat" key={stat.label}>
                 <div className="trust-stat-num">
-                  {stat.value}<span>{stat.suffix}</span>
+                  <AnimatedCounter value={stat.value} /><span>{stat.suffix}</span>
                 </div>
                 <div className="trust-stat-label">{stat.label}</div>
               </div>
@@ -105,7 +108,10 @@ export function WhyUs() {
           </div>
           <div className="trust-badges">
             {TRUST_BADGES.map((badge) => (
-              <div className="trust-badge-item" key={badge}>{badge}</div>
+              <div className="trust-badge-item" key={badge.label}>
+                <badge.icon size={16} style={{ color: 'var(--gold)' }} />
+                {badge.label}
+              </div>
             ))}
           </div>
         </div>

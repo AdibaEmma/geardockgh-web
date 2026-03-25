@@ -136,7 +136,7 @@ export function ProductDetail({ slug }: ProductDetailProps) {
         {/* Image Gallery */}
         <div>
           <div
-            className="aspect-square overflow-hidden rounded-xl border"
+            className="aspect-square overflow-hidden rounded-xl border shadow-md"
             style={{
               background: 'var(--card)',
               borderColor: 'var(--border)',
@@ -161,10 +161,12 @@ export function ProductDetail({ slug }: ProductDetailProps) {
                 <button
                   key={i}
                   onClick={() => setSelectedImageIndex(i)}
-                  className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg border transition-all"
+                  className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg border transition-all duration-200 hover:scale-105"
                   style={{
                     borderColor:
                       i === selectedImageIndex ? 'var(--gold)' : 'var(--border)',
+                    boxShadow:
+                      i === selectedImageIndex ? '0 0 0 1px var(--gold)' : 'none',
                   }}
                 >
                   <img
@@ -190,7 +192,7 @@ export function ProductDetail({ slug }: ProductDetailProps) {
           )}
 
           <h1
-            className="font-[family-name:var(--font-syne)] text-2xl font-bold lg:text-3xl"
+            className="font-[family-name:var(--font-outfit)] text-2xl font-bold lg:text-3xl"
             style={{ color: 'var(--white)' }}
           >
             {product.name}
@@ -198,7 +200,7 @@ export function ProductDetail({ slug }: ProductDetailProps) {
 
           <div className="mt-3 flex items-baseline gap-3">
             <span
-              className="font-[family-name:var(--font-syne)] text-2xl font-bold"
+              className="font-[family-name:var(--font-outfit)] text-2xl font-bold"
               style={{ color: 'var(--gold)' }}
             >
               {formatPesewas(activePrice)}
@@ -395,23 +397,25 @@ export function ProductDetail({ slug }: ProductDetailProps) {
           ) : (
             <div className="mt-6 flex items-center gap-4">
               <div
-                className="flex items-center gap-3 rounded-lg border px-3 py-2"
-                style={{ borderColor: 'var(--border)' }}
+                className="flex items-center gap-1 rounded-lg border px-2 py-1.5"
+                style={{ borderColor: 'var(--border)', background: 'var(--deep)' }}
               >
                 <button
                   onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                  className="rounded-md p-1.5 transition-colors hover:bg-[var(--hover-bg)]"
                   style={{ color: 'var(--muted)' }}
                 >
                   <Minus size={16} />
                 </button>
                 <span
-                  className="min-w-[2rem] text-center font-[family-name:var(--font-space-mono)] text-sm"
+                  className="min-w-[2.5rem] text-center font-[family-name:var(--font-space-mono)] text-sm"
                   style={{ color: 'var(--white)' }}
                 >
                   {quantity}
                 </span>
                 <button
                   onClick={() => setQuantity((q) => q + 1)}
+                  className="rounded-md p-1.5 transition-colors hover:bg-[var(--hover-bg)]"
                   style={{ color: 'var(--muted)' }}
                 >
                   <Plus size={16} />
@@ -439,15 +443,16 @@ export function ProductDetail({ slug }: ProductDetailProps) {
           {Object.keys(specs).length > 0 && (
             <div className="mt-8">
               <h3
-                className="mb-3 font-[family-name:var(--font-syne)] text-sm font-semibold"
+                className="mb-3 font-[family-name:var(--font-outfit)] text-sm font-semibold"
                 style={{ color: 'var(--white)' }}
               >
                 Specifications
               </h3>
               <div
-                className="divide-y divide-[var(--border)] rounded-lg border"
+                className="divide-y divide-[var(--border)] overflow-hidden rounded-lg border shadow-sm"
                 style={{
                   borderColor: 'var(--border)',
+                  background: 'var(--card)',
                 }}
               >
                 {Object.entries(specs).map(([key, value]) => (

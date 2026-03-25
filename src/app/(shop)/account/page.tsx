@@ -25,7 +25,7 @@ export default function AccountPage() {
   return (
     <div className="py-4">
       <h1
-        className="mb-6 font-[family-name:var(--font-syne)] text-2xl font-bold"
+        className="mb-6 font-[family-name:var(--font-outfit)] text-2xl font-bold"
         style={{ color: 'var(--white)' }}
       >
         My Account
@@ -44,7 +44,7 @@ export default function AccountPage() {
           <div className="flex items-center gap-2">
             <Package size={18} style={{ color: 'var(--gold)' }} />
             <h3
-              className="font-[family-name:var(--font-syne)] text-lg font-bold"
+              className="font-[family-name:var(--font-outfit)] text-lg font-bold"
               style={{ color: 'var(--white)' }}
             >
               Orders

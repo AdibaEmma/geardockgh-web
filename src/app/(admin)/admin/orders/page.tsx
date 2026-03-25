@@ -98,7 +98,7 @@ export default function AdminOrdersPage() {
   return (
     <div>
       <h1
-        className="mb-6 font-[family-name:var(--font-syne)] text-2xl font-bold"
+        className="mb-6 font-[family-name:var(--font-outfit)] text-2xl font-bold"
         style={{ color: 'var(--white)' }}
       >
         Orders

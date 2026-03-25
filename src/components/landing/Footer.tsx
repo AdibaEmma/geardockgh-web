@@ -14,7 +14,7 @@ const INFO_LINKS = [
   { href: '/products', label: 'All Products' },
 ];
 
-const PAYMENT_METHODS = ['MTN MoMo', 'Vodafone Cash', 'Visa', 'Mastercard'];
+const PAYMENT_METHODS = ['MTN MoMo', 'Vodafone Cash', 'AirtelTigo', 'Visa', 'Mastercard'];
 
 interface FooterColumnProps {
   title: string;

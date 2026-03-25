@@ -91,7 +91,7 @@ export default function AdminLoginPage() {
             <Shield size={24} style={{ color: 'var(--gold)' }} />
           </div>
           <h1
-            className="font-[family-name:var(--font-syne)] text-xl font-bold"
+            className="font-[family-name:var(--font-outfit)] text-xl font-bold"
             style={{ color: 'var(--gold)' }}
           >
             Admin Panel

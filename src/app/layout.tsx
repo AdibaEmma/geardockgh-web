@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
-import { Syne, DM_Sans, Space_Mono } from "next/font/google";
+import { Outfit, Rubik, Space_Mono } from "next/font/google";
 import { Providers } from "@/providers";
 import "./globals.css";
 
-const syne = Syne({
-  variable: "--font-syne",
+const outfit = Outfit({
+  variable: "--font-outfit",
   subsets: ["latin"],
   display: "swap",
 });
 
-const dmSans = DM_Sans({
-  variable: "--font-dm-sans",
+const rubik = Rubik({
+  variable: "--font-rubik",
   subsets: ["latin"],
   display: "swap",
 });
@@ -63,7 +63,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${syne.variable} ${dmSans.variable} ${spaceMono.variable} font-sans antialiased`}
+        className={`${outfit.variable} ${rubik.variable} ${spaceMono.variable} font-sans antialiased`}
       >
         <Providers>{children}</Providers>
       </body>

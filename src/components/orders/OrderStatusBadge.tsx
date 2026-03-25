@@ -4,16 +4,20 @@ import type { OrderStatus } from '@/types';
 
 const statusConfig: Record<
   OrderStatus,
-  { label: string; color: string; bg: string }
+  { label: string; color: string; bg: string; accent: string }
 > = {
-  PENDING_PAYMENT: { label: 'Pending Payment', color: 'var(--gold)', bg: 'rgba(240,165,0,0.1)' },
-  PAYMENT_CONFIRMED: { label: 'Confirmed', color: 'var(--teal)', bg: 'rgba(0,201,167,0.1)' },
-  PROCESSING: { label: 'Processing', color: '#3b82f6', bg: 'rgba(59,130,246,0.1)' },
-  SHIPPED: { label: 'Shipped', color: '#8b5cf6', bg: 'rgba(139,92,246,0.1)' },
-  DELIVERED: { label: 'Delivered', color: 'var(--teal)', bg: 'rgba(0,201,167,0.1)' },
-  CANCELLED: { label: 'Cancelled', color: '#ef4444', bg: 'rgba(239,68,68,0.1)' },
-  REFUNDED: { label: 'Refunded', color: '#f97316', bg: 'rgba(249,115,22,0.1)' },
+  PENDING_PAYMENT: { label: 'Pending Payment', color: 'var(--gold)', bg: 'rgba(240,165,0,0.1)', accent: '#F0A500' },
+  PAYMENT_CONFIRMED: { label: 'Confirmed', color: 'var(--teal)', bg: 'rgba(0,201,167,0.1)', accent: '#00C9A7' },
+  PROCESSING: { label: 'Processing', color: '#3b82f6', bg: 'rgba(59,130,246,0.1)', accent: '#3b82f6' },
+  SHIPPED: { label: 'Shipped', color: '#8b5cf6', bg: 'rgba(139,92,246,0.1)', accent: '#8b5cf6' },
+  DELIVERED: { label: 'Delivered', color: 'var(--teal)', bg: 'rgba(0,201,167,0.1)', accent: '#00C9A7' },
+  CANCELLED: { label: 'Cancelled', color: '#ef4444', bg: 'rgba(239,68,68,0.1)', accent: '#ef4444' },
+  REFUNDED: { label: 'Refunded', color: '#f97316', bg: 'rgba(249,115,22,0.1)', accent: '#f97316' },
 };
+
+export function getStatusAccentColor(status: OrderStatus): string {
+  return statusConfig[status]?.accent ?? '#F0A500';
+}
 
 interface OrderStatusBadgeProps {
   status: OrderStatus;

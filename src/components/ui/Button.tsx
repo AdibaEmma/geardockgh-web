@@ -16,19 +16,25 @@ export function Button({
   className,
   children,
   disabled,
+  style,
   ...props
 }: ButtonProps) {
   const baseStyles =
-    'inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50';
+    'inline-flex items-center justify-center rounded-lg font-medium transition-all duration-250 ease-out cursor-pointer disabled:cursor-not-allowed disabled:opacity-50';
 
   const variants = {
     primary:
-      'bg-[var(--gold)] text-[var(--deep)] hover:bg-[var(--gold-light)] active:scale-[0.98]',
+      'text-[var(--deep)] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]',
     secondary:
-      'border border-[var(--border)] bg-transparent text-[var(--white)] hover:border-[var(--gold)] hover:text-[var(--gold)]',
+      'border border-[var(--border)] bg-transparent text-[var(--white)] hover:border-[var(--gold)] hover:text-[var(--gold)] hover:shadow-sm',
     ghost:
       'bg-transparent text-[var(--muted)] hover:text-[var(--white)]',
   };
+
+  const primaryStyle = variant === 'primary' ? {
+    background: 'linear-gradient(135deg, var(--gold), var(--gold-light))',
+    boxShadow: '0 4px 16px rgba(240,165,0,0.25)',
+  } : undefined;
 
   const sizes = {
     sm: 'px-3 py-1.5 text-xs',
@@ -40,6 +46,7 @@ export function Button({
     <button
       className={cn(baseStyles, variants[variant], sizes[size], className)}
       disabled={disabled || isLoading}
+      style={{ ...primaryStyle, ...style }}
       {...props}
     >
       {isLoading ? (

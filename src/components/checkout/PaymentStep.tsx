@@ -33,7 +33,7 @@ export function PaymentStep() {
   return (
     <div className="space-y-4">
       <h3
-        className="font-[family-name:var(--font-syne)] text-lg font-bold"
+        className="font-[family-name:var(--font-outfit)] text-lg font-bold"
         style={{ color: 'var(--white)' }}
       >
         Payment Method
@@ -44,10 +44,11 @@ export function PaymentStep() {
           <button
             key={key}
             onClick={() => setPaymentMethod(key)}
-            className="flex w-full items-center gap-4 rounded-lg border p-4 text-left transition-all"
+            className="flex w-full items-center gap-4 rounded-lg border p-4 text-left transition-all duration-200"
             style={{
               background: paymentMethod === key ? 'var(--card)' : 'transparent',
               borderColor: paymentMethod === key ? 'var(--gold)' : 'var(--border)',
+              boxShadow: paymentMethod === key ? '0 0 0 1px var(--gold), var(--shadow-sm)' : 'none',
             }}
           >
             <div

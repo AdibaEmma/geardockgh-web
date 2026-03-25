@@ -51,7 +51,7 @@ export function AddressStep() {
   return (
     <div className="space-y-4">
       <h3
-        className="font-[family-name:var(--font-syne)] text-lg font-bold"
+        className="font-[family-name:var(--font-outfit)] text-lg font-bold"
         style={{ color: 'var(--white)' }}
       >
         Shipping Address
@@ -63,10 +63,11 @@ export function AddressStep() {
             <button
               key={addr.id}
               onClick={() => setSelectedId(addr.id)}
-              className="flex w-full items-start gap-3 rounded-lg border p-4 text-left transition-all"
+              className="flex w-full items-start gap-3 rounded-lg border p-4 text-left transition-all duration-200"
               style={{
                 background: selectedId === addr.id ? 'var(--card)' : 'transparent',
                 borderColor: selectedId === addr.id ? 'var(--gold)' : 'var(--border)',
+                boxShadow: selectedId === addr.id ? '0 0 0 1px var(--gold), var(--shadow-sm)' : 'none',
               }}
             >
               <MapPin

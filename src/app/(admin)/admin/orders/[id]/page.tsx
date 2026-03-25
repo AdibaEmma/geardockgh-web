@@ -86,7 +86,7 @@ export default function AdminOrderDetailPage({ params }: AdminOrderDetailProps) 
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1
-            className="font-[family-name:var(--font-syne)] text-2xl font-bold"
+            className="font-[family-name:var(--font-outfit)] text-2xl font-bold"
             style={{ color: 'var(--white)' }}
           >
             {order.orderNumber}
@@ -106,7 +106,7 @@ export default function AdminOrderDetailPage({ params }: AdminOrderDetailProps) 
             style={{ background: 'var(--card)', borderColor: 'var(--border)' }}
           >
             <h3
-              className="mb-4 font-[family-name:var(--font-syne)] font-bold"
+              className="mb-4 font-[family-name:var(--font-outfit)] font-bold"
               style={{ color: 'var(--white)' }}
             >
               Items
@@ -159,7 +159,7 @@ export default function AdminOrderDetailPage({ params }: AdminOrderDetailProps) 
             >
               <span className="font-semibold" style={{ color: 'var(--white)' }}>Total</span>
               <span
-                className="font-[family-name:var(--font-syne)] text-lg font-bold"
+                className="font-[family-name:var(--font-outfit)] text-lg font-bold"
                 style={{ color: 'var(--gold)' }}
               >
                 {formatPesewas(order.totalPesewas)}
@@ -176,7 +176,7 @@ export default function AdminOrderDetailPage({ params }: AdminOrderDetailProps) 
               <div className="flex items-center gap-2 mb-2">
                 <User size={16} style={{ color: 'var(--gold)' }} />
                 <h3
-                  className="font-[family-name:var(--font-syne)] font-bold"
+                  className="font-[family-name:var(--font-outfit)] font-bold"
                   style={{ color: 'var(--white)' }}
                 >
                   Customer
@@ -205,7 +205,7 @@ export default function AdminOrderDetailPage({ params }: AdminOrderDetailProps) 
               <div className="flex items-center gap-2 mb-2">
                 <MapPin size={16} style={{ color: 'var(--gold)' }} />
                 <h3
-                  className="font-[family-name:var(--font-syne)] font-bold"
+                  className="font-[family-name:var(--font-outfit)] font-bold"
                   style={{ color: 'var(--white)' }}
                 >
                   Shipping
@@ -227,7 +227,7 @@ export default function AdminOrderDetailPage({ params }: AdminOrderDetailProps) 
               <div className="flex items-center gap-2 mb-2">
                 <MessageSquare size={16} style={{ color: 'var(--gold)' }} />
                 <h3
-                  className="font-[family-name:var(--font-syne)] font-bold"
+                  className="font-[family-name:var(--font-outfit)] font-bold"
                   style={{ color: 'var(--white)' }}
                 >
                   Customer Notes
@@ -250,7 +250,7 @@ export default function AdminOrderDetailPage({ params }: AdminOrderDetailProps) 
             style={{ background: 'var(--card)', borderColor: 'var(--border)' }}
           >
             <h3
-              className="mb-4 font-[family-name:var(--font-syne)] font-bold"
+              className="mb-4 font-[family-name:var(--font-outfit)] font-bold"
               style={{ color: 'var(--white)' }}
             >
               Update Status
@@ -284,7 +284,7 @@ export default function AdminOrderDetailPage({ params }: AdminOrderDetailProps) 
             style={{ background: 'var(--card)', borderColor: 'var(--border)' }}
           >
             <h3
-              className="mb-4 font-[family-name:var(--font-syne)] font-bold"
+              className="mb-4 font-[family-name:var(--font-outfit)] font-bold"
               style={{ color: 'var(--white)' }}
             >
               Timeline

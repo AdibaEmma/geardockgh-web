@@ -26,18 +26,27 @@ export function ProductGrid({ products, isLoading }: ProductGridProps) {
               style={{ background: 'var(--deep)' }}
             />
             <div className="space-y-3 p-4">
+              {/* Category label */}
               <div
-                className="h-3 w-2/3 rounded"
+                className="h-2.5 w-1/4 rounded"
                 style={{ background: 'var(--border)' }}
               />
+              {/* Product name */}
               <div
-                className="h-4 w-full rounded"
+                className="h-4 w-3/4 rounded"
                 style={{ background: 'var(--border)' }}
               />
-              <div
-                className="h-5 w-1/3 rounded"
-                style={{ background: 'var(--border)' }}
-              />
+              {/* Price + cart button row */}
+              <div className="flex items-center justify-between pt-1">
+                <div
+                  className="h-5 w-1/3 rounded"
+                  style={{ background: 'var(--border)' }}
+                />
+                <div
+                  className="h-8 w-8 rounded-lg"
+                  style={{ background: 'var(--border)' }}
+                />
+              </div>
             </div>
           </div>
         ))}
@@ -55,7 +64,7 @@ export function ProductGrid({ products, isLoading }: ProductGridProps) {
         }}
       >
         <p
-          className="font-[family-name:var(--font-syne)] text-lg font-semibold"
+          className="font-[family-name:var(--font-outfit)] text-lg font-semibold"
           style={{ color: 'var(--white)' }}
         >
           No products found

@@ -148,7 +148,7 @@ export default function AdminProductsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <h1
-          className="font-[family-name:var(--font-syne)] text-2xl font-bold"
+          className="font-[family-name:var(--font-outfit)] text-2xl font-bold"
           style={{ color: 'var(--white)' }}
         >
           Products
@@ -488,7 +488,7 @@ export default function AdminProductsPage() {
             }}
           >
             <h3
-              className="mb-2 font-[family-name:var(--font-syne)] text-lg font-bold"
+              className="mb-2 font-[family-name:var(--font-outfit)] text-lg font-bold"
               style={{ color: 'var(--white)' }}
             >
               Delete Product

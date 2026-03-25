@@ -61,7 +61,7 @@ function PaymentCallbackContent() {
       <div className="flex flex-col items-center justify-center py-24">
         <XCircle size={48} className="mb-4" style={{ color: '#ef4444' }} />
         <h2
-          className="font-[family-name:var(--font-syne)] text-xl font-bold"
+          className="font-[family-name:var(--font-outfit)] text-xl font-bold"
           style={{ color: 'var(--white)' }}
         >
           Invalid Payment Reference
@@ -85,7 +85,7 @@ function PaymentCallbackContent() {
           style={{ color: 'var(--gold)' }}
         />
         <h2
-          className="font-[family-name:var(--font-syne)] text-xl font-bold"
+          className="font-[family-name:var(--font-outfit)] text-xl font-bold"
           style={{ color: 'var(--white)' }}
         >
           Verifying Payment...
@@ -102,7 +102,7 @@ function PaymentCallbackContent() {
       <div className="flex flex-col items-center justify-center py-24">
         <XCircle size={48} className="mb-4" style={{ color: '#ef4444' }} />
         <h2
-          className="font-[family-name:var(--font-syne)] text-xl font-bold"
+          className="font-[family-name:var(--font-outfit)] text-xl font-bold"
           style={{ color: 'var(--white)' }}
         >
           Payment Failed
@@ -126,7 +126,7 @@ function PaymentCallbackContent() {
     <div className="flex flex-col items-center justify-center py-24">
       <CheckCircle size={48} className="mb-4" style={{ color: 'var(--teal)' }} />
       <h2
-        className="font-[family-name:var(--font-syne)] text-xl font-bold"
+        className="font-[family-name:var(--font-outfit)] text-xl font-bold"
         style={{ color: 'var(--white)' }}
       >
         Payment Successful!

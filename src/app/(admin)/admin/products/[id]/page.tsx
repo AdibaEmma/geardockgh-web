@@ -150,7 +150,7 @@ export default function AdminProductDetailPage({ params }: PageProps) {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1
-            className="font-[family-name:var(--font-syne)] text-2xl font-bold"
+            className="font-[family-name:var(--font-outfit)] text-2xl font-bold"
             style={{ color: 'var(--white)' }}
           >
             {product.name}

@@ -39,7 +39,7 @@ export default function PreordersPage() {
       </Link>
 
       <h1
-        className="font-[family-name:var(--font-syne)] text-2xl font-bold"
+        className="font-[family-name:var(--font-outfit)] text-2xl font-bold"
         style={{ color: 'var(--white)' }}
       >
         My Pre-Orders

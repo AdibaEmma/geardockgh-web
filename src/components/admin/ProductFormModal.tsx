@@ -173,7 +173,7 @@ export function ProductFormModal({ open, onClose, onSubmit, product, isSubmittin
           style={{ borderColor: 'var(--border)' }}
         >
           <h2
-            className="font-[family-name:var(--font-syne)] text-lg font-bold"
+            className="font-[family-name:var(--font-outfit)] text-lg font-bold"
             style={{ color: 'var(--white)' }}
           >
             {product ? 'Edit Product' : 'Add Product'}

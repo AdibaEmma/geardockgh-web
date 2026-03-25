@@ -1,13 +1,15 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import type { LucideIcon } from 'lucide-react';
+import { Smartphone, CreditCard, Truck, ShieldCheck, RefreshCw } from 'lucide-react';
 
-const TRUST_ITEMS = [
-  { icon: '\uD83D\uDCF1', label: 'MTN MoMo Accepted' },
-  { icon: '\uD83D\uDCB3', label: 'Visa & Mastercard' },
-  { icon: '\uD83D\uDE9A', label: '48h Delivery in Bolgatanga' },
-  { icon: '\u2705', label: 'Verified Imports Only' },
-  { icon: '\uD83D\uDD04', label: '7-Day Easy Returns' },
+const TRUST_ITEMS: { icon: LucideIcon; label: string }[] = [
+  { icon: Smartphone, label: 'MTN MoMo Accepted' },
+  { icon: CreditCard, label: 'Visa & Mastercard' },
+  { icon: Truck, label: '48h Delivery in Bolgatanga' },
+  { icon: ShieldCheck, label: 'Verified Imports Only' },
+  { icon: RefreshCw, label: '7-Day Easy Returns' },
 ];
 
 export function TrustBar() {
@@ -36,7 +38,9 @@ export function TrustBar() {
     <section className="trust-bar reveal-element" ref={barRef}>
       {TRUST_ITEMS.map((item) => (
         <div className="trust-item" key={item.label}>
-          <span className="trust-icon">{item.icon}</span>
+          <span className="trust-icon">
+            <item.icon size={18} style={{ color: 'var(--gold)' }} />
+          </span>
           <span className="trust-label">{item.label}</span>
         </div>
       ))}
