@@ -167,17 +167,31 @@ export function Hero() {
                     style={{ textDecoration: 'none', color: 'inherit' }}
                   >
                     {image ? (
-                      <img
-                        src={image}
-                        alt={product.name}
+                      <div
                         style={{
-                          width: 64,
-                          height: 64,
-                          objectFit: 'contain',
-                          marginBottom: 16,
+                          width: 80,
+                          height: 80,
                           borderRadius: 10,
+                          background: 'var(--deep)',
+                          border: '1px solid rgba(255, 255, 255, 0.05)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          marginBottom: 16,
+                          overflow: 'hidden',
                         }}
-                      />
+                      >
+                        <img
+                          src={image}
+                          alt={product.name}
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'contain',
+                            padding: 8,
+                          }}
+                        />
+                      </div>
                     ) : (
                       <ProductImagePlaceholder
                         name={product.name}
