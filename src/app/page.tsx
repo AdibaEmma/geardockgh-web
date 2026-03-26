@@ -6,6 +6,7 @@ import {
   TrustBar,
   Categories,
   FeaturedProducts,
+  NewArrivals,
   PreorderBundles,
   FlashDeal,
   HowItWorks,
@@ -25,6 +26,7 @@ export default function HomePage() {
       <Ticker />
       <TrustBar />
       <Categories />
+      <NewArrivals />
       <FeaturedProducts />
       <PreorderBundles />
       <FlashDeal />

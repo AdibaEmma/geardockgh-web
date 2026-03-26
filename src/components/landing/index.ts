@@ -5,6 +5,7 @@ export { Ticker } from './Ticker';
 export { TrustBar } from './TrustBar';
 export { Categories } from './Categories';
 export { FeaturedProducts } from './FeaturedProducts';
+export { NewArrivals } from './NewArrivals';
 export { FlashDeal } from './FlashDeal';
 export { PreorderBundles } from './PreorderBundles';
 export { HowItWorks } from './HowItWorks';

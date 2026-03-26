@@ -21,6 +21,10 @@ export async function getFeaturedProducts() {
   return apiClient.get<Product[]>('/products/featured');
 }
 
+export async function getNewArrivals() {
+  return apiClient.get<Product[]>('/products/new-arrivals');
+}
+
 export async function getFlashDeal() {
   return apiClient.get<Product | null>('/products/flash-deal');
 }
