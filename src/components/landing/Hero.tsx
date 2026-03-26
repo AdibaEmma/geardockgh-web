@@ -8,9 +8,10 @@ import { ProductImagePlaceholder } from '@/components/ui/ProductImagePlaceholder
 import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
 
 const STATS = [
-  { value: '200', suffix: '+', label: 'Products Curated' },
-  { value: '48', suffix: 'h', label: 'Delivery in Bolgatanga' },
+  { value: '224', suffix: '+', label: 'Orders Fulfilled' },
+  { value: '88', suffix: '+', label: 'Products' },
   { value: '13', suffix: '', label: 'Categories' },
+  { value: '48', suffix: 'h', label: 'Delivery' },
 ];
 
 const SHOWCASE_PRODUCTS: { name: string; price: string; icon: LucideIcon }[] = [

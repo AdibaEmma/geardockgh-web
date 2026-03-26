@@ -39,9 +39,9 @@ const FEATURES: Feature[] = [
 ];
 
 const TRUST_STATS = [
-  { value: '500', suffix: '+', label: 'Orders Delivered' },
+  { value: '224', suffix: '+', label: 'Orders Delivered' },
   { value: '4.9', suffix: '/5', label: 'Customer Rating' },
-  { value: '200', suffix: '+', label: 'Products Curated' },
+  { value: '88', suffix: '+', label: 'Products Curated' },
   { value: '48', suffix: 'h', label: 'Bolgatanga Delivery' },
 ];
 

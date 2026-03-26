@@ -14,6 +14,7 @@ import {
   Newsletter,
   Footer,
 } from '@/components/landing';
+import { WhatsAppButton } from '@/components/shop/WhatsAppButton';
 
 export default function HomePage() {
   return (
@@ -32,6 +33,7 @@ export default function HomePage() {
       <WhyUs />
       <Newsletter />
       <Footer />
+      <WhatsAppButton />
     </div>
   );
 }

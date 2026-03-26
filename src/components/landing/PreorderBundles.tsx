@@ -2,7 +2,22 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { Package, Gift, Check } from 'lucide-react';
+import {
+  Gift,
+  Check,
+  Keyboard,
+  Monitor,
+  Laptop,
+  Cable,
+  Sun,
+  Camera,
+  Mic,
+  ScreenShare,
+  Mouse,
+  Headphones,
+  Gamepad2,
+} from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { getFeaturedBundles } from '@/lib/api/bundles';
 import { formatPesewas } from '@/lib/utils/formatters';
 import type { Bundle } from '@/types';
@@ -74,6 +89,48 @@ const FALLBACK_BUNDLES: FallbackBundle[] = [
     ],
   },
 ];
+
+const BUNDLE_ICONS: Record<string, LucideIcon[]> = {
+  'Remote Work': [Keyboard, Monitor, Laptop, Cable],
+  'Content Creation': [Sun, Camera, Mic, ScreenShare],
+  Gaming: [Mouse, Keyboard, Headphones, Gamepad2],
+};
+
+function BundleIconGrid({ category }: { category: string }) {
+  const icons = BUNDLE_ICONS[category];
+  if (!icons) return null;
+
+  return (
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        gap: 12,
+        padding: '20px 28px',
+        width: '100%',
+        height: '100%',
+        alignContent: 'center',
+      }}
+    >
+      {icons.map((Icon, i) => (
+        <div
+          key={i}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 16,
+            borderRadius: 14,
+            background: 'rgba(255, 255, 255, 0.04)',
+            border: '1px solid var(--border)',
+          }}
+        >
+          <Icon size={36} strokeWidth={1.5} style={{ color: 'var(--gold)', opacity: 0.9 }} />
+        </div>
+      ))}
+    </div>
+  );
+}
 
 function apiBundleToDisplay(bundle: Bundle): FallbackBundle {
   return {
@@ -175,7 +232,7 @@ function BundleCard({ bundle }: { bundle: FallbackBundle }) {
             style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 16 }}
           />
         ) : (
-          <Package size={48} style={{ color: 'var(--border)' }} />
+          <BundleIconGrid category={bundle.category} />
         )}
       </div>
 
