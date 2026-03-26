@@ -1,11 +1,14 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { Headphones, Sun, Keyboard } from 'lucide-react';
+import { Headphones, Sun, Keyboard, Package } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { ProductImagePlaceholder } from '@/components/ui/ProductImagePlaceholder';
 import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
+import { getNewArrivals } from '@/lib/api/products';
+import { formatPesewas } from '@/lib/utils/formatters';
+import type { Product } from '@/types';
 
 const STATS = [
   { value: '224', suffix: '+', label: 'Orders Delivered' },
@@ -14,14 +17,39 @@ const STATS = [
   { value: '48', suffix: 'h', label: 'Delivery' },
 ];
 
-const SHOWCASE_PRODUCTS: { name: string; price: string; icon: LucideIcon }[] = [
+const FALLBACK_PRODUCTS: { name: string; price: string; icon: LucideIcon }[] = [
   { name: 'Sony WH-1000XM5', price: 'GH\u20B5 2,400', icon: Headphones },
   { name: 'Ring Light Pro 18"', price: 'GH\u20B5 680', icon: Sun },
   { name: 'Mechanical Keyboard TKL', price: 'GH\u20B5 520', icon: Keyboard },
 ];
 
+function parseFirstImage(product: Product): string | null {
+  if (product.imagesJson) {
+    try {
+      const images = JSON.parse(product.imagesJson);
+      return images[0] ?? null;
+    } catch { /* fall through */ }
+  }
+  return null;
+}
+
 export function Hero() {
   const showcaseRef = useRef<HTMLDivElement>(null);
+  const [newArrivals, setNewArrivals] = useState<Product[]>([]);
+
+  useEffect(() => {
+    const fetchArrivals = async () => {
+      try {
+        const response = await getNewArrivals();
+        const products = (response.data ?? []) as Product[];
+        // Take up to 3 for the showcase rotation
+        setNewArrivals(products.slice(0, 3));
+      } catch {
+        // Fall back to static products
+      }
+    };
+    fetchArrivals();
+  }, []);
 
   useEffect(() => {
     const el = showcaseRef.current;
@@ -128,14 +156,51 @@ export function Hero() {
           <div className="orbit-dot" />
           <div className="orbit-dot" />
           <div className="orbit-dot" />
-          {SHOWCASE_PRODUCTS.map((product, i) => (
-            <div className={`showcase-card showcase-card-${i + 1}`} key={product.name}>
-              <ProductImagePlaceholder name={product.name} className="showcase-card-placeholder" icon={product.icon} />
-              <div className="showcase-card-name">{product.name}</div>
-              <div className="showcase-card-price">{product.price}</div>
-              <span className="showcase-card-link">Shop &rarr;</span>
-            </div>
-          ))}
+          {newArrivals.length > 0
+            ? newArrivals.map((product, i) => {
+                const image = parseFirstImage(product);
+                return (
+                  <Link
+                    href={`/products/${product.slug}`}
+                    className={`showcase-card showcase-card-${i + 1}`}
+                    key={product.id}
+                    style={{ textDecoration: 'none', color: 'inherit' }}
+                  >
+                    {image ? (
+                      <img
+                        src={image}
+                        alt={product.name}
+                        style={{
+                          width: 64,
+                          height: 64,
+                          objectFit: 'contain',
+                          marginBottom: 16,
+                          borderRadius: 10,
+                        }}
+                      />
+                    ) : (
+                      <ProductImagePlaceholder
+                        name={product.name}
+                        className="showcase-card-placeholder"
+                        icon={Package}
+                      />
+                    )}
+                    <div className="showcase-card-name">{product.name}</div>
+                    <div className="showcase-card-price">
+                      {formatPesewas(product.pricePesewas)}
+                    </div>
+                    <span className="showcase-card-link">Shop &rarr;</span>
+                  </Link>
+                );
+              })
+            : FALLBACK_PRODUCTS.map((product, i) => (
+                <div className={`showcase-card showcase-card-${i + 1}`} key={product.name}>
+                  <ProductImagePlaceholder name={product.name} className="showcase-card-placeholder" icon={product.icon} />
+                  <div className="showcase-card-name">{product.name}</div>
+                  <div className="showcase-card-price">{product.price}</div>
+                  <span className="showcase-card-link">Shop &rarr;</span>
+                </div>
+              ))}
           <div className="showcase-badge badge-1">NEW ARRIVAL</div>
           <div className="showcase-badge badge-2">GH CERTIFIED</div>
           <div className="showcase-badge badge-3">FREE SHIPPING</div>
