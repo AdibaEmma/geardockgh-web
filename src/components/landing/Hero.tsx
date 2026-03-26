@@ -156,65 +156,69 @@ export function Hero() {
           <div className="orbit-dot" />
           <div className="orbit-dot" />
           <div className="orbit-dot" />
-          {newArrivals.length > 0
-            ? newArrivals.map((product, i) => {
-                const image = parseFirstImage(product);
-                return (
-                  <Link
-                    href={`/products/${product.slug}`}
-                    className={`showcase-card showcase-card-${i + 1}`}
-                    key={product.id}
-                    style={{ textDecoration: 'none', color: 'inherit' }}
+          {/* Real new arrivals */}
+          {newArrivals.map((product, i) => {
+            const image = parseFirstImage(product);
+            return (
+              <Link
+                href={`/products/${product.slug}`}
+                className={`showcase-card showcase-card-${i + 1}`}
+                key={product.id}
+                style={{ textDecoration: 'none', color: 'inherit' }}
+              >
+                {image ? (
+                  <div
+                    style={{
+                      width: 80,
+                      height: 80,
+                      borderRadius: 10,
+                      background: 'var(--deep)',
+                      border: '1px solid rgba(255, 255, 255, 0.05)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginBottom: 16,
+                      overflow: 'hidden',
+                    }}
                   >
-                    {image ? (
-                      <div
-                        style={{
-                          width: 80,
-                          height: 80,
-                          borderRadius: 10,
-                          background: 'var(--deep)',
-                          border: '1px solid rgba(255, 255, 255, 0.05)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          marginBottom: 16,
-                          overflow: 'hidden',
-                        }}
-                      >
-                        <img
-                          src={image}
-                          alt={product.name}
-                          style={{
-                            width: '100%',
-                            height: '100%',
-                            objectFit: 'contain',
-                            padding: 8,
-                          }}
-                        />
-                      </div>
-                    ) : (
-                      <ProductImagePlaceholder
-                        name={product.name}
-                        className="showcase-card-placeholder"
-                        icon={Package}
-                      />
-                    )}
-                    <div className="showcase-card-name">{product.name}</div>
-                    <div className="showcase-card-price">
-                      {formatPesewas(product.pricePesewas)}
-                    </div>
-                    <span className="showcase-card-link">Shop &rarr;</span>
-                  </Link>
-                );
-              })
-            : FALLBACK_PRODUCTS.map((product, i) => (
-                <div className={`showcase-card showcase-card-${i + 1}`} key={product.name}>
-                  <ProductImagePlaceholder name={product.name} className="showcase-card-placeholder" icon={product.icon} />
-                  <div className="showcase-card-name">{product.name}</div>
-                  <div className="showcase-card-price">{product.price}</div>
-                  <span className="showcase-card-link">Shop &rarr;</span>
+                    <img
+                      src={image}
+                      alt={product.name}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'contain',
+                        padding: 8,
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <ProductImagePlaceholder
+                    name={product.name}
+                    className="showcase-card-placeholder"
+                    icon={Package}
+                  />
+                )}
+                <div className="showcase-card-name">{product.name}</div>
+                <div className="showcase-card-price">
+                  {formatPesewas(product.pricePesewas)}
                 </div>
-              ))}
+                <span className="showcase-card-link">Shop &rarr;</span>
+              </Link>
+            );
+          })}
+          {/* Fill remaining slots with fallback products to keep 3-card rotation */}
+          {FALLBACK_PRODUCTS.slice(newArrivals.length).map((product, i) => {
+            const slotIndex = newArrivals.length + i;
+            return (
+              <div className={`showcase-card showcase-card-${slotIndex + 1}`} key={product.name}>
+                <ProductImagePlaceholder name={product.name} className="showcase-card-placeholder" icon={product.icon} />
+                <div className="showcase-card-name">{product.name}</div>
+                <div className="showcase-card-price">{product.price}</div>
+                <span className="showcase-card-link">Shop &rarr;</span>
+              </div>
+            );
+          })}
           <div className="showcase-badge badge-1">NEW ARRIVAL</div>
           <div className="showcase-badge badge-2">GH CERTIFIED</div>
           <div className="showcase-badge badge-3">FREE SHIPPING</div>
