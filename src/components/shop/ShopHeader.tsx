@@ -39,7 +39,7 @@ export function ShopHeader() {
               alt=""
               className="h-16 w-16 -my-4 -ml-2 -mr-3 object-contain"
             />
-            GearDock<span style={{ color: 'var(--gold)' }}>GH</span>
+            <span><span style={{ color: 'var(--teal)' }}>GearDock</span><span style={{ color: 'var(--gold)' }}>GH</span></span>
           </Link>
 
           {/* Desktop Nav */}
