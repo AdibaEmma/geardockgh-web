@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Plus, Pencil, Trash2, Search, Package, Eye, Globe, GlobeLock, Star } from 'lucide-react';
+import { Plus, Pencil, Trash2, Search, Package, Eye, Globe, GlobeLock, Star, Zap } from 'lucide-react';
 import {
   getAdminProducts,
   createAdminProduct,
@@ -12,6 +12,7 @@ import {
   deleteAdminProduct,
   toggleAdminProductPublish,
   toggleAdminProductFeatured,
+  toggleAdminProductFlashDeal,
 } from '@/lib/api/admin';
 import { Button } from '@/components/ui/Button';
 import { ProductFormModal } from '@/components/admin/ProductFormModal';
@@ -116,6 +117,15 @@ export default function AdminProductsPage() {
       addToast({ type: 'success', message: 'Featured status updated' });
     },
     onError: () => addToast({ type: 'error', message: 'Failed to update featured status' }),
+  });
+
+  const { mutate: doToggleFlashDeal } = useMutation({
+    mutationFn: toggleAdminProductFlashDeal,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-products'] });
+      addToast({ type: 'success', message: 'Flash deal status updated' });
+    },
+    onError: () => addToast({ type: 'error', message: 'Failed to update flash deal status' }),
   });
 
   const closeModal = () => {
@@ -393,6 +403,17 @@ export default function AdminProductsPage() {
                             size={14}
                             style={{ color: product.isFeatured ? 'var(--gold)' : 'var(--muted)' }}
                             fill={product.isFeatured ? 'var(--gold)' : 'none'}
+                          />
+                        </button>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); doToggleFlashDeal(product.id); }}
+                          className="rounded-md p-1.5 transition-colors hover:bg-white/10"
+                          title={product.isFlashDeal ? 'Remove flash deal' : 'Set as flash deal'}
+                        >
+                          <Zap
+                            size={14}
+                            style={{ color: product.isFlashDeal ? '#f59e0b' : 'var(--muted)' }}
+                            fill={product.isFlashDeal ? '#f59e0b' : 'none'}
                           />
                         </button>
                         <Link

@@ -45,9 +45,9 @@ export function Newsletter() {
   };
 
   const displayCount =
-    subscriberCount !== null && subscriberCount > 0
+    subscriberCount !== null && subscriberCount >= 50
       ? `${subscriberCount.toLocaleString()}+`
-      : '0';
+      : null;
 
   return (
     <section className="newsletter">
@@ -86,7 +86,7 @@ export function Newsletter() {
           </p>
         )}
         <p className="newsletter-note">
-          // <span>{displayCount}</span> SUBSCRIBERS &middot; 0 SPAM &middot; 100% GEAR &middot; UNSUBSCRIBE ANYTIME
+          {displayCount && <>// <span>{displayCount}</span> SUBSCRIBERS &middot; </>}NO SPAM &middot; 100% GEAR DROPS &middot; UNSUBSCRIBE ANYTIME
         </p>
       </div>
     </section>

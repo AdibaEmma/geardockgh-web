@@ -34,8 +34,7 @@ const CATEGORIES: Category[] = [
     icon: Smartphone,
     title: 'Phones & Tablets',
     slug: 'phones-tablets',
-    description:
-      'Smartphones, tablets, and mobile accessories for staying connected on the go.',
+    description: 'Smartphones, tablets & mobile accessories.',
     count: '// PHONES & TABLETS',
     startingFrom: 'GH₵ 800',
   },
@@ -43,8 +42,7 @@ const CATEGORIES: Category[] = [
     icon: Armchair,
     title: 'Desks & Furniture',
     slug: 'desks-furniture',
-    description:
-      'Standing desks, ergonomic chairs, monitor arms, and workspace furniture designed for comfort and productivity.',
+    description: 'Ergonomic desks, chairs & monitor arms — your body pays the price of a bad setup.',
     count: '// DESKS & FURNITURE',
     startingFrom: 'GH₵ 350',
   },
@@ -52,8 +50,7 @@ const CATEGORIES: Category[] = [
     icon: Laptop,
     title: 'Laptops & Computers',
     slug: 'laptops-computers',
-    description:
-      'Laptops, desktops, mini PCs, and computing essentials for work, creative projects, and everyday use.',
+    description: 'Laptops, desktops & mini PCs for work and creative projects.',
     count: '// LAPTOPS & COMPUTERS',
     startingFrom: 'GH₵ 2,500',
   },
@@ -61,8 +58,7 @@ const CATEGORIES: Category[] = [
     icon: Monitor,
     title: 'Monitors & Displays',
     slug: 'monitors-displays',
-    description:
-      'High-resolution monitors, ultrawide displays, portable screens, and display accessories for any setup.',
+    description: 'Hi-res monitors, ultrawides & portable screens for any setup.',
     count: '// MONITORS & DISPLAYS',
     startingFrom: 'GH₵ 800',
   },
@@ -70,8 +66,7 @@ const CATEGORIES: Category[] = [
     icon: Headphones,
     title: 'Audio & Headphones',
     slug: 'audio-headphones',
-    description:
-      'Headphones, earbuds, microphones, speakers, and audio interfaces for calls, music, and content creation.',
+    description: 'Headphones, mics & speakers — hear everything, be heard clearly.',
     count: '// AUDIO & HEADPHONES',
     startingFrom: 'GH₵ 120',
   },
@@ -79,8 +74,7 @@ const CATEGORIES: Category[] = [
     icon: Keyboard,
     title: 'Keyboards & Mice',
     slug: 'keyboards-mice',
-    description:
-      'Mechanical keyboards, wireless mice, trackpads, and input devices for precision and comfort.',
+    description: 'Mechanical keyboards & wireless mice built for precision.',
     count: '// KEYBOARDS & MICE',
     startingFrom: 'GH₵ 90',
   },
@@ -88,8 +82,7 @@ const CATEGORIES: Category[] = [
     icon: Battery,
     title: 'Power & Energy',
     slug: 'power-energy',
-    description:
-      'Portable power stations, UPS systems, solar panels, and power banks to keep your gear running anywhere.',
+    description: 'Power stations, UPS systems & solar panels — dumsor-proof your setup.',
     count: '// POWER & ENERGY',
     startingFrom: 'GH₵ 200',
   },
@@ -97,8 +90,7 @@ const CATEGORIES: Category[] = [
     icon: Camera,
     title: 'Cameras & Video',
     slug: 'cameras-video',
-    description:
-      'Webcams, action cameras, ring lights, capture cards, and video gear for streaming and content creation.',
+    description: 'Webcams, ring lights & capture cards for streaming and content.',
     count: '// CAMERAS & VIDEO',
     startingFrom: 'GH₵ 150',
   },
@@ -106,8 +98,7 @@ const CATEGORIES: Category[] = [
     icon: Cable,
     title: 'Accessories',
     slug: 'accessories',
-    description:
-      'Cables, adapters, hubs, docking stations, and desk accessories to complete your setup.',
+    description: 'Cables, hubs, docks & desk accessories to complete your setup.',
     count: '// ACCESSORIES',
     startingFrom: 'GH₵ 30',
   },
@@ -115,8 +106,7 @@ const CATEGORIES: Category[] = [
     icon: Lightbulb,
     title: 'Lighting',
     slug: 'lighting',
-    description:
-      'Desk lamps, LED light bars, monitor backlighting, and ambient lighting for any workspace.',
+    description: 'Desk lamps, LED bars & ambient lighting for late-night sessions.',
     count: '// LIGHTING',
     startingFrom: 'GH₵ 60',
   },
@@ -124,8 +114,7 @@ const CATEGORIES: Category[] = [
     icon: HardDrive,
     title: 'Storage & Networking',
     slug: 'storage-networking',
-    description:
-      'External drives, SSDs, NAS devices, routers, and networking gear for fast, reliable connectivity.',
+    description: 'SSDs, external drives & routers for fast, reliable connectivity.',
     count: '// STORAGE & NETWORKING',
     startingFrom: 'GH₵ 80',
   },
@@ -133,8 +122,7 @@ const CATEGORIES: Category[] = [
     icon: Gamepad2,
     title: 'Gaming Consoles',
     slug: 'gaming-consoles',
-    description:
-      'PlayStation, Xbox, Nintendo Switch, and handheld consoles for casual and competitive gaming.',
+    description: 'PlayStation, Xbox & Switch — casual or competitive, we stock it.',
     count: '// GAMING CONSOLES',
     startingFrom: 'GH₵ 1,200',
   },
@@ -142,8 +130,7 @@ const CATEGORIES: Category[] = [
     icon: Joystick,
     title: 'Gaming Accessories',
     slug: 'gaming-accessories',
-    description:
-      'Controllers, gaming headsets, charging docks, console stands, and peripherals to level up your play.',
+    description: 'Controllers, headsets & peripherals to level up your play.',
     count: '// GAMING ACCESSORIES',
     startingFrom: 'GH₵ 80',
   },
@@ -151,8 +138,7 @@ const CATEGORIES: Category[] = [
     icon: Package,
     title: 'Other',
     slug: 'other',
-    description:
-      'Unique finds and uncategorized gear that doesn\u2019t fit neatly into a box \u2014 but belongs on your desk.',
+    description: 'Unique finds that don\u2019t fit a box — but belong on your desk.',
     count: '// OTHER',
     startingFrom: 'GH₵ 20',
   },

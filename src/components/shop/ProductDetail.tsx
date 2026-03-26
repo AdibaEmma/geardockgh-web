@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Minus, Plus, ShoppingCart, Package, Bell, BellOff } from 'lucide-react';
+import { ShareButton } from '@/components/shop/ShareButton';
 import { useProduct } from '@/hooks/use-products';
 import { useCartStore } from '@/stores/cart-store';
 import { useToastStore } from '@/stores/toast-store';
@@ -472,14 +473,17 @@ export function ProductDetail({ slug }: ProductDetailProps) {
             </div>
           )}
 
-          {/* Trust messaging */}
-          <div
-            className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs"
-            style={{ color: 'var(--muted)' }}
-          >
-            <span>48h delivery in Bolgatanga</span>
-            <span>7-day easy returns</span>
-            <span>Verified imports only</span>
+          {/* Trust messaging + Share */}
+          <div className="mt-3 flex items-center justify-between">
+            <div
+              className="flex flex-wrap gap-x-4 gap-y-1 text-xs"
+              style={{ color: 'var(--muted)' }}
+            >
+              <span>48h delivery in Bolgatanga</span>
+              <span>7-day easy returns</span>
+              <span>Verified imports only</span>
+            </div>
+            <ShareButton productName={product.name} productSlug={product.slug} />
           </div>
 
           {/* Specs */}

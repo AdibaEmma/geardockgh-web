@@ -248,6 +248,10 @@ export async function toggleAdminProductFeatured(id: string) {
   return apiClient.patch<Product>(`/admin/products/${id}/toggle-featured`);
 }
 
+export async function toggleAdminProductFlashDeal(id: string) {
+  return apiClient.patch<Product>(`/admin/products/${id}/toggle-flash-deal`);
+}
+
 export interface ProductAuditLog {
   id: string;
   action: string;

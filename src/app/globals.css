@@ -479,9 +479,10 @@ nav.landing-nav.scrolled {
 
 /* Hero trust line */
 .hero-trust {
-  display: inline-flex;
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   margin-top: 16px;
   font-family: var(--font-mono);
   font-size: 11px;
@@ -489,6 +490,11 @@ nav.landing-nav.scrolled {
   letter-spacing: 0.5px;
   opacity: 0;
   animation: fadeUp 0.8s 1.2s forwards;
+}
+.hero-trust-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 .trust-dot-live {
   width: 6px; height: 6px;
@@ -547,6 +553,10 @@ nav.landing-nav.scrolled {
   font-weight: 600;
   color: var(--gold);
   letter-spacing: 2px;
+}
+.placeholder-icon {
+  color: var(--gold);
+  opacity: 0.6;
 }
 .showcase-card-placeholder {
   width: 64px;
@@ -1025,6 +1035,14 @@ nav.landing-nav.scrolled {
   font-size: 11px;
   color: #ff6b35;
   letter-spacing: 0.5px;
+}
+.stock-deadline {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.3px;
+  margin-top: 4px;
 }
 .flash-cta { margin-top: 8px; }
 .flash-trust {
