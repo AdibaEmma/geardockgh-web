@@ -8,7 +8,7 @@ import { ProductImagePlaceholder } from '@/components/ui/ProductImagePlaceholder
 import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
 
 const STATS = [
-  { value: '224', suffix: '+', label: 'Orders Fulfilled' },
+  { value: '224', suffix: '+', label: 'Orders Delivered' },
   { value: '88', suffix: '+', label: 'Products' },
   { value: '13', suffix: '', label: 'Categories' },
   { value: '48', suffix: 'h', label: 'Delivery' },
