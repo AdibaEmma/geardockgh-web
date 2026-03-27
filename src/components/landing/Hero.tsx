@@ -204,7 +204,7 @@ export function Hero() {
           })}
           <div className="showcase-badge badge-1">NEW ARRIVAL</div>
           <div className="showcase-badge badge-2">GH CERTIFIED</div>
-          <div className="showcase-badge badge-3">FREE SHIPPING</div>
+          <div className="showcase-badge badge-3">FREE DELIVERY IN BOLGA</div>
         </div>
       </div>
     </section>
