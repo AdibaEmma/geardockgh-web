@@ -2,8 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { Headphones, Sun, Keyboard, Package } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
+import { Package } from 'lucide-react';
 import { ProductImagePlaceholder } from '@/components/ui/ProductImagePlaceholder';
 import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
 import { getNewArrivals } from '@/lib/api/products';
@@ -15,12 +14,6 @@ const STATS = [
   { value: '88', suffix: '+', label: 'Products' },
   { value: '13', suffix: '', label: 'Categories' },
   { value: '48', suffix: 'h', label: 'Delivery' },
-];
-
-const FALLBACK_PRODUCTS: { name: string; price: string; icon: LucideIcon }[] = [
-  { name: 'Sony WH-1000XM5', price: 'GH\u20B5 2,400', icon: Headphones },
-  { name: 'Ring Light Pro 18"', price: 'GH\u20B5 680', icon: Sun },
-  { name: 'Mechanical Keyboard TKL', price: 'GH\u20B5 520', icon: Keyboard },
 ];
 
 function parseFirstImage(product: Product): string | null {
@@ -152,11 +145,13 @@ export function Hero() {
       </div>
 
       <div className="hero-right">
-        <div className="hero-showcase" ref={showcaseRef}>
+        <div
+          className={`hero-showcase showcase-count-${newArrivals.length}`}
+          ref={showcaseRef}
+        >
           <div className="orbit-dot" />
           <div className="orbit-dot" />
           <div className="orbit-dot" />
-          {/* Real new arrivals */}
           {newArrivals.map((product, i) => {
             const image = parseFirstImage(product);
             return (
@@ -205,18 +200,6 @@ export function Hero() {
                 </div>
                 <span className="showcase-card-link">Shop &rarr;</span>
               </Link>
-            );
-          })}
-          {/* Fill remaining slots with fallback products to keep 3-card rotation */}
-          {FALLBACK_PRODUCTS.slice(newArrivals.length).map((product, i) => {
-            const slotIndex = newArrivals.length + i;
-            return (
-              <div className={`showcase-card showcase-card-${slotIndex + 1}`} key={product.name}>
-                <ProductImagePlaceholder name={product.name} className="showcase-card-placeholder" icon={product.icon} />
-                <div className="showcase-card-name">{product.name}</div>
-                <div className="showcase-card-price">{product.price}</div>
-                <span className="showcase-card-link">Shop &rarr;</span>
-              </div>
             );
           })}
           <div className="showcase-badge badge-1">NEW ARRIVAL</div>
