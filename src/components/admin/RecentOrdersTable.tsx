@@ -60,7 +60,7 @@ export function RecentOrdersTable({ orders }: RecentOrdersTableProps) {
                 <th className="px-5 py-3 text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--muted)' }}>
                   Order
                 </th>
-                <th className="px-5 py-3 text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--muted)' }}>
+                <th className="hidden px-5 py-3 text-xs font-medium uppercase tracking-wide md:table-cell" style={{ color: 'var(--muted)' }}>
                   Customer
                 </th>
                 <th className="px-5 py-3 text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--muted)' }}>
@@ -69,7 +69,7 @@ export function RecentOrdersTable({ orders }: RecentOrdersTableProps) {
                 <th className="px-5 py-3 text-xs font-medium uppercase tracking-wide text-right" style={{ color: 'var(--muted)' }}>
                   Amount
                 </th>
-                <th className="px-5 py-3 text-xs font-medium uppercase tracking-wide text-right" style={{ color: 'var(--muted)' }}>
+                <th className="hidden px-5 py-3 text-xs font-medium uppercase tracking-wide text-right lg:table-cell" style={{ color: 'var(--muted)' }}>
                   Date
                 </th>
               </tr>
@@ -92,7 +92,7 @@ export function RecentOrdersTable({ orders }: RecentOrdersTableProps) {
                         #{order.orderNumber}
                       </Link>
                     </td>
-                    <td className="px-5 py-3">
+                    <td className="hidden px-5 py-3 md:table-cell">
                       <div>
                         <p className="font-medium" style={{ color: 'var(--white)' }}>
                           {order.customerName}
@@ -113,7 +113,7 @@ export function RecentOrdersTable({ orders }: RecentOrdersTableProps) {
                     <td className="px-5 py-3 text-right font-medium" style={{ color: 'var(--white)' }}>
                       {formatPesewas(order.totalPesewas)}
                     </td>
-                    <td className="px-5 py-3 text-right" style={{ color: 'var(--muted)' }}>
+                    <td className="hidden px-5 py-3 text-right lg:table-cell" style={{ color: 'var(--muted)' }}>
                       {formatDate(order.createdAt)}
                     </td>
                   </tr>

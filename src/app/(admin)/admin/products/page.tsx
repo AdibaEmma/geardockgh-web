@@ -283,15 +283,12 @@ export default function AdminProductsPage() {
             <table className="w-full">
               <thead>
                 <tr style={{ background: 'var(--card)' }}>
-                  {['Name', 'Category', 'Price', 'Stock', 'Status', 'Actions'].map((h) => (
-                    <th
-                      key={h}
-                      className="px-4 py-3 text-left text-xs font-semibold"
-                      style={{ color: 'var(--muted)' }}
-                    >
-                      {h}
-                    </th>
-                  ))}
+                  <th className="px-4 py-3 text-left text-xs font-semibold" style={{ color: 'var(--muted)' }}>Name</th>
+                  <th className="hidden px-4 py-3 text-left text-xs font-semibold md:table-cell" style={{ color: 'var(--muted)' }}>Category</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold" style={{ color: 'var(--muted)' }}>Price</th>
+                  <th className="hidden px-4 py-3 text-left text-xs font-semibold sm:table-cell" style={{ color: 'var(--muted)' }}>Stock</th>
+                  <th className="hidden px-4 py-3 text-left text-xs font-semibold sm:table-cell" style={{ color: 'var(--muted)' }}>Status</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold" style={{ color: 'var(--muted)' }}>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -337,7 +334,7 @@ export default function AdminProductsPage() {
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="hidden px-4 py-3 md:table-cell">
                       <span
                         className="rounded-full px-2 py-0.5 text-xs"
                         style={{
@@ -367,7 +364,7 @@ export default function AdminProductsPage() {
                         </span>
                       ) : null}
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="hidden px-4 py-3 sm:table-cell">
                       <span
                         className="text-sm"
                         style={{
@@ -377,7 +374,7 @@ export default function AdminProductsPage() {
                         {product.stockCount}
                       </span>
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="hidden px-4 py-3 sm:table-cell">
                       <button
                         onClick={() => doTogglePublish(product.id)}
                         className="inline-flex rounded-full px-2 py-0.5 text-xs font-medium transition-opacity hover:opacity-80"

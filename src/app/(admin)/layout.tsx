@@ -48,22 +48,20 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     <div className="min-h-screen" style={{ background: 'var(--black)' }}>
       <AdminSidebar />
 
-      <div
-        className="flex min-h-screen flex-col transition-[margin] duration-200 ease-in-out"
-        style={{ marginLeft: 0 }}
-      >
-        <style>{`
-          @media (min-width: 1024px) {
-            #admin-content {
-              margin-left: ${sidebarWidth}px;
-              transition: margin-left 200ms ease;
-            }
+      <style>{`
+        #admin-content {
+          margin-left: 0;
+          transition: margin-left 200ms ease;
+        }
+        @media (min-width: 1024px) {
+          #admin-content {
+            margin-left: ${sidebarWidth}px;
           }
-        `}</style>
-        <div id="admin-content" className="flex min-h-screen flex-col">
-          <AdminTopbar />
-          <main className="flex-1 px-4 py-6 lg:px-6">{children}</main>
-        </div>
+        }
+      `}</style>
+      <div id="admin-content" className="flex min-h-screen flex-col overflow-x-hidden">
+        <AdminTopbar />
+        <main className="flex-1 px-4 py-6 lg:px-6">{children}</main>
       </div>
     </div>
   );

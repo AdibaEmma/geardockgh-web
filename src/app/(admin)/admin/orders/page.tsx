@@ -170,7 +170,7 @@ export default function AdminOrdersPage() {
 
       {selectedIds.size > 0 && (
         <div
-          className="mb-4 flex items-center gap-3 rounded-lg border px-4 py-3"
+          className="mb-4 flex flex-wrap items-center gap-2 rounded-lg border px-4 py-3 sm:gap-3"
           style={{ background: 'var(--card)', borderColor: 'var(--gold)' }}
         >
           <span className="text-sm font-medium" style={{ color: 'var(--white)' }}>
@@ -218,118 +218,115 @@ export default function AdminOrdersPage() {
           className="overflow-hidden rounded-xl border"
           style={{ borderColor: 'var(--border)' }}
         >
-          <table className="w-full">
-            <thead>
-              <tr style={{ background: 'var(--card)' }}>
-                <th className="w-10 px-4 py-3">
-                  <input
-                    type="checkbox"
-                    checked={orders.length > 0 && selectedIds.size === orders.length}
-                    onChange={() => {
-                      if (selectedIds.size === orders.length) {
-                        setSelectedIds(new Set());
-                      } else {
-                        setSelectedIds(new Set(orders.map((o) => o.id)));
-                      }
-                    }}
-                    className="accent-[var(--gold)]"
-                  />
-                </th>
-                {['Order', 'Customer', 'Status', 'Total', 'Date', 'Actions'].map(
-                  (h) => (
-                    <th
-                      key={h}
-                      className="px-4 py-3 text-left text-xs font-semibold"
-                      style={{ color: 'var(--muted)' }}
-                    >
-                      {h}
-                    </th>
-                  ),
-                )}
-              </tr>
-            </thead>
-            <tbody>
-              {orders.map((order) => (
-                <tr
-                  key={order.id}
-                  className="border-t"
-                  style={{ borderColor: 'var(--border)' }}
-                >
-                  <td className="px-4 py-3">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr style={{ background: 'var(--card)' }}>
+                  <th className="hidden w-10 px-4 py-3 sm:table-cell">
                     <input
                       type="checkbox"
-                      checked={selectedIds.has(order.id)}
-                      onChange={() => toggleSelect(order.id)}
+                      checked={orders.length > 0 && selectedIds.size === orders.length}
+                      onChange={() => {
+                        if (selectedIds.size === orders.length) {
+                          setSelectedIds(new Set());
+                        } else {
+                          setSelectedIds(new Set(orders.map((o) => o.id)));
+                        }
+                      }}
                       className="accent-[var(--gold)]"
                     />
-                  </td>
-                  <td className="px-4 py-3">
-                    <span
-                      className="font-[family-name:var(--font-space-mono)] text-sm font-bold"
-                      style={{ color: 'var(--white)' }}
-                    >
-                      {order.orderNumber}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <p className="text-sm" style={{ color: 'var(--white)' }}>
-                      {order.customer
-                        ? `${order.customer.firstName} ${order.customer.lastName}`
-                        : '--'}
-                    </p>
-                    <p className="text-xs" style={{ color: 'var(--muted)' }}>
-                      {order.customer?.email}
-                    </p>
-                  </td>
-                  <td className="px-4 py-3">
-                    <select
-                      value={order.status}
-                      onChange={(e) =>
-                        changeStatus({
-                          id: order.id,
-                          status: e.target.value,
-                        })
-                      }
-                      className="rounded border px-2 py-1 text-xs"
-                      style={{
-                        background: 'var(--deep)',
-                        color: 'var(--white)',
-                        borderColor: 'var(--border)',
-                      }}
-                    >
-                      {allStatuses.map((s) => (
-                        <option key={s} value={s}>
-                          {s.replace(/_/g, ' ')}
-                        </option>
-                      ))}
-                    </select>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span
-                      className="text-sm font-semibold"
-                      style={{ color: 'var(--gold)' }}
-                    >
-                      {formatPesewas(order.totalPesewas)}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className="text-xs" style={{ color: 'var(--muted)' }}>
-                      {formatDate(order.createdAt)}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <Link
-                      href={`/admin/orders/${order.id}`}
-                      className="text-xs font-medium transition-colors hover:text-[var(--gold)]"
-                      style={{ color: 'var(--muted)' }}
-                    >
-                      View
-                    </Link>
-                  </td>
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold" style={{ color: 'var(--muted)' }}>Order</th>
+                  <th className="hidden px-4 py-3 text-left text-xs font-semibold md:table-cell" style={{ color: 'var(--muted)' }}>Customer</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold" style={{ color: 'var(--muted)' }}>Status</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold" style={{ color: 'var(--muted)' }}>Total</th>
+                  <th className="hidden px-4 py-3 text-left text-xs font-semibold lg:table-cell" style={{ color: 'var(--muted)' }}>Date</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold" style={{ color: 'var(--muted)' }}>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {orders.map((order) => (
+                  <tr
+                    key={order.id}
+                    className="border-t"
+                    style={{ borderColor: 'var(--border)' }}
+                  >
+                    <td className="hidden px-4 py-3 sm:table-cell">
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.has(order.id)}
+                        onChange={() => toggleSelect(order.id)}
+                        className="accent-[var(--gold)]"
+                      />
+                    </td>
+                    <td className="px-4 py-3">
+                      <span
+                        className="font-[family-name:var(--font-space-mono)] text-sm font-bold"
+                        style={{ color: 'var(--white)' }}
+                      >
+                        {order.orderNumber}
+                      </span>
+                    </td>
+                    <td className="hidden px-4 py-3 md:table-cell">
+                      <p className="text-sm" style={{ color: 'var(--white)' }}>
+                        {order.customer
+                          ? `${order.customer.firstName} ${order.customer.lastName}`
+                          : '--'}
+                      </p>
+                      <p className="text-xs" style={{ color: 'var(--muted)' }}>
+                        {order.customer?.email}
+                      </p>
+                    </td>
+                    <td className="px-4 py-3">
+                      <select
+                        value={order.status}
+                        onChange={(e) =>
+                          changeStatus({
+                            id: order.id,
+                            status: e.target.value,
+                          })
+                        }
+                        className="rounded border px-2 py-1 text-xs"
+                        style={{
+                          background: 'var(--deep)',
+                          color: 'var(--white)',
+                          borderColor: 'var(--border)',
+                        }}
+                      >
+                        {allStatuses.map((s) => (
+                          <option key={s} value={s}>
+                            {s.replace(/_/g, ' ')}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
+                    <td className="px-4 py-3">
+                      <span
+                        className="text-sm font-semibold"
+                        style={{ color: 'var(--gold)' }}
+                      >
+                        {formatPesewas(order.totalPesewas)}
+                      </span>
+                    </td>
+                    <td className="hidden px-4 py-3 lg:table-cell">
+                      <span className="text-xs" style={{ color: 'var(--muted)' }}>
+                        {formatDate(order.createdAt)}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <Link
+                        href={`/admin/orders/${order.id}`}
+                        className="text-xs font-medium transition-colors hover:text-[var(--gold)]"
+                        style={{ color: 'var(--muted)' }}
+                      >
+                        View
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 
