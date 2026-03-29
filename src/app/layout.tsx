@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { Outfit, Rubik, Space_Mono } from "next/font/google";
 import { Providers } from "@/providers";
+import { OrganizationJsonLd } from "@/components/seo/JsonLd";
 import "./globals.css";
+
+const SITE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://geardockgh.com";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -23,9 +26,31 @@ const spaceMono = Space_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "GearDockGH — Premium Gear for Remote Workers & Creators",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "GearDockGH — Premium Gear for Remote Workers & Creators",
+    template: "%s | GearDockGH",
+  },
   description:
-    "Premium imported gear for Ghana's remote workers, content creators, gamers, and students. Top-tier equipment. Delivered to your door.",
+    "Premium imported gear for Ghana's remote workers, content creators, gamers, and students. Verified imports, priced in cedis, 48h delivery. MoMo accepted.",
+  keywords: [
+    "buy tech gear Ghana",
+    "premium gear Ghana",
+    "remote work equipment Ghana",
+    "MoMo online shopping Ghana",
+    "headphones Ghana",
+    "laptops Ghana",
+    "gaming gear Ghana",
+    "GearDockGH",
+  ],
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
+  },
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any" },
@@ -43,8 +68,20 @@ export const metadata: Metadata = {
   openGraph: {
     title: "GearDockGH — Premium Gear for Remote Workers & Creators",
     description:
-      "Premium imported gear for Ghana's remote workers, content creators, gamers, and students. Top-tier equipment. Delivered to your door.",
+      "Premium imported gear for Ghana's remote workers, content creators, gamers, and students. Verified imports, priced in cedis, 48h delivery.",
     type: "website",
+    siteName: "GearDockGH",
+    locale: "en_GH",
+    url: SITE_URL,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "GearDockGH — Premium Gear for Remote Workers & Creators",
+    description:
+      "Premium imported gear for Ghana's remote workers, content creators, and gamers. Verified imports, MoMo accepted, 48h delivery.",
+  },
+  alternates: {
+    canonical: SITE_URL,
   },
 };
 
@@ -65,6 +102,7 @@ export default function RootLayout({
       <body
         className={`${outfit.variable} ${rubik.variable} ${spaceMono.variable} font-sans antialiased`}
       >
+        <OrganizationJsonLd />
         <Providers>{children}</Providers>
       </body>
     </html>
