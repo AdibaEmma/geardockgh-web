@@ -32,11 +32,14 @@ export default function PreorderPage() {
   const [search, setSearch] = useState('');
   const [categories, setCategories] = useState<string[]>([]);
   const [subcategory, setSubcategory] = useState<string | null>(null);
+  const [priceRange, setPriceRange] = useState<{ min?: number; max?: number } | null>(null);
 
   const { data, isLoading } = useProducts({
     search: search || undefined,
     category: categories.length > 0 ? categories.join(',') : undefined,
     subcategory: subcategory ?? undefined,
+    minPrice: priceRange?.min,
+    maxPrice: priceRange?.max,
     isPreorder: true,
     page,
     limit: 20,
@@ -75,6 +78,11 @@ export default function PreorderPage() {
             onCategoriesChange={(cats) => { setCategories(cats); setSubcategory(null); setPage(1); }}
             selectedSubcategory={subcategory}
             onSubcategoryChange={(sub) => { setSubcategory(sub); setPage(1); }}
+            priceRange={priceRange}
+            onPriceRangeChange={(range) => { setPriceRange(range); setPage(1); }}
+            inStockOnly={false}
+            onInStockChange={() => {}}
+            hideInStock
           />
         </div>
 

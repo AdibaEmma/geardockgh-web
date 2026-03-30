@@ -8,6 +8,9 @@ interface GetProductsParams {
   subcategory?: string;
   search?: string;
   isPreorder?: boolean;
+  minPrice?: number;
+  maxPrice?: number;
+  inStock?: boolean;
 }
 
 export async function getProducts(params?: GetProductsParams) {

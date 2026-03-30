@@ -10,6 +10,9 @@ interface UseProductsParams {
   subcategory?: string;
   search?: string;
   isPreorder?: boolean;
+  minPrice?: number;
+  maxPrice?: number;
+  inStock?: boolean;
 }
 
 export function useProducts(params?: UseProductsParams) {

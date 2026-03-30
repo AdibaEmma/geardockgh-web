@@ -15,12 +15,17 @@ function ProductsContent() {
     return param ? param.split(',') : [];
   });
   const [subcategory, setSubcategory] = useState<string | null>(null);
+  const [priceRange, setPriceRange] = useState<{ min?: number; max?: number } | null>(null);
+  const [inStockOnly, setInStockOnly] = useState(false);
   const [page, setPage] = useState(1);
 
   const { data, isLoading } = useProducts({
     search: search || undefined,
     category: categories.length > 0 ? categories.join(',') : undefined,
     subcategory: subcategory ?? undefined,
+    minPrice: priceRange?.min,
+    maxPrice: priceRange?.max,
+    inStock: inStockOnly || undefined,
     isPreorder: false,
     page,
     limit: 20,
@@ -29,16 +34,7 @@ function ProductsContent() {
   const products = (data?.data ?? []) as Product[];
   const meta = data?.meta;
 
-  const handleCategoriesChange = (newCats: string[]) => {
-    setCategories(newCats);
-    setSubcategory(null);
-    setPage(1);
-  };
-
-  const handleSubcategoryChange = (sub: string | null) => {
-    setSubcategory(sub);
-    setPage(1);
-  };
+  const resetPage = () => setPage(1);
 
   return (
     <div className="animate-[fadeUp_400ms_ease-out]">
@@ -48,24 +44,22 @@ function ProductsContent() {
       >
         Shop
       </h1>
-      <p
-        className="mt-2 text-sm"
-        style={{ color: 'var(--muted)' }}
-      >
+      <p className="mt-2 text-sm" style={{ color: 'var(--muted)' }}>
         Browse our in-stock collection of premium gear — ready for delivery
       </p>
 
       <div className="mt-6">
         <ProductFilters
           search={search}
-          onSearchChange={(val) => {
-            setSearch(val);
-            setPage(1);
-          }}
+          onSearchChange={(val) => { setSearch(val); resetPage(); }}
           selectedCategories={categories}
-          onCategoriesChange={handleCategoriesChange}
+          onCategoriesChange={(cats) => { setCategories(cats); setSubcategory(null); resetPage(); }}
           selectedSubcategory={subcategory}
-          onSubcategoryChange={handleSubcategoryChange}
+          onSubcategoryChange={(sub) => { setSubcategory(sub); resetPage(); }}
+          priceRange={priceRange}
+          onPriceRangeChange={(range) => { setPriceRange(range); resetPage(); }}
+          inStockOnly={inStockOnly}
+          onInStockChange={(val) => { setInStockOnly(val); resetPage(); }}
         />
       </div>
 
@@ -73,17 +67,13 @@ function ProductsContent() {
         <ProductGrid products={products} isLoading={isLoading} />
       </div>
 
-      {/* Pagination */}
       {meta && meta.totalPages > 1 && (
         <div className="mt-8 flex items-center justify-center gap-3">
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page <= 1}
             className="rounded-lg border px-4 py-2 text-sm font-medium transition-all duration-200 hover:border-[var(--gold)] hover:text-[var(--gold)] disabled:opacity-40 disabled:hover:border-[var(--border)] disabled:hover:text-[var(--muted)]"
-            style={{
-              borderColor: 'var(--border)',
-              color: 'var(--muted)',
-            }}
+            style={{ borderColor: 'var(--border)', color: 'var(--muted)' }}
           >
             Previous
           </button>
@@ -97,10 +87,7 @@ function ProductsContent() {
             onClick={() => setPage((p) => Math.min(meta.totalPages, p + 1))}
             disabled={page >= meta.totalPages}
             className="rounded-lg border px-4 py-2 text-sm font-medium transition-all duration-200 hover:border-[var(--gold)] hover:text-[var(--gold)] disabled:opacity-40 disabled:hover:border-[var(--border)] disabled:hover:text-[var(--muted)]"
-            style={{
-              borderColor: 'var(--border)',
-              color: 'var(--muted)',
-            }}
+            style={{ borderColor: 'var(--border)', color: 'var(--muted)' }}
           >
             Next
           </button>
