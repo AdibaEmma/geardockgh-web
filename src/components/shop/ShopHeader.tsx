@@ -79,8 +79,9 @@ export function ShopHeader() {
               style={{ color: pathname === '/wishlist' ? 'var(--gold)' : 'var(--muted)' }}
             >
               <Heart size={18} fill={wishlistItems.length > 0 ? 'currentColor' : 'none'} />
+              <span>Wishlist</span>
               {wishlistItems.length > 0 && (
-                <span className="absolute -right-2 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 font-[family-name:var(--font-space-mono)] text-[10px] font-bold text-white">
+                <span className="absolute -right-2.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 font-[family-name:var(--font-space-mono)] text-[10px] font-bold text-white">
                   {wishlistItems.length}
                 </span>
               )}
