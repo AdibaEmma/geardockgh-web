@@ -179,6 +179,7 @@ export function FeaturedProducts() {
             );
           })}
         </div>
+        <div className="swipe-indicator">Swipe to explore</div>
       )}
 
       <div className="view-all-cta">

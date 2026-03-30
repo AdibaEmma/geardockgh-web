@@ -150,6 +150,7 @@ export function Categories() {
           </Link>
         ))}
       </div>
+      <div className="swipe-indicator">Swipe to explore</div>
     </section>
   );
 }
