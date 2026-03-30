@@ -17,6 +17,7 @@ import {
 import { WhatsAppButton } from '@/components/shop/WhatsAppButton';
 import { SocialProofToast } from '@/components/ui/SocialProofToast';
 import { BackToTop } from '@/components/ui/BackToTop';
+import { MobileBottomNav } from '@/components/ui/MobileBottomNav';
 
 export default function HomePage() {
   return (
@@ -38,6 +39,7 @@ export default function HomePage() {
       <WhatsAppButton />
       <SocialProofToast />
       <BackToTop />
+      <MobileBottomNav />
     </div>
   );
 }

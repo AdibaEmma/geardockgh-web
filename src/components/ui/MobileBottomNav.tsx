@@ -1,0 +1,80 @@
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { Home, Search, ShoppingBag, Package, User } from 'lucide-react';
+import { useCartStore } from '@/stores/cart-store';
+
+const NAV_ITEMS = [
+  { icon: Home, label: 'Home', href: '/' },
+  { icon: Search, label: 'Shop', href: '/products' },
+  { icon: ShoppingBag, label: 'Cart', href: '/cart' },
+  { icon: Package, label: 'Pre-Order', href: '/preorder' },
+  { icon: User, label: 'Account', href: '/account' },
+];
+
+export function MobileBottomNav() {
+  const pathname = usePathname();
+  const items = useCartStore((s) => s.items);
+  const cartCount = items.reduce((sum, item) => sum + item.quantity, 0);
+
+  const [visible, setVisible] = useState(true);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentY = window.scrollY;
+      const delta = currentY - lastScrollY.current;
+
+      // Only toggle after a meaningful scroll (threshold of 10px)
+      if (delta > 10 && currentY > 100) {
+        setVisible(false); // scrolling down
+      } else if (delta < -10) {
+        setVisible(true); // scrolling up
+      }
+
+      lastScrollY.current = currentY;
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const isActive = (href: string) => {
+    if (href === '/') return pathname === '/';
+    return pathname.startsWith(href);
+  };
+
+  return (
+    <nav
+      className={`mobile-bottom-nav ${visible ? '' : 'hidden-nav'}`}
+      role="navigation"
+      aria-label="Mobile navigation"
+    >
+      {NAV_ITEMS.map((item) => {
+        const active = isActive(item.href);
+        const Icon = item.icon;
+        const isCart = item.href === '/cart';
+
+        return (
+          <Link
+            key={item.href}
+            href={item.href}
+            className={`mobile-bottom-nav-item ${active ? 'active' : ''}`}
+          >
+            <span className="mobile-bottom-nav-icon">
+              <Icon size={22} strokeWidth={active ? 2.2 : 1.5} />
+              {isCart && cartCount > 0 && (
+                <span className="mobile-bottom-nav-badge">
+                  {cartCount > 9 ? '9+' : cartCount}
+                </span>
+              )}
+            </span>
+            <span className="mobile-bottom-nav-label">{item.label}</span>
+          </Link>
+        );
+      })}
+    </nav>
+  );
+}

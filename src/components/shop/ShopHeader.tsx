@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { ShoppingCart, User, LogOut, Menu, X, Shield } from 'lucide-react';
+import { ShoppingCart, User, LogOut, Shield } from 'lucide-react';
 import { useAuthStore } from '@/stores/auth-store';
 import { useCartStore } from '@/stores/cart-store';
 import { useLogout } from '@/hooks/use-auth';
@@ -11,7 +11,7 @@ import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 export function ShopHeader() {
   const [cartOpen, setCartOpen] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  // Mobile menu removed — bottom nav handles mobile navigation
   const user = useAuthStore((s) => s.user);
   const items = useCartStore((s) => s.items);
   const count = items.reduce((sum, item) => sum + item.quantity, 0);
@@ -123,7 +123,7 @@ export function ShopHeader() {
             )}
           </nav>
 
-          {/* Mobile: Cart + Menu */}
+          {/* Mobile: Logo actions (cart handled by bottom nav) */}
           <div className="flex items-center gap-3 md:hidden">
             <ThemeToggle />
             <button
@@ -138,82 +138,10 @@ export function ShopHeader() {
                 </span>
               )}
             </button>
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              style={{ color: 'var(--muted)' }}
-            >
-              {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
-            </button>
           </div>
         </div>
 
-        {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <div
-            className="animate-[slideDown_200ms_ease-out] border-t px-4 py-4 md:hidden"
-            style={{ borderColor: 'var(--border)' }}
-          >
-            <div className="flex flex-col gap-3">
-              <Link
-                href="/products"
-                onClick={() => setMobileMenuOpen(false)}
-                className="text-sm"
-                style={{ color: 'var(--muted)' }}
-              >
-                Products
-              </Link>
-              <Link
-                href="/orders"
-                onClick={() => setMobileMenuOpen(false)}
-                className="text-sm"
-                style={{ color: 'var(--muted)' }}
-              >
-                Orders
-              </Link>
-              {isAdmin && (
-                <Link
-                  href="/admin"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-1.5 text-sm font-medium"
-                  style={{ color: 'var(--gold)' }}
-                >
-                  <Shield size={16} />
-                  Admin
-                </Link>
-              )}
-              {user ? (
-                <>
-                  <Link
-                    href="/account"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="text-sm"
-                    style={{ color: 'var(--white)' }}
-                  >
-                    Hi, {user.firstName}
-                  </Link>
-                  <button
-                    onClick={() => {
-                      logout();
-                      setMobileMenuOpen(false);
-                    }}
-                    className="text-left text-sm text-red-400"
-                  >
-                    Logout
-                  </button>
-                </>
-              ) : (
-                <Link
-                  href="/login"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="text-sm"
-                  style={{ color: 'var(--gold)' }}
-                >
-                  Sign In
-                </Link>
-              )}
-            </div>
-          </div>
-        )}
+        {/* Mobile Menu - hidden, bottom nav handles mobile navigation */}
       </header>
 
       <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />
