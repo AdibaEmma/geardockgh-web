@@ -8,6 +8,7 @@ import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 const NAV_ITEMS = [
   { href: '/products', label: 'Shop' },
+  { href: '/preorder', label: 'Pre-Order' },
   { href: '#featured', label: 'Featured' },
   { href: '#how', label: 'How It Works' },
   { href: '#why', label: 'Why Us' },

@@ -12,6 +12,8 @@ const SHOP_LINKS = [
 const INFO_LINKS = [
   { href: '#how', label: 'How It Works' },
   { href: '/products', label: 'All Products' },
+  { href: '/preorder', label: 'Pre-Order' },
+  { href: '/returns', label: 'Returns & Terms' },
 ];
 
 const PAYMENT_METHODS = ['MTN MoMo', 'Vodafone Cash', 'AirtelTigo', 'Visa', 'Mastercard'];

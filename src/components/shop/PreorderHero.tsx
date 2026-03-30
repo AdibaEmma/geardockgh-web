@@ -59,13 +59,20 @@ export function PreorderHero() {
           </div>
         </div>
 
-        <div className="mt-8">
+        <div className="mt-8 flex flex-wrap items-center gap-4">
           <Link
             href="#preorder-products"
             className="inline-flex items-center gap-2 rounded-lg px-6 py-3 text-sm font-semibold transition-all hover:brightness-110"
             style={{ background: 'var(--gold)', color: 'var(--black)' }}
           >
             Browse Pre-Order Gear &darr;
+          </Link>
+          <Link
+            href="/returns"
+            className="inline-flex items-center gap-1.5 text-xs font-medium underline underline-offset-2 transition-colors hover:text-[var(--gold)]"
+            style={{ color: 'var(--muted)' }}
+          >
+            Returns & Terms &rarr;
           </Link>
         </div>
       </div>

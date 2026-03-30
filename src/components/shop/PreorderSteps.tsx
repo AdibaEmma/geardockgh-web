@@ -1,6 +1,6 @@
 'use client';
 
-import { MousePointerClick, CreditCard, Truck } from 'lucide-react';
+import { MousePointerClick, CreditCard, Package, Truck } from 'lucide-react';
 
 const STEPS = [
   {
@@ -10,13 +10,18 @@ const STEPS = [
   },
   {
     icon: CreditCard,
-    title: 'Pay a Small Deposit',
-    description: 'Secure your order with a refundable deposit via MoMo or card. No full payment until your gear arrives.',
+    title: 'Make Payment',
+    description: 'Pay via MoMo or card to secure your order. Once your gear arrives in Ghana, you complete the remaining balance.',
+  },
+  {
+    icon: Package,
+    title: 'Shipping',
+    description: 'We handle sourcing, import, and customs clearance. You get WhatsApp updates at every stage with a tracking ETA.',
   },
   {
     icon: Truck,
-    title: 'We Deliver to Your Door',
-    description: 'We handle import, customs, and delivery. You get a tracking ETA and your gear arrives in Bolgatanga.',
+    title: 'We Deliver',
+    description: 'Your gear arrives at your door in Bolgatanga. Inspect it, and if anything is off, our 7-day return policy has you covered.',
   },
 ];
 
@@ -30,7 +35,7 @@ export function PreorderSteps() {
         How Pre-Orders Work
       </h2>
 
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {STEPS.map((step, i) => {
           const Icon = step.icon;
           return (
