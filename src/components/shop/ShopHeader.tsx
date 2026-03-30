@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { ShoppingCart, User, LogOut, Shield } from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import { ShoppingCart, User, LogOut, Shield, FileText } from 'lucide-react';
 import { useAuthStore } from '@/stores/auth-store';
 import { useCartStore } from '@/stores/cart-store';
 import { useLogout } from '@/hooks/use-auth';
@@ -11,12 +12,16 @@ import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 export function ShopHeader() {
   const [cartOpen, setCartOpen] = useState(false);
+  const pathname = usePathname();
   // Mobile menu removed — bottom nav handles mobile navigation
   const user = useAuthStore((s) => s.user);
   const items = useCartStore((s) => s.items);
   const count = items.reduce((sum, item) => sum + item.quantity, 0);
   const { mutate: logout } = useLogout();
   const isAdmin = user?.role === 'ADMIN';
+
+  const isOnPreorder = pathname.startsWith('/preorder');
+  const isOnProducts = pathname.startsWith('/products');
 
   return (
     <>
@@ -45,13 +50,25 @@ export function ShopHeader() {
           {/* Desktop Nav */}
           <nav className="hidden items-center gap-6 md:flex">
             <ThemeToggle />
-            <Link
-              href="/products"
-              className="text-sm transition-colors hover:text-[var(--gold)]"
-              style={{ color: 'var(--muted)' }}
-            >
-              Products
-            </Link>
+
+            {/* Context-aware nav: show Pre-Order when on shop, show Shop when on preorder */}
+            {isOnPreorder ? (
+              <Link
+                href="/products"
+                className="text-sm transition-colors hover:text-[var(--gold)]"
+                style={{ color: 'var(--muted)' }}
+              >
+                Shop
+              </Link>
+            ) : (
+              <Link
+                href="/preorder"
+                className="text-sm transition-colors hover:text-[var(--gold)]"
+                style={{ color: isOnProducts ? 'var(--gold)' : 'var(--muted)' }}
+              >
+                Pre-Order
+              </Link>
+            )}
 
             {/* Cart Button */}
             <button
@@ -75,6 +92,16 @@ export function ShopHeader() {
               style={{ color: 'var(--muted)' }}
             >
               Orders
+            </Link>
+
+            {/* Returns & Terms */}
+            <Link
+              href="/returns"
+              className="flex items-center gap-1 text-sm transition-colors hover:text-[var(--gold)]"
+              style={{ color: pathname === '/returns' ? 'var(--gold)' : 'var(--muted)' }}
+            >
+              <FileText size={14} />
+              Returns
             </Link>
 
             {/* Admin */}

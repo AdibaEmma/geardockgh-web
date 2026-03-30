@@ -11,12 +11,12 @@ const STEPS = [
   {
     icon: CreditCard,
     title: 'Make Payment',
-    description: 'Pay via MoMo or card to secure your order. Once your gear arrives in Ghana, you complete the remaining balance.',
+    description: 'Pay via MoMo or card to secure your order. Once your gear arrives in Ghana, you pay the remaining balance plus shipping fee.',
   },
   {
     icon: Package,
     title: 'Shipping',
-    description: 'We handle sourcing, import, and customs clearance. You get WhatsApp updates at every stage with a tracking ETA.',
+    description: 'We handle sourcing, import, and customs clearance. Shipping fee applies based on item size and location. You get WhatsApp updates at every stage with a tracking ETA.',
   },
   {
     icon: Truck,

@@ -11,13 +11,12 @@ function ProductsContent() {
   const searchParams = useSearchParams();
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState<string | null>(searchParams.get('category'));
-  const [isPreorder, setIsPreorder] = useState<boolean | null>(null);
   const [page, setPage] = useState(1);
 
   const { data, isLoading } = useProducts({
     search: search || undefined,
     category: category ?? undefined,
-    isPreorder: isPreorder ?? undefined,
+    isPreorder: false,
     page,
     limit: 20,
   });
@@ -31,13 +30,13 @@ function ProductsContent() {
         className="font-[family-name:var(--font-outfit)] text-3xl font-bold"
         style={{ color: 'var(--white)' }}
       >
-        Products
+        Shop
       </h1>
       <p
         className="mt-2 text-sm"
         style={{ color: 'var(--muted)' }}
       >
-        Browse our curated collection of premium gear
+        Browse our in-stock collection of premium gear — ready for delivery
       </p>
 
       <div className="mt-6">
@@ -53,31 +52,6 @@ function ProductsContent() {
             setPage(1);
           }}
         />
-      </div>
-
-      <div className="mt-4 flex gap-2">
-        {[
-          { label: 'All', value: null },
-          { label: 'Pre-Order', value: true },
-          { label: 'In Stock', value: false },
-        ].map((tab) => (
-          <button
-            key={tab.label}
-            onClick={() => {
-              setIsPreorder(tab.value);
-              setPage(1);
-            }}
-            className="rounded-full border px-4 py-1.5 text-xs font-medium transition-all duration-200"
-            style={{
-              borderColor: isPreorder === tab.value ? 'var(--gold)' : 'var(--border)',
-              color: isPreorder === tab.value ? 'var(--gold)' : 'var(--muted)',
-              background: isPreorder === tab.value ? 'rgba(245, 158, 11, 0.1)' : 'transparent',
-              boxShadow: isPreorder === tab.value ? '0 2px 8px rgba(240,165,0,0.2)' : 'none',
-            }}
-          >
-            {tab.label}
-          </button>
-        ))}
       </div>
 
       <div className="mt-6">
