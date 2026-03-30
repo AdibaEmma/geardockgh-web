@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Clock, Shield, CreditCard } from 'lucide-react';
+import { Clock, Shield, CreditCard, Ship, Plane } from 'lucide-react';
 
 export function PreorderHero() {
   return (
@@ -24,21 +24,44 @@ export function PreorderHero() {
           className="font-[family-name:var(--font-outfit)] text-3xl font-bold leading-tight sm:text-4xl lg:text-5xl"
           style={{ color: 'var(--white)' }}
         >
-          Stop waiting 6 weeks
+          Reserve your gear.
           <br />
-          <span style={{ color: 'var(--gold)' }}>for your gear.</span>
+          <span style={{ color: 'var(--gold)' }}>We handle the rest.</span>
         </h1>
 
         <p
           className="mt-4 max-w-xl text-sm leading-relaxed sm:text-base"
           style={{ color: 'var(--muted)' }}
         >
-          Reserve premium tech before it lands in Ghana. Pay a small deposit now,
-          we handle the import, and deliver to your door when it arrives &mdash;
-          no customs stress, no surprises.
+          Pay a deposit to lock in your price, and we source, import, and deliver
+          to your door &mdash; no customs stress, no surprises. You pay the
+          balance + shipping when it arrives.
         </p>
 
-        <div className="mt-8 flex flex-wrap gap-6">
+        {/* Shipping timeline badges */}
+        <div
+          className="mt-6 inline-flex flex-wrap gap-3 rounded-lg border p-3"
+          style={{ borderColor: 'var(--border)', background: 'var(--deep)' }}
+        >
+          <div className="flex items-center gap-2">
+            <Plane size={14} style={{ color: 'var(--teal)' }} />
+            <span className="text-xs font-medium" style={{ color: 'var(--white)' }}>
+              Air: 1–3 weeks
+            </span>
+          </div>
+          <div
+            className="w-px self-stretch"
+            style={{ background: 'var(--border)' }}
+          />
+          <div className="flex items-center gap-2">
+            <Ship size={14} style={{ color: 'var(--teal)' }} />
+            <span className="text-xs font-medium" style={{ color: 'var(--white)' }}>
+              Sea: 6–10 weeks
+            </span>
+          </div>
+        </div>
+
+        <div className="mt-6 flex flex-wrap gap-6">
           <div className="flex items-center gap-2">
             <CreditCard size={18} style={{ color: 'var(--teal)' }} />
             <span className="text-xs font-medium" style={{ color: 'var(--white)' }}>
@@ -48,7 +71,7 @@ export function PreorderHero() {
           <div className="flex items-center gap-2">
             <Clock size={18} style={{ color: 'var(--teal)' }} />
             <span className="text-xs font-medium" style={{ color: 'var(--white)' }}>
-              Transparent ETA
+              WhatsApp tracking updates
             </span>
           </div>
           <div className="flex items-center gap-2">

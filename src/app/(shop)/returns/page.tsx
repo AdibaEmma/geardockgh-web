@@ -44,7 +44,7 @@ const RETURN_STEPS = [
   {
     step: '01',
     title: 'Contact Us',
-    description: 'Reach out via WhatsApp at 0537743399 or through our website chat.',
+    description: 'Reach out via WhatsApp at 0556137400 or through our website chat.',
   },
   {
     step: '02',
@@ -268,7 +268,7 @@ export default function ReturnsPage() {
           <MessageCircle size={20} />
           <div>
             <p className="text-sm font-semibold">Need help? Contact us on WhatsApp</p>
-            <p className="text-xs opacity-80">0537743399 &middot; Available Mon–Sat, 8am–8pm</p>
+            <p className="text-xs opacity-80">0556137400 &middot; Available Mon–Sat, 8am–8pm</p>
           </div>
         </div>
       </section>
@@ -371,7 +371,7 @@ export default function ReturnsPage() {
           </p>
           <p>
             For questions, disputes, or support, contact us on WhatsApp at{' '}
-            <strong style={{ color: 'var(--gold)' }}>0537743399</strong> or email{' '}
+            <strong style={{ color: 'var(--gold)' }}>0556137400</strong> or email{' '}
             <strong style={{ color: 'var(--gold)' }}>support@geardockgh.com</strong>.
           </p>
         </div>

@@ -18,6 +18,7 @@ export type PreorderStatus =
 
 export type PaymentStatus = 'PENDING' | 'SUCCESS' | 'FAILED' | 'REFUNDED';
 export type PaymentProvider = 'PAYSTACK' | 'MOMO' | 'BANK_TRANSFER';
+export type ShippingMethod = 'AIR' | 'SEA';
 
 // Product Options
 export interface ProductOptionValue {
@@ -59,6 +60,7 @@ export interface Product {
   preorderMinUnits: number | null;
   preorderSlotsTaken: number;
   preorderSlotTarget: number | null;
+  shippingMethod: ShippingMethod | null;
   category: string | null;
   imagesJson: string | null;
   specsJson: string | null;

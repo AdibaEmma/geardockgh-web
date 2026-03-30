@@ -20,6 +20,7 @@ interface ProductFormData {
   isPublished: boolean;
   isPreorder: boolean;
   preorderSlotTarget: string;
+  shippingMethod: string;
   images: string[];
   options: ProductOption[];
 }
@@ -37,6 +38,7 @@ interface ProductFormModalProps {
     isPreorder?: boolean;
     isPublished?: boolean;
     preorderSlotTarget?: number | null;
+    shippingMethod?: string | null;
     category?: string;
     imagesJson?: string;
     optionsJson?: string;
@@ -56,6 +58,7 @@ const emptyForm: ProductFormData = {
   isPublished: false,
   isPreorder: false,
   preorderSlotTarget: '',
+  shippingMethod: '',
   images: [],
   options: [],
 };
@@ -93,6 +96,7 @@ export function ProductFormModal({ open, onClose, onSubmit, product, isSubmittin
         isPublished: product.isPublished,
         isPreorder: product.isPreorder,
         preorderSlotTarget: product.preorderSlotTarget != null ? String(product.preorderSlotTarget) : '',
+        shippingMethod: product.shippingMethod ?? '',
         images: existingImages,
         options: existingOptions,
       });
@@ -142,6 +146,9 @@ export function ProductFormModal({ open, onClose, onSubmit, product, isSubmittin
       isPublished: form.isPublished,
       preorderSlotTarget: form.isPreorder && form.preorderSlotTarget
         ? Number(form.preorderSlotTarget)
+        : null,
+      shippingMethod: form.isPreorder && form.shippingMethod
+        ? form.shippingMethod
         : null,
       category: form.category || undefined,
       imagesJson: form.images.length > 0 ? JSON.stringify(form.images) : undefined,
@@ -338,6 +345,36 @@ export function ProductFormModal({ open, onClose, onSubmit, product, isSubmittin
               <p className="mb-3 text-xs leading-relaxed" style={{ color: 'var(--gold)' }}>
                 Set the price as your product cost + profit margin. Shipping, customs, and clearing fees are excluded and will be communicated to the customer separately when goods arrive.
               </p>
+              {/* Shipping Method */}
+              <div className="mb-3">
+                <label
+                  className="mb-1.5 block text-sm font-medium"
+                  style={{ color: 'var(--white)' }}
+                >
+                  Shipping Method
+                </label>
+                <div className="flex gap-2">
+                  {[
+                    { value: 'AIR', label: 'Air (1–3 weeks)', emoji: '✈️' },
+                    { value: 'SEA', label: 'Sea (6–10 weeks)', emoji: '🚢' },
+                  ].map((method) => (
+                    <button
+                      key={method.value}
+                      type="button"
+                      onClick={() => handleChange('shippingMethod', form.shippingMethod === method.value ? '' : method.value)}
+                      className="flex-1 rounded-lg border px-3 py-2.5 text-xs font-medium transition-all"
+                      style={{
+                        borderColor: form.shippingMethod === method.value ? 'var(--gold)' : 'var(--border)',
+                        color: form.shippingMethod === method.value ? 'var(--gold)' : 'var(--muted)',
+                        background: form.shippingMethod === method.value ? 'rgba(245, 158, 11, 0.1)' : 'transparent',
+                      }}
+                    >
+                      {method.emoji} {method.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               <Input
                 label="Slot Target (order alert threshold)"
                 type="number"
