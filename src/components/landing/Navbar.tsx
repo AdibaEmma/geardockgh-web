@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ShoppingBag } from 'lucide-react';
+import { ShoppingBag, Heart } from 'lucide-react';
 import { useCartStore } from '@/stores/cart-store';
+import { useWishlistStore } from '@/stores/wishlist-store';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 const NAV_ITEMS = [
@@ -18,6 +19,7 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const itemCount = useCartStore((s) => s.itemCount());
+  const wishlistCount = useWishlistStore((s) => s.items.length);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -63,6 +65,15 @@ export function Navbar() {
 
         <div className="nav-actions">
           <ThemeToggle />
+          <Link
+            href="/wishlist"
+            className="nav-cart"
+            aria-label="Wishlist"
+            style={{ position: 'relative' }}
+          >
+            <Heart size={18} fill={wishlistCount > 0 ? 'currentColor' : 'none'} />
+            {wishlistCount > 0 && <span className="cart-badge" style={{ background: '#ef4444' }}>{wishlistCount}</span>}
+          </Link>
           <Link href="/cart" className="nav-cart" aria-label="Shopping cart">
             <ShoppingBag size={18} />
             {itemCount > 0 && <span className="cart-badge">{itemCount}</span>}

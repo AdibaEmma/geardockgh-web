@@ -13,6 +13,7 @@ import { formatPesewas, formatDate } from '@/lib/utils/formatters';
 import { Button } from '@/components/ui/Button';
 import { PreorderBadge } from '@/components/shop/PreorderBadge';
 import { PreorderInfo, calculateDeposit } from '@/components/shop/PreorderInfo';
+import { WishlistButton } from '@/components/shop/WishlistButton';
 import type { Product, ProductVariant, ProductOption, ProductOptionValue } from '@/types';
 
 interface ProductDetailProps {
@@ -483,7 +484,10 @@ export function ProductDetail({ slug }: ProductDetailProps) {
               <span>7-day easy returns</span>
               <span>Verified imports only</span>
             </div>
-            <ShareButton productName={product.name} productSlug={product.slug} />
+            <div className="flex items-center gap-3">
+              <WishlistButton product={product} size={18} showLabel />
+              <ShareButton productName={product.name} productSlug={product.slug} />
+            </div>
           </div>
 
           {/* Specs */}

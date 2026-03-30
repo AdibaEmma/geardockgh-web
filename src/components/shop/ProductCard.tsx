@@ -6,6 +6,7 @@ import { ShoppingCart, Bell, Loader2, Check } from 'lucide-react';
 import { formatPesewas, formatDate } from '@/lib/utils/formatters';
 import { useCartStore } from '@/stores/cart-store';
 import { useToastStore } from '@/stores/toast-store';
+import { WishlistButton } from '@/components/shop/WishlistButton';
 import type { Product } from '@/types';
 
 interface ProductCardProps {
@@ -108,6 +109,11 @@ export function ProductCard({ product }: ProductCardProps) {
             {Math.round(((product.comparePricePesewas - product.pricePesewas) / product.comparePricePesewas) * 100)}% OFF
           </span>
         )}
+
+        {/* Wishlist heart — top-right, visible on hover (desktop) or always (mobile) */}
+        <div className="absolute right-2 top-2 opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100">
+          <WishlistButton product={product} size={16} className="rounded-full bg-black/40 p-1.5 backdrop-blur-sm" />
+        </div>
       </div>
 
       <div className="p-3 sm:p-4">

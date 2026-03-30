@@ -3,9 +3,10 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ShoppingCart, User, LogOut, Shield, FileText } from 'lucide-react';
+import { ShoppingCart, Heart, User, LogOut, Shield, FileText } from 'lucide-react';
 import { useAuthStore } from '@/stores/auth-store';
 import { useCartStore } from '@/stores/cart-store';
+import { useWishlistStore } from '@/stores/wishlist-store';
 import { useLogout } from '@/hooks/use-auth';
 import { CartDrawer } from './CartDrawer';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
@@ -16,6 +17,7 @@ export function ShopHeader() {
   // Mobile menu removed — bottom nav handles mobile navigation
   const user = useAuthStore((s) => s.user);
   const items = useCartStore((s) => s.items);
+  const wishlistItems = useWishlistStore((s) => s.items);
   const count = items.reduce((sum, item) => sum + item.quantity, 0);
   const { mutate: logout } = useLogout();
   const isAdmin = user?.role === 'ADMIN';
@@ -69,6 +71,20 @@ export function ShopHeader() {
                 Pre-Order
               </Link>
             )}
+
+            {/* Wishlist */}
+            <Link
+              href="/wishlist"
+              className="relative flex items-center gap-1.5 text-sm transition-colors hover:text-red-400"
+              style={{ color: pathname === '/wishlist' ? 'var(--gold)' : 'var(--muted)' }}
+            >
+              <Heart size={18} fill={wishlistItems.length > 0 ? 'currentColor' : 'none'} />
+              {wishlistItems.length > 0 && (
+                <span className="absolute -right-2 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 font-[family-name:var(--font-space-mono)] text-[10px] font-bold text-white">
+                  {wishlistItems.length}
+                </span>
+              )}
+            </Link>
 
             {/* Cart Button */}
             <button
