@@ -10,12 +10,17 @@ import type { Product } from '@/types';
 function ProductsContent() {
   const searchParams = useSearchParams();
   const [search, setSearch] = useState('');
-  const [category, setCategory] = useState<string | null>(searchParams.get('category'));
+  const [categories, setCategories] = useState<string[]>(() => {
+    const param = searchParams.get('category');
+    return param ? param.split(',') : [];
+  });
+  const [subcategory, setSubcategory] = useState<string | null>(null);
   const [page, setPage] = useState(1);
 
   const { data, isLoading } = useProducts({
     search: search || undefined,
-    category: category ?? undefined,
+    category: categories.length > 0 ? categories.join(',') : undefined,
+    subcategory: subcategory ?? undefined,
     isPreorder: false,
     page,
     limit: 20,
@@ -23,6 +28,17 @@ function ProductsContent() {
 
   const products = (data?.data ?? []) as Product[];
   const meta = data?.meta;
+
+  const handleCategoriesChange = (newCats: string[]) => {
+    setCategories(newCats);
+    setSubcategory(null);
+    setPage(1);
+  };
+
+  const handleSubcategoryChange = (sub: string | null) => {
+    setSubcategory(sub);
+    setPage(1);
+  };
 
   return (
     <div className="animate-[fadeUp_400ms_ease-out]">
@@ -46,11 +62,10 @@ function ProductsContent() {
             setSearch(val);
             setPage(1);
           }}
-          selectedCategory={category}
-          onCategoryChange={(cat) => {
-            setCategory(cat);
-            setPage(1);
-          }}
+          selectedCategories={categories}
+          onCategoriesChange={handleCategoriesChange}
+          selectedSubcategory={subcategory}
+          onSubcategoryChange={handleSubcategoryChange}
         />
       </div>
 

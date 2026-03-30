@@ -5,17 +5,14 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8001/api';
 
 const CATEGORIES = [
   'phones-tablets',
-  'laptops-computers',
-  'monitors-displays',
-  'audio-headphones',
-  'keyboards-mice',
+  'audio',
+  'computing',
+  'gaming',
   'power-energy',
-  'desks-furniture',
+  'home-office',
   'cameras-video',
-  'gaming-consoles',
-  'gaming-accessories',
   'storage-networking',
-  'lighting',
+  'tv-streaming',
   'accessories',
 ];
 

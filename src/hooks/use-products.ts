@@ -7,6 +7,7 @@ interface UseProductsParams {
   page?: number;
   limit?: number;
   category?: string;
+  subcategory?: string;
   search?: string;
   isPreorder?: boolean;
 }

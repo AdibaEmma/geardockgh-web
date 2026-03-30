@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { ImageUploader } from '@/components/admin/ImageUploader';
 import { OptionsEditor } from '@/components/admin/OptionsEditor';
-import { CATEGORIES } from '@/lib/utils/constants';
+import { CATEGORY_TREE } from '@/lib/utils/constants';
 import type { Product, ProductOption } from '@/types';
 
 interface ProductFormData {
@@ -17,6 +17,7 @@ interface ProductFormData {
   costPriceGhs: string;
   stockCount: string;
   category: string;
+  subcategory: string;
   isPublished: boolean;
   isPreorder: boolean;
   preorderSlotTarget: string;
@@ -40,6 +41,7 @@ interface ProductFormModalProps {
     preorderSlotTarget?: number | null;
     shippingMethod?: string | null;
     category?: string;
+    subcategory?: string;
     imagesJson?: string;
     optionsJson?: string;
   }) => void;
@@ -55,6 +57,7 @@ const emptyForm: ProductFormData = {
   costPriceGhs: '',
   stockCount: '0',
   category: '',
+  subcategory: '',
   isPublished: false,
   isPreorder: false,
   preorderSlotTarget: '',
@@ -93,6 +96,7 @@ export function ProductFormModal({ open, onClose, onSubmit, product, isSubmittin
           : '',
         stockCount: String(product.stockCount),
         category: product.category ?? '',
+        subcategory: product.subcategory ?? '',
         isPublished: product.isPublished,
         isPreorder: product.isPreorder,
         preorderSlotTarget: product.preorderSlotTarget != null ? String(product.preorderSlotTarget) : '',
@@ -151,6 +155,7 @@ export function ProductFormModal({ open, onClose, onSubmit, product, isSubmittin
         ? form.shippingMethod
         : null,
       category: form.category || undefined,
+      subcategory: form.subcategory || undefined,
       imagesJson: form.images.length > 0 ? JSON.stringify(form.images) : undefined,
       optionsJson: form.options.length > 0 ? JSON.stringify(form.options) : undefined,
     });
@@ -277,31 +282,68 @@ export function ProductFormModal({ open, onClose, onSubmit, product, isSubmittin
             error={errors.stockCount}
           />
 
-          {/* Category */}
-          <div className="w-full">
-            <label
-              className="mb-1.5 block text-sm font-medium"
-              style={{ color: 'var(--white)' }}
-            >
-              Category
-            </label>
-            <select
-              value={form.category}
-              onChange={(e) => handleChange('category', e.target.value)}
-              className="w-full rounded-lg border px-3 py-2.5 text-sm outline-none transition-colors focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)]"
-              style={{
-                background: 'var(--deep)',
-                color: 'var(--white)',
-                borderColor: 'var(--border)',
-              }}
-            >
-              <option value="">No category</option>
-              {CATEGORIES.map((cat) => (
-                <option key={cat.value} value={cat.value}>
-                  {cat.label}
-                </option>
-              ))}
-            </select>
+          {/* Category + Subcategory */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="w-full">
+              <label
+                className="mb-1.5 block text-sm font-medium"
+                style={{ color: 'var(--white)' }}
+              >
+                Category
+              </label>
+              <select
+                value={form.category}
+                onChange={(e) => {
+                  handleChange('category', e.target.value);
+                  setForm((prev) => ({ ...prev, subcategory: '' }));
+                }}
+                className="w-full rounded-lg border px-3 py-2.5 text-sm outline-none transition-colors focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)]"
+                style={{
+                  background: 'var(--deep)',
+                  color: 'var(--white)',
+                  borderColor: 'var(--border)',
+                }}
+              >
+                <option value="">No category</option>
+                {CATEGORY_TREE.map((cat) => (
+                  <option key={cat.value} value={cat.value}>
+                    {cat.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {(() => {
+              const selectedCat = CATEGORY_TREE.find(c => c.value === form.category);
+              if (!selectedCat?.subcategories?.length) return null;
+              return (
+                <div className="w-full">
+                  <label
+                    className="mb-1.5 block text-sm font-medium"
+                    style={{ color: 'var(--white)' }}
+                  >
+                    Subcategory
+                  </label>
+                  <select
+                    value={form.subcategory}
+                    onChange={(e) => handleChange('subcategory', e.target.value)}
+                    className="w-full rounded-lg border px-3 py-2.5 text-sm outline-none transition-colors focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)]"
+                    style={{
+                      background: 'var(--deep)',
+                      color: 'var(--white)',
+                      borderColor: 'var(--border)',
+                    }}
+                  >
+                    <option value="">All {selectedCat.label}</option>
+                    {selectedCat.subcategories.map((sub) => (
+                      <option key={sub.value} value={sub.value}>
+                        {sub.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              );
+            })()}
           </div>
 
           {/* Product Options */}

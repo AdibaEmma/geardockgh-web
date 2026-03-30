@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useProducts } from '@/hooks/use-products';
 import { ProductGrid } from '@/components/shop/ProductGrid';
+import { ProductFilters } from '@/components/shop/ProductFilters';
 import { PreorderHero } from '@/components/shop/PreorderHero';
 import { PreorderSteps } from '@/components/shop/PreorderSteps';
 import { Shield, MessageCircle, RefreshCw } from 'lucide-react';
@@ -28,8 +29,14 @@ const FAQ_ITEMS = [
 
 export default function PreorderPage() {
   const [page, setPage] = useState(1);
+  const [search, setSearch] = useState('');
+  const [categories, setCategories] = useState<string[]>([]);
+  const [subcategory, setSubcategory] = useState<string | null>(null);
 
   const { data, isLoading } = useProducts({
+    search: search || undefined,
+    category: categories.length > 0 ? categories.join(',') : undefined,
+    subcategory: subcategory ?? undefined,
     isPreorder: true,
     page,
     limit: 20,
@@ -58,6 +65,17 @@ export default function PreorderPage() {
           >
             {meta?.total ?? 0} items
           </span>
+        </div>
+
+        <div className="mb-6">
+          <ProductFilters
+            search={search}
+            onSearchChange={(val) => { setSearch(val); setPage(1); }}
+            selectedCategories={categories}
+            onCategoriesChange={(cats) => { setCategories(cats); setSubcategory(null); setPage(1); }}
+            selectedSubcategory={subcategory}
+            onSubcategoryChange={(sub) => { setSubcategory(sub); setPage(1); }}
+          />
         </div>
 
         <ProductGrid products={products} isLoading={isLoading} />

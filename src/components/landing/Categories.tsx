@@ -7,17 +7,12 @@ import {
   Smartphone,
   Armchair,
   Laptop,
-  Monitor,
   Headphones,
-  Keyboard,
   Battery,
   Camera,
   Cable,
-  Lightbulb,
   HardDrive,
   Gamepad2,
-  Joystick,
-  Package,
 } from 'lucide-react';
 
 interface Category {
@@ -39,44 +34,28 @@ const CATEGORIES: Category[] = [
     startingFrom: 'GH₵ 800',
   },
   {
-    icon: Armchair,
-    title: 'Desks & Furniture',
-    slug: 'desks-furniture',
-    description: 'Ergonomic desks, chairs & monitor arms — your body pays the price of a bad setup.',
-    count: '// DESKS & FURNITURE',
-    startingFrom: 'GH₵ 350',
-  },
-  {
     icon: Laptop,
-    title: 'Laptops & Computers',
-    slug: 'laptops-computers',
-    description: 'Laptops, desktops & mini PCs for work and creative projects.',
-    count: '// LAPTOPS & COMPUTERS',
-    startingFrom: 'GH₵ 2,500',
-  },
-  {
-    icon: Monitor,
-    title: 'Monitors & Displays',
-    slug: 'monitors-displays',
-    description: 'Hi-res monitors, ultrawides & portable screens for any setup.',
-    count: '// MONITORS & DISPLAYS',
-    startingFrom: 'GH₵ 800',
+    title: 'Computing',
+    slug: 'computing',
+    description: 'Laptops, monitors, keyboards & mice for work and creative projects.',
+    count: '// COMPUTING',
+    startingFrom: 'GH₵ 90',
   },
   {
     icon: Headphones,
-    title: 'Audio & Headphones',
-    slug: 'audio-headphones',
+    title: 'Audio',
+    slug: 'audio',
     description: 'Headphones, mics & speakers — hear everything, be heard clearly.',
-    count: '// AUDIO & HEADPHONES',
+    count: '// AUDIO',
     startingFrom: 'GH₵ 120',
   },
   {
-    icon: Keyboard,
-    title: 'Keyboards & Mice',
-    slug: 'keyboards-mice',
-    description: 'Mechanical keyboards & wireless mice built for precision.',
-    count: '// KEYBOARDS & MICE',
-    startingFrom: 'GH₵ 90',
+    icon: Armchair,
+    title: 'Home & Office',
+    slug: 'home-office',
+    description: 'Desks, chairs, lighting & fans — your body pays the price of a bad setup.',
+    count: '// HOME & OFFICE',
+    startingFrom: 'GH₵ 60',
   },
   {
     icon: Battery,
@@ -103,14 +82,6 @@ const CATEGORIES: Category[] = [
     startingFrom: 'GH₵ 30',
   },
   {
-    icon: Lightbulb,
-    title: 'Lighting',
-    slug: 'lighting',
-    description: 'Desk lamps, LED bars & ambient lighting for late-night sessions.',
-    count: '// LIGHTING',
-    startingFrom: 'GH₵ 60',
-  },
-  {
     icon: HardDrive,
     title: 'Storage & Networking',
     slug: 'storage-networking',
@@ -120,27 +91,11 @@ const CATEGORIES: Category[] = [
   },
   {
     icon: Gamepad2,
-    title: 'Gaming Consoles',
-    slug: 'gaming-consoles',
-    description: 'PlayStation, Xbox & Switch — casual or competitive, we stock it.',
-    count: '// GAMING CONSOLES',
-    startingFrom: 'GH₵ 1,200',
-  },
-  {
-    icon: Joystick,
-    title: 'Gaming Accessories',
-    slug: 'gaming-accessories',
-    description: 'Controllers, headsets & peripherals to level up your play.',
-    count: '// GAMING ACCESSORIES',
+    title: 'Gaming',
+    slug: 'gaming',
+    description: 'Consoles, controllers, headsets & peripherals to level up your play.',
+    count: '// GAMING',
     startingFrom: 'GH₵ 80',
-  },
-  {
-    icon: Package,
-    title: 'Other',
-    slug: 'other',
-    description: 'Unique finds that don\u2019t fit a box — but belong on your desk.',
-    count: '// OTHER',
-    startingFrom: 'GH₵ 20',
   },
 ];
 
@@ -171,7 +126,7 @@ export function Categories() {
 
   return (
     <section className="section" id="categories">
-      <div className="section-tag">// 13 CATEGORIES</div>
+      <div className="section-tag">// 10 CATEGORIES</div>
       <h2 className="section-title">
         Everything<br />your workspace needs.
       </h2>

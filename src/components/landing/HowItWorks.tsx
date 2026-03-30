@@ -10,7 +10,7 @@ const STEPS: { num: string; icon: LucideIcon; title: string; description: string
     icon: ShoppingCart,
     title: 'Browse & Add to Cart',
     description:
-      'Explore curated gear across 13 categories. Filter by budget, category, or popularity.',
+      'Explore curated gear across 10 categories. Filter by budget, category, or popularity.',
   },
   {
     num: '02',

@@ -12,7 +12,7 @@ import type { Product } from '@/types';
 const STATS = [
   { value: '224', suffix: '+', label: 'Orders Delivered' },
   { value: '88', suffix: '+', label: 'Products' },
-  { value: '13', suffix: '', label: 'Categories' },
+  { value: '10', suffix: '', label: 'Categories' },
   { value: '48', suffix: 'h', label: 'Delivery' },
 ];
 

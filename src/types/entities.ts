@@ -62,6 +62,7 @@ export interface Product {
   preorderSlotTarget: number | null;
   shippingMethod: ShippingMethod | null;
   category: string | null;
+  subcategory: string | null;
   imagesJson: string | null;
   specsJson: string | null;
   optionsJson: string | null;
