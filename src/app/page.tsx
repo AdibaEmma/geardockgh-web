@@ -15,6 +15,8 @@ import {
   Footer,
 } from '@/components/landing';
 import { WhatsAppButton } from '@/components/shop/WhatsAppButton';
+import { SocialProofToast } from '@/components/ui/SocialProofToast';
+import { BackToTop } from '@/components/ui/BackToTop';
 
 export default function HomePage() {
   return (
@@ -34,6 +36,8 @@ export default function HomePage() {
       <Newsletter />
       <Footer />
       <WhatsAppButton />
+      <SocialProofToast />
+      <BackToTop />
     </div>
   );
 }

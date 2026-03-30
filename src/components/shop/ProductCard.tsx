@@ -91,16 +91,16 @@ export function ProductCard({ product }: ProductCardProps) {
         )}
 
         {!product.isPreorder && product.comparePricePesewas && product.comparePricePesewas > product.pricePesewas && (
-          <span className="absolute right-3 top-3 rounded-full bg-red-500/20 px-2.5 py-1 text-xs font-medium text-red-400">
-            Sale
+          <span className="absolute left-3 top-3 flex items-center gap-1 rounded-full bg-red-500 px-2.5 py-1 text-[10px] font-bold text-white shadow-md">
+            {Math.round(((product.comparePricePesewas - product.pricePesewas) / product.comparePricePesewas) * 100)}% OFF
           </span>
         )}
       </div>
 
-      <div className="p-4">
+      <div className="p-3 sm:p-4">
         {product.category && (
           <span
-            className="mb-1.5 block font-[family-name:var(--font-space-mono)] text-[10px] uppercase tracking-wider"
+            className="mb-1 sm:mb-1.5 block font-[family-name:var(--font-space-mono)] text-[9px] sm:text-[10px] uppercase tracking-wider"
             style={{ color: 'var(--muted)' }}
           >
             {product.category}
@@ -108,23 +108,23 @@ export function ProductCard({ product }: ProductCardProps) {
         )}
 
         <h3
-          className="mb-2 line-clamp-2 text-sm font-medium leading-snug"
+          className="mb-1.5 sm:mb-2 line-clamp-2 text-xs sm:text-sm font-medium leading-snug"
           style={{ color: 'var(--white)' }}
         >
           {product.name}
         </h3>
 
         <div className="flex items-center justify-between">
-          <div className="flex items-baseline gap-2">
+          <div className="flex flex-col sm:flex-row sm:items-baseline sm:gap-2">
             <span
-              className="font-[family-name:var(--font-outfit)] text-lg font-bold"
+              className="font-[family-name:var(--font-outfit)] text-sm sm:text-lg font-bold"
               style={{ color: 'var(--gold)' }}
             >
               {formatPesewas(product.pricePesewas)}
             </span>
             {product.comparePricePesewas && product.comparePricePesewas > product.pricePesewas && (
               <span
-                className="text-xs line-through"
+                className="text-[10px] sm:text-xs line-through"
                 style={{ color: 'var(--muted)' }}
               >
                 {formatPesewas(product.comparePricePesewas)}

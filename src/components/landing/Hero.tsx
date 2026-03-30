@@ -142,6 +142,41 @@ export function Hero() {
             MoMo accepted
           </span>
         </div>
+
+        {/* Mobile new arrivals strip — only visible on mobile */}
+        {newArrivals.length > 0 && (
+          <div className="hero-mobile-arrivals">
+            <div className="hero-mobile-arrivals-label">NEW ARRIVALS</div>
+            <div className="hero-mobile-arrivals-scroll">
+              {newArrivals.map((product) => {
+                const image = parseFirstImage(product);
+                return (
+                  <Link
+                    href={`/products/${product.slug}`}
+                    key={product.id}
+                    className="hero-mobile-arrival-card"
+                  >
+                    {image ? (
+                      <img
+                        src={image}
+                        alt={product.name}
+                        className="hero-mobile-arrival-img"
+                      />
+                    ) : (
+                      <div className="hero-mobile-arrival-placeholder">
+                        <Package size={20} />
+                      </div>
+                    )}
+                    <div className="hero-mobile-arrival-info">
+                      <span className="hero-mobile-arrival-name">{product.name}</span>
+                      <span className="hero-mobile-arrival-price">{formatPesewas(product.pricePesewas)}</span>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="hero-right">

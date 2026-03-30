@@ -60,7 +60,7 @@ export function ProductFilters({
         )}
       </div>
 
-      <div className="flex flex-wrap gap-2">
+      <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide sm:flex-wrap sm:overflow-visible sm:pb-0">
         <button
           onClick={() => onCategoryChange(null)}
           className={cn(
@@ -81,7 +81,7 @@ export function ProductFilters({
                 onCategoryChange(selectedCategory === cat.value ? null : cat.value)
               }
               className={cn(
-                'inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-all',
+                'inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border px-3 py-1.5 text-xs font-medium transition-all',
                 selectedCategory === cat.value
                   ? 'border-[var(--gold)] bg-[var(--gold)]/10 text-[var(--gold)]'
                   : 'border-[var(--border)] text-[var(--muted)] hover:border-[var(--gold)]/40 hover:text-[var(--white)]',
