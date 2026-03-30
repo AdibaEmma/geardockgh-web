@@ -1899,7 +1899,19 @@ html.theme-transitioning *::after {
   .nav-cta { display: none; }
   .hero { grid-template-columns: 1fr; }
   .hero-right { display: none; }
-  .hero-left { padding: 120px 0 60px; }
+  .hero-left { padding: 100px 0 40px; }
+  .hero-heading { font-size: clamp(40px, 10vw, 56px); letter-spacing: -1px; margin-bottom: 20px; }
+  .hero-tag { font-size: 10px; margin-bottom: 20px; }
+  .hero-sub { font-size: 14px; line-height: 1.6; margin-bottom: 20px; }
+  .hero-price-callout { margin-bottom: 24px; padding: 8px 16px; }
+  .price-amount { font-size: 22px; }
+  .hero-actions { flex-direction: column; gap: 12px; align-items: stretch; }
+  .btn-primary { text-align: center; justify-content: center; }
+  .btn-secondary { justify-content: center; }
+  .hero-stats { gap: 20px; margin-top: 32px; padding-top: 24px; }
+  .stat-num { font-size: 24px; }
+  .stat-label { font-size: 10px; }
+  .hero-trust { gap: 8px; margin-top: 12px; font-size: 10px; }
   .steps-grid { grid-template-columns: 1fr; gap: 16px; }
   .steps-grid::before { display: none; }
   .trust-grid { grid-template-columns: 1fr 1fr; }
