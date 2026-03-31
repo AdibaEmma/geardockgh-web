@@ -82,6 +82,7 @@ export function FeaturedProducts() {
           ))}
         </div>
       ) : (
+        <>
         <div className="products-grid" ref={gridRef}>
           {products.map((product, i) => {
             const images = parseImages(product);
@@ -180,6 +181,7 @@ export function FeaturedProducts() {
           })}
         </div>
         <div className="swipe-indicator">Swipe to explore</div>
+        </>
       )}
 
       <div className="view-all-cta">
