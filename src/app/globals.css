@@ -2019,7 +2019,7 @@ html.theme-transitioning *::after {
   /* Featured products → horizontal swipe carousel */
   .products-grid {
     display: flex;
-    gap: 12px;
+    gap: 16px;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
@@ -2029,7 +2029,7 @@ html.theme-transitioning *::after {
   .products-grid::-webkit-scrollbar { display: none; }
   .products-grid .product-card {
     flex-shrink: 0;
-    width: 260px;
+    width: calc(100vw - 56px);
     scroll-snap-align: start;
   }
   .products-grid .product-card.featured-card {
