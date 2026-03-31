@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Outfit, Rubik, Space_Mono } from "next/font/google";
 import { Providers } from "@/providers";
 import { OrganizationJsonLd } from "@/components/seo/JsonLd";
+import { PageLoader } from "@/components/ui/PageLoader";
 import "./globals.css";
 
 const SITE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://geardockgh.com";
@@ -102,6 +103,7 @@ export default function RootLayout({
       <body
         className={`${outfit.variable} ${rubik.variable} ${spaceMono.variable} font-sans antialiased`}
       >
+        <PageLoader />
         <OrganizationJsonLd />
         <Providers>{children}</Providers>
       </body>
