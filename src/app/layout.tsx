@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Outfit, Rubik, Space_Mono } from "next/font/google";
 import { Providers } from "@/providers";
 import { OrganizationJsonLd } from "@/components/seo/JsonLd";
+import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 import { PageLoader } from "@/components/ui/PageLoader";
 import "./globals.css";
 
@@ -103,6 +104,7 @@ export default function RootLayout({
       <body
         className={`${outfit.variable} ${rubik.variable} ${spaceMono.variable} font-sans antialiased`}
       >
+        <GoogleAnalytics />
         <PageLoader />
         <OrganizationJsonLd />
         <Providers>{children}</Providers>
