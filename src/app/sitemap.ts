@@ -1,4 +1,5 @@
 import type { MetadataRoute } from 'next';
+import { blogPosts } from '@/lib/data/blog-posts';
 
 const SITE_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://geardockgh.com';
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8001/api';
@@ -88,5 +89,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  return [...staticPages, ...categoryPages, ...productPages];
+  const blogPages: MetadataRoute.Sitemap = [
+    {
+      url: `${SITE_URL}/blog`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
+    },
+    ...blogPosts.map((post) => ({
+      url: `${SITE_URL}/blog/${post.slug}`,
+      lastModified: new Date(post.updatedAt ?? post.publishedAt),
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    })),
+  ];
+
+  return [...staticPages, ...categoryPages, ...productPages, ...blogPages];
 }

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useOrder } from '@/hooks/use-orders';
 import { formatPesewas } from '@/lib/utils/formatters';
 import { Button } from '@/components/ui/Button';
+import { ReferralBanner } from '@/components/referral/ReferralBanner';
 import type { Order } from '@/types';
 
 interface ConfirmationPageProps {
@@ -117,6 +118,11 @@ export default function OrderConfirmationPage({ params }: ConfirmationPageProps)
           </Button>
         </Link>
       </div>
+
+      <ReferralBanner
+        orderNumber={order.orderNumber}
+        productName={order.items[0]?.product?.name}
+      />
     </div>
   );
 }
