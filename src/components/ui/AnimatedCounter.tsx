@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface AnimatedCounterProps {
   value: string;
@@ -12,25 +12,7 @@ export function AnimatedCounter({ value, duration = 1500 }: AnimatedCounterProps
   const ref = useRef<HTMLSpanElement>(null);
   const hasAnimated = useRef(false);
 
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !hasAnimated.current) {
-          hasAnimated.current = true;
-          animateValue();
-        }
-      },
-      { threshold: 0.5 },
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
-  function animateValue() {
+  const animateValue = useCallback(() => {
     const isFloat = value.includes('.');
     const target = parseFloat(value.replace(/,/g, ''));
     if (isNaN(target)) {
@@ -43,7 +25,6 @@ export function AnimatedCounter({ value, duration = 1500 }: AnimatedCounterProps
     function step(now: number) {
       const elapsed = now - start;
       const progress = Math.min(elapsed / duration, 1);
-      // Ease out cubic
       const eased = 1 - Math.pow(1 - progress, 3);
       const current = eased * target;
 
@@ -63,7 +44,30 @@ export function AnimatedCounter({ value, duration = 1500 }: AnimatedCounterProps
     }
 
     requestAnimationFrame(step);
-  }
+  }, [value, duration]);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    // Reset so strict mode re-mount can re-trigger
+    hasAnimated.current = false;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasAnimated.current) {
+          hasAnimated.current = true;
+          animateValue();
+        }
+      },
+      { threshold: 0.5 },
+    );
+
+    observer.observe(el);
+    return () => {
+      observer.disconnect();
+    };
+  }, [animateValue]);
 
   return <span ref={ref}>{display}</span>;
 }
