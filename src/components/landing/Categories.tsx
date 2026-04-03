@@ -133,7 +133,7 @@ export function Categories() {
       <div className="categories-grid" ref={gridRef}>
         {CATEGORIES.map((cat) => (
           <Link
-            href={`/products?category=${cat.slug}`}
+            href={`/products/category/${cat.slug}`}
             className="category-card reveal-element"
             key={cat.title}
           >

@@ -7,10 +7,11 @@ import { ProductGrid } from '@/components/shop/ProductGrid';
 import { ProductFilters } from '@/components/shop/ProductFilters';
 import type { Product } from '@/types';
 
-function ProductsContent() {
+function ProductsContent({ initialCategory }: { initialCategory?: string }) {
   const searchParams = useSearchParams();
   const [search, setSearch] = useState('');
   const [categories, setCategories] = useState<string[]>(() => {
+    if (initialCategory) return [initialCategory];
     const param = searchParams.get('category');
     return param ? param.split(',') : [];
   });
@@ -38,17 +39,21 @@ function ProductsContent() {
 
   return (
     <div className="animate-[fadeUp_400ms_ease-out]">
-      <h1
-        className="font-[family-name:var(--font-outfit)] text-3xl font-bold"
-        style={{ color: 'var(--white)' }}
-      >
-        Shop
-      </h1>
-      <p className="mt-2 text-sm" style={{ color: 'var(--muted)' }}>
-        Browse our in-stock collection of premium gear — ready for delivery
-      </p>
+      {!initialCategory && (
+        <>
+          <h1
+            className="font-[family-name:var(--font-outfit)] text-3xl font-bold"
+            style={{ color: 'var(--white)' }}
+          >
+            Shop
+          </h1>
+          <p className="mt-2 text-sm" style={{ color: 'var(--muted)' }}>
+            Browse our in-stock collection of premium gear — ready for delivery
+          </p>
+        </>
+      )}
 
-      <div className="mt-6">
+      <div className={initialCategory ? '' : 'mt-6'}>
         <ProductFilters
           search={search}
           onSearchChange={(val) => { setSearch(val); resetPage(); }}
@@ -97,10 +102,10 @@ function ProductsContent() {
   );
 }
 
-export function ProductsPageContent() {
+export function ProductsPageContent({ initialCategory }: { initialCategory?: string } = {}) {
   return (
     <Suspense>
-      <ProductsContent />
+      <ProductsContent initialCategory={initialCategory} />
     </Suspense>
   );
 }
