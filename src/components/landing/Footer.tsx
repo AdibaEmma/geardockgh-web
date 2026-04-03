@@ -13,6 +13,10 @@ const INFO_LINKS = [
   { href: '#how', label: 'How It Works' },
   { href: '/products', label: 'All Products' },
   { href: '/preorder', label: 'Pre-Order' },
+  { href: '/blog', label: 'Blog' },
+  { href: '/faq', label: 'FAQ' },
+  { href: '/shipping', label: 'Shipping & Delivery' },
+  { href: '/about', label: 'About Us' },
   { href: '/returns', label: 'Returns & Terms' },
 ];
 
