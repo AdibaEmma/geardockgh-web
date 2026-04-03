@@ -58,13 +58,14 @@ function ProductsContent({ initialCategory }: { initialCategory?: string }) {
           search={search}
           onSearchChange={(val) => { setSearch(val); resetPage(); }}
           selectedCategories={categories}
-          onCategoriesChange={(cats) => { setCategories(cats); setSubcategory(null); resetPage(); }}
+          onCategoriesChange={initialCategory ? () => {} : (cats) => { setCategories(cats); setSubcategory(null); resetPage(); }}
           selectedSubcategory={subcategory}
           onSubcategoryChange={(sub) => { setSubcategory(sub); resetPage(); }}
           priceRange={priceRange}
           onPriceRangeChange={(range) => { setPriceRange(range); resetPage(); }}
           inStockOnly={inStockOnly}
           onInStockChange={(val) => { setInStockOnly(val); resetPage(); }}
+          hideCategories={!!initialCategory}
         />
       </div>
 

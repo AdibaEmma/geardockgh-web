@@ -59,7 +59,7 @@ export default async function CategoryPage({
         >
           {content.h1}
         </h1>
-        <p className="mt-3 max-w-2xl text-sm leading-relaxed" style={{ color: 'var(--muted)' }}>
+        <p className="mt-3 text-sm leading-relaxed" style={{ color: 'var(--muted)' }}>
           {content.intro}
         </p>
       </div>

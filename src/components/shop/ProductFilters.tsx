@@ -37,6 +37,8 @@ interface ProductFiltersProps {
   onInStockChange: (inStock: boolean) => void;
   /** Set to true to hide the in-stock filter (e.g., on pre-order page) */
   hideInStock?: boolean;
+  /** Set to true to hide the category pills (e.g., on dedicated category pages) */
+  hideCategories?: boolean;
 }
 
 export function ProductFilters({
@@ -51,6 +53,7 @@ export function ProductFilters({
   inStockOnly,
   onInStockChange,
   hideInStock,
+  hideCategories,
 }: ProductFiltersProps) {
   const activeCategory = selectedCategories.length === 1
     ? CATEGORY_TREE.find(c => c.value === selectedCategories[0])
@@ -134,39 +137,41 @@ export function ProductFilters({
         )}
       </div>
 
-      {/* Category pills — multi-select */}
-      <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide sm:flex-wrap sm:overflow-visible sm:pb-0">
-        <button
-          onClick={() => { onCategoriesChange([]); onSubcategoryChange(null); }}
-          className={cn(
-            'rounded-full border px-3 py-1.5 text-xs font-medium transition-all',
-            selectedCategories.length === 0
-              ? 'border-[var(--gold)] bg-[var(--gold)]/10 text-[var(--gold)]'
-              : 'border-[var(--border)] text-[var(--muted)] hover:border-[var(--gold)]/40 hover:text-[var(--white)]',
-          )}
-        >
-          All
-        </button>
-        {CATEGORY_TREE.map((cat) => {
-          const Icon = ICON_MAP[cat.icon];
-          const isSelected = selectedCategories.includes(cat.value);
-          return (
-            <button
-              key={cat.value}
-              onClick={() => toggleCategory(cat.value)}
-              className={cn(
-                'inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border px-3 py-1.5 text-xs font-medium transition-all',
-                isSelected
-                  ? 'border-[var(--gold)] bg-[var(--gold)]/10 text-[var(--gold)]'
-                  : 'border-[var(--border)] text-[var(--muted)] hover:border-[var(--gold)]/40 hover:text-[var(--white)]',
-              )}
-            >
-              {Icon && <Icon size={14} />}
-              {cat.label}
-            </button>
-          );
-        })}
-      </div>
+      {/* Category pills — multi-select (hidden on dedicated category pages) */}
+      {!hideCategories && (
+        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide sm:flex-wrap sm:overflow-visible sm:pb-0">
+          <button
+            onClick={() => { onCategoriesChange([]); onSubcategoryChange(null); }}
+            className={cn(
+              'rounded-full border px-3 py-1.5 text-xs font-medium transition-all',
+              selectedCategories.length === 0
+                ? 'border-[var(--gold)] bg-[var(--gold)]/10 text-[var(--gold)]'
+                : 'border-[var(--border)] text-[var(--muted)] hover:border-[var(--gold)]/40 hover:text-[var(--white)]',
+            )}
+          >
+            All
+          </button>
+          {CATEGORY_TREE.map((cat) => {
+            const Icon = ICON_MAP[cat.icon];
+            const isSelected = selectedCategories.includes(cat.value);
+            return (
+              <button
+                key={cat.value}
+                onClick={() => toggleCategory(cat.value)}
+                className={cn(
+                  'inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border px-3 py-1.5 text-xs font-medium transition-all',
+                  isSelected
+                    ? 'border-[var(--gold)] bg-[var(--gold)]/10 text-[var(--gold)]'
+                    : 'border-[var(--border)] text-[var(--muted)] hover:border-[var(--gold)]/40 hover:text-[var(--white)]',
+                )}
+              >
+                {Icon && <Icon size={14} />}
+                {cat.label}
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {/* Subcategory pills */}
       {subcategories && subcategories.length > 0 && (
