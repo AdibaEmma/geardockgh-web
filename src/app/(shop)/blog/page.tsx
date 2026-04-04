@@ -17,8 +17,13 @@ export const metadata: Metadata = {
 export default function BlogPage() {
   return (
     <div className="mx-auto max-w-4xl py-8">
-      <h1 className="text-3xl font-bold text-text-primary">Blog</h1>
-      <p className="mt-2 text-text-secondary">
+      <h1
+        className="font-[family-name:var(--font-outfit)] text-3xl font-bold"
+        style={{ color: 'var(--white)' }}
+      >
+        Blog
+      </h1>
+      <p className="mt-2 text-sm" style={{ color: 'var(--muted)' }}>
         Buying guides, tech tips, and product insights for Ghana&apos;s digital
         professionals.
       </p>
@@ -28,22 +33,29 @@ export default function BlogPage() {
           <Link
             key={post.slug}
             href={`/blog/${post.slug}`}
-            className="group rounded-xl border border-border-default bg-bg-secondary/50 p-6 transition-all hover:border-accent-primary/30 hover:shadow-lg hover:shadow-accent-primary/5"
+            className="group rounded-xl border p-6 transition-all hover:border-[var(--gold)]/40 hover:shadow-lg"
+            style={{ background: 'var(--card)', borderColor: 'var(--border)' }}
           >
-            <span className="text-xs font-medium text-accent-primary">
+            <span className="text-xs font-medium" style={{ color: 'var(--gold)' }}>
               {post.category}
             </span>
-            <h2 className="mt-2 text-lg font-semibold text-text-primary group-hover:text-accent-primary transition-colors">
+            <h2
+              className="mt-2 text-lg font-semibold transition-colors group-hover:text-[var(--gold)]"
+              style={{ color: 'var(--white)' }}
+            >
               {post.title}
             </h2>
-            <p className="mt-2 text-sm leading-relaxed text-text-muted line-clamp-3">
+            <p className="mt-2 text-sm leading-relaxed line-clamp-3" style={{ color: 'var(--muted)' }}>
               {post.excerpt}
             </p>
-            <div className="mt-4 flex items-center justify-between text-xs text-text-muted">
+            <div className="mt-4 flex items-center justify-between text-xs" style={{ color: 'var(--muted)' }}>
               <span>{post.publishedAt}</span>
               <span>{post.readingTime}</span>
             </div>
-            <span className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-accent-primary opacity-0 transition-opacity group-hover:opacity-100">
+            <span
+              className="mt-3 inline-flex items-center gap-1 text-sm font-medium opacity-0 transition-opacity group-hover:opacity-100"
+              style={{ color: 'var(--gold)' }}
+            >
               Read more <ArrowRight size={14} />
             </span>
           </Link>

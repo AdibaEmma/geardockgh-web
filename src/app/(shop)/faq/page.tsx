@@ -69,10 +69,13 @@ export default function FAQPage() {
   return (
     <div className="mx-auto max-w-3xl py-8">
       <FAQPageJsonLd questions={faqs} />
-      <h1 className="text-3xl font-bold text-text-primary">
+      <h1
+        className="font-[family-name:var(--font-outfit)] text-3xl font-bold"
+        style={{ color: 'var(--white)' }}
+      >
         Frequently Asked Questions
       </h1>
-      <p className="mt-2 text-text-secondary">
+      <p className="mt-2 text-sm" style={{ color: 'var(--muted)' }}>
         Everything you need to know about shopping with GearDockGH.
       </p>
 
@@ -80,12 +83,13 @@ export default function FAQPage() {
         {faqs.map((faq) => (
           <div
             key={faq.question}
-            className="rounded-xl border border-border-default bg-bg-secondary/50 p-6"
+            className="rounded-xl border p-6"
+            style={{ background: 'var(--card)', borderColor: 'var(--border)' }}
           >
-            <h2 className="text-base font-semibold text-text-primary">
+            <h2 className="text-base font-semibold" style={{ color: 'var(--white)' }}>
               {faq.question}
             </h2>
-            <p className="mt-2 text-sm leading-relaxed text-text-secondary">
+            <p className="mt-2 text-sm leading-relaxed" style={{ color: 'var(--muted)' }}>
               {faq.answer}
             </p>
           </div>

@@ -42,10 +42,13 @@ export const metadata: Metadata = {
 export default function ShippingPage() {
   return (
     <div className="mx-auto max-w-3xl py-8">
-      <h1 className="text-3xl font-bold text-text-primary">
-        Shipping & Delivery
+      <h1
+        className="font-[family-name:var(--font-outfit)] text-3xl font-bold"
+        style={{ color: 'var(--white)' }}
+      >
+        Shipping &amp; Delivery
       </h1>
-      <p className="mt-2 text-text-secondary">
+      <p className="mt-2 text-sm" style={{ color: 'var(--muted)' }}>
         We deliver across Ghana. Here are our shipping zones, timelines, and
         costs.
       </p>
@@ -54,38 +57,45 @@ export default function ShippingPage() {
         {zones.map((zone) => (
           <div
             key={zone.name}
-            className="flex flex-col gap-1 rounded-xl border border-border-default bg-bg-secondary/50 p-5 sm:flex-row sm:items-center sm:justify-between"
+            className="flex flex-col gap-1 rounded-xl border p-5 sm:flex-row sm:items-center sm:justify-between"
+            style={{ background: 'var(--card)', borderColor: 'var(--border)' }}
           >
             <div>
-              <h2 className="font-semibold text-text-primary">{zone.name}</h2>
-              <p className="text-sm text-text-muted">{zone.timeline}</p>
+              <h2 className="font-semibold" style={{ color: 'var(--white)' }}>{zone.name}</h2>
+              <p className="text-sm" style={{ color: 'var(--muted)' }}>{zone.timeline}</p>
             </div>
-            <span className="text-sm font-medium text-accent-primary">
+            <span className="text-sm font-medium" style={{ color: 'var(--gold)' }}>
               {zone.cost}
             </span>
           </div>
         ))}
       </div>
 
-      <div className="mt-10 rounded-xl border border-border-default bg-bg-secondary/50 p-6">
-        <h2 className="text-lg font-semibold text-text-primary">
+      <div
+        className="mt-10 rounded-xl border p-6"
+        style={{ background: 'var(--card)', borderColor: 'var(--border)' }}
+      >
+        <h2
+          className="font-[family-name:var(--font-outfit)] text-lg font-semibold"
+          style={{ color: 'var(--white)' }}
+        >
           How It Works
         </h2>
-        <ol className="mt-4 space-y-3 text-sm text-text-secondary">
+        <ol className="mt-4 space-y-3 text-sm" style={{ color: 'var(--muted)' }}>
           <li>
-            <span className="font-medium text-text-primary">1. Order</span> —
+            <span className="font-medium" style={{ color: 'var(--white)' }}>1. Order</span> —
             Place your order and pay via MoMo, card, or bank transfer.
           </li>
           <li>
-            <span className="font-medium text-text-primary">2. Confirm</span> —
+            <span className="font-medium" style={{ color: 'var(--white)' }}>2. Confirm</span> —
             We verify your payment and prepare your package.
           </li>
           <li>
-            <span className="font-medium text-text-primary">3. Ship</span> — Your
+            <span className="font-medium" style={{ color: 'var(--white)' }}>3. Ship</span> — Your
             order is dispatched via our trusted courier partners.
           </li>
           <li>
-            <span className="font-medium text-text-primary">4. Deliver</span> —
+            <span className="font-medium" style={{ color: 'var(--white)' }}>4. Deliver</span> —
             Receive your gear at your doorstep. We&apos;ll keep you updated via
             WhatsApp.
           </li>

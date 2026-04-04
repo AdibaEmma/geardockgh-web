@@ -63,20 +63,24 @@ export default async function BlogPostPage({
 
       <Link
         href="/blog"
-        className="inline-flex items-center gap-1 text-sm text-text-muted transition-colors hover:text-text-secondary"
+        className="inline-flex items-center gap-1 text-sm transition-colors hover:text-[var(--white)]"
+        style={{ color: 'var(--muted)' }}
       >
         <ArrowLeft size={14} />
         All posts
       </Link>
 
       <div className="mt-6">
-        <span className="text-xs font-medium text-accent-primary">
+        <span className="text-xs font-medium" style={{ color: 'var(--gold)' }}>
           {post.category}
         </span>
-        <h1 className="mt-2 text-3xl font-extrabold text-text-primary sm:text-4xl">
+        <h1
+          className="mt-2 font-[family-name:var(--font-outfit)] text-3xl font-extrabold sm:text-4xl"
+          style={{ color: 'var(--white)' }}
+        >
           {post.title}
         </h1>
-        <div className="mt-3 flex items-center gap-4 text-sm text-text-muted">
+        <div className="mt-3 flex items-center gap-4 text-sm" style={{ color: 'var(--muted)' }}>
           <span>{post.publishedAt}</span>
           <span>{post.readingTime}</span>
         </div>
