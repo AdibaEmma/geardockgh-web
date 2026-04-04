@@ -10,8 +10,8 @@ import { formatPesewas } from '@/lib/utils/formatters';
 import type { Product } from '@/types';
 
 const STATS = [
-  { value: '224', suffix: '+', label: 'Orders Delivered' },
-  { value: '88', suffix: '+', label: 'Products' },
+  { value: '50', suffix: '+', label: 'Orders Delivered' },
+  { value: '20', suffix: '+', label: 'Products' },
   { value: '10', suffix: '', label: 'Categories' },
   { value: '48', suffix: 'h', label: 'Delivery' },
 ];
@@ -121,7 +121,7 @@ export function Hero() {
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
               <path d="M2 6l3 3 5-5" stroke="var(--teal)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-            224+ orders delivered
+            50+ orders delivered
           </span>
           <span className="hero-trust-item">
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
