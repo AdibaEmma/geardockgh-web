@@ -16,6 +16,7 @@ const NAV_ITEMS = [
 ];
 
 const MORE_ITEMS = [
+  { href: '/contact', label: 'Contact Us' },
   { href: '/faq', label: 'FAQ' },
   { href: '/shipping', label: 'Shipping & Delivery' },
   { href: '/about', label: 'About Us' },

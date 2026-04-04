@@ -44,7 +44,7 @@ const RETURN_STEPS = [
   {
     step: '01',
     title: 'Contact Us',
-    description: 'Reach out via WhatsApp at 0556137400 or through our website chat.',
+    description: 'Reach out via WhatsApp at 0200011849 or through our website chat.',
   },
   {
     step: '02',
@@ -268,7 +268,7 @@ export default function ReturnsPage() {
           <MessageCircle size={20} />
           <div>
             <p className="text-sm font-semibold">Need help? Contact us on WhatsApp</p>
-            <p className="text-xs opacity-80">0556137400 &middot; Available Mon–Sat, 8am–8pm</p>
+            <p className="text-xs opacity-80">0200011849 &middot; Available Mon–Sat, 8am–8pm</p>
           </div>
         </div>
       </section>
@@ -371,8 +371,8 @@ export default function ReturnsPage() {
           </p>
           <p>
             For questions, disputes, or support, contact us on WhatsApp at{' '}
-            <strong style={{ color: 'var(--gold)' }}>0556137400</strong> or email{' '}
-            <strong style={{ color: 'var(--gold)' }}>support@geardockgh.com</strong>.
+            <strong style={{ color: 'var(--gold)' }}>0200011849</strong> or email{' '}
+            <strong style={{ color: 'var(--gold)' }}>geardockgh@gmail.com</strong>.
           </p>
         </div>
 
@@ -380,7 +380,7 @@ export default function ReturnsPage() {
           className="mt-6 rounded-lg p-4 text-center text-xs"
           style={{ background: 'var(--deep)', color: 'var(--muted)' }}
         >
-          &copy; 2026 GearDockGH &middot; Zurelix Limited &middot; All rights reserved
+          &copy; 2026 GearDockGH &middot; All rights reserved
         </div>
       </section>
     </div>

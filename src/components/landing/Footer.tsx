@@ -17,6 +17,7 @@ const INFO_LINKS = [
   { href: '/faq', label: 'FAQ' },
   { href: '/shipping', label: 'Shipping & Delivery' },
   { href: '/about', label: 'About Us' },
+  { href: '/contact', label: 'Contact Us' },
   { href: '/returns', label: 'Returns & Terms' },
 ];
 
