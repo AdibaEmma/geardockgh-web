@@ -20,6 +20,7 @@ interface ProductFormData {
   subcategory: string;
   isPublished: boolean;
   isPreorder: boolean;
+  allowPreorderWhenOOS: boolean;
   preorderSlotTarget: string;
   shippingMethod: string;
   images: string[];
@@ -37,6 +38,7 @@ interface ProductFormModalProps {
     costPricePesewas?: number;
     stockCount?: number;
     isPreorder?: boolean;
+    allowPreorderWhenOOS?: boolean;
     isPublished?: boolean;
     preorderSlotTarget?: number | null;
     shippingMethod?: string | null;
@@ -60,6 +62,7 @@ const emptyForm: ProductFormData = {
   subcategory: '',
   isPublished: false,
   isPreorder: false,
+  allowPreorderWhenOOS: false,
   preorderSlotTarget: '',
   shippingMethod: '',
   images: [],
@@ -99,6 +102,7 @@ export function ProductFormModal({ open, onClose, onSubmit, product, isSubmittin
         subcategory: product.subcategory ?? '',
         isPublished: product.isPublished,
         isPreorder: product.isPreorder,
+        allowPreorderWhenOOS: product.allowPreorderWhenOOS,
         preorderSlotTarget: product.preorderSlotTarget != null ? String(product.preorderSlotTarget) : '',
         shippingMethod: product.shippingMethod ?? '',
         images: existingImages,
@@ -147,11 +151,12 @@ export function ProductFormModal({ open, onClose, onSubmit, product, isSubmittin
         : undefined,
       stockCount: form.stockCount ? Number(form.stockCount) : undefined,
       isPreorder: form.isPreorder,
+      allowPreorderWhenOOS: form.allowPreorderWhenOOS,
       isPublished: form.isPublished,
-      preorderSlotTarget: form.isPreorder && form.preorderSlotTarget
+      preorderSlotTarget: (form.isPreorder || form.allowPreorderWhenOOS) && form.preorderSlotTarget
         ? Number(form.preorderSlotTarget)
         : null,
-      shippingMethod: form.isPreorder && form.shippingMethod
+      shippingMethod: (form.isPreorder || form.allowPreorderWhenOOS) && form.shippingMethod
         ? form.shippingMethod
         : null,
       category: form.category || undefined,
@@ -369,23 +374,43 @@ export function ProductFormModal({ open, onClose, onSubmit, product, isSubmittin
               <input
                 type="checkbox"
                 checked={form.isPreorder}
-                onChange={(e) => handleChange('isPreorder', e.target.checked)}
+                onChange={(e) => {
+                  handleChange('isPreorder', e.target.checked);
+                  if (e.target.checked) handleChange('allowPreorderWhenOOS', false);
+                }}
                 className="h-4 w-4 rounded accent-[var(--gold)]"
               />
               <span className="text-sm" style={{ color: 'var(--white)' }}>
-                Pre-order
+                Pre-order (dedicated)
+              </span>
+            </label>
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={form.allowPreorderWhenOOS}
+                onChange={(e) => handleChange('allowPreorderWhenOOS', e.target.checked)}
+                className="h-4 w-4 rounded accent-[var(--gold)]"
+                disabled={form.isPreorder}
+              />
+              <span
+                className="text-sm"
+                style={{ color: form.isPreorder ? 'var(--muted)' : 'var(--white)' }}
+              >
+                Allow pre-order when out of stock
               </span>
             </label>
           </div>
 
-          {/* Slot Target — only when pre-order is enabled */}
-          {form.isPreorder && (
+          {/* Slot Target — when pre-order or OOS pre-order is enabled */}
+          {(form.isPreorder || form.allowPreorderWhenOOS) && (
             <div
               className="rounded-lg border p-4"
               style={{ borderColor: 'rgba(245, 158, 11, 0.3)', background: 'rgba(245, 158, 11, 0.03)' }}
             >
               <p className="mb-3 text-xs leading-relaxed" style={{ color: 'var(--gold)' }}>
-                Set the price as your product cost + profit margin. Shipping, customs, and clearing fees are excluded and will be communicated to the customer separately when goods arrive.
+                {form.allowPreorderWhenOOS && !form.isPreorder
+                  ? 'When this product goes out of stock, customers can pre-order it. Configure deposit and shipping settings below.'
+                  : 'Set the price as your product cost + profit margin. Shipping, customs, and clearing fees are excluded and will be communicated to the customer separately when goods arrive.'}
               </p>
               {/* Shipping Method */}
               <div className="mb-3">

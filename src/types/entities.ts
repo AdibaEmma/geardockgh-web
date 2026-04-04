@@ -54,6 +54,7 @@ export interface Product {
   isPublished: boolean;
   isFeatured: boolean;
   isFlashDeal: boolean;
+  allowPreorderWhenOOS: boolean;
   estArrivalDate: string | null;
   preorderDepositType: string | null;
   preorderDepositValue: number | null;

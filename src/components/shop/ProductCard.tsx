@@ -7,6 +7,7 @@ import { formatPesewas, formatDate } from '@/lib/utils/formatters';
 import { useCartStore } from '@/stores/cart-store';
 import { useToastStore } from '@/stores/toast-store';
 import { WishlistButton } from '@/components/shop/WishlistButton';
+import { isProductPreorderable } from '@/lib/utils/product-helpers';
 import type { Product } from '@/types';
 
 interface ProductCardProps {
@@ -21,6 +22,8 @@ export function ProductCard({ product }: ProductCardProps) {
   const images = product.imagesJson ? JSON.parse(product.imagesJson) as string[] : [];
   const firstImage = images[0] ?? null;
 
+  const preorderable = isProductPreorderable(product);
+
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -33,8 +36,8 @@ export function ProductCard({ product }: ProductCardProps) {
       name: product.name,
       pricePesewas: product.pricePesewas,
       image: firstImage,
-      isPreorder: product.isPreorder,
-      depositPesewas: product.isPreorder
+      isPreorder: preorderable,
+      depositPesewas: preorderable
         ? (() => {
             if (product.preorderDepositType === 'percentage' && product.preorderDepositValue != null) {
               return Math.round((product.pricePesewas * product.preorderDepositValue) / 100);
@@ -82,7 +85,7 @@ export function ProductCard({ product }: ProductCardProps) {
           </div>
         )}
 
-        {product.isPreorder && (
+        {preorderable && (
           <div className="absolute left-3 top-3 flex items-center gap-1.5">
             <span
               className="rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider shadow-md"
@@ -104,7 +107,7 @@ export function ProductCard({ product }: ProductCardProps) {
           </div>
         )}
 
-        {!product.isPreorder && product.comparePricePesewas && product.comparePricePesewas > product.pricePesewas && (
+        {!preorderable && product.comparePricePesewas && product.comparePricePesewas > product.pricePesewas && (
           <span className="absolute left-3 top-3 flex items-center gap-1 rounded-full bg-red-500 px-2.5 py-1 text-[10px] font-bold text-white shadow-md">
             {Math.round(((product.comparePricePesewas - product.pricePesewas) / product.comparePricePesewas) * 100)}% OFF
           </span>
@@ -151,7 +154,7 @@ export function ProductCard({ product }: ProductCardProps) {
             )}
           </div>
 
-          {!product.isPreorder && product.stockCount === 0 ? (
+          {!preorderable && product.stockCount === 0 ? (
             <div
               className="rounded-lg p-2"
               style={{ color: 'var(--muted)' }}
@@ -174,7 +177,7 @@ export function ProductCard({ product }: ProductCardProps) {
           )}
         </div>
 
-        {product.isPreorder && (
+        {preorderable && (
           <p className="mt-1.5 text-xs" style={{ color: 'var(--muted)' }}>
             {product.preorderDepositType && product.preorderDepositValue != null && (
               <span style={{ color: 'var(--gold)' }}>
@@ -193,13 +196,13 @@ export function ProductCard({ product }: ProductCardProps) {
           </p>
         )}
 
-        {!product.isPreorder && product.stockCount <= 5 && product.stockCount > 0 && (
+        {!preorderable && product.stockCount <= 5 && product.stockCount > 0 && (
           <p className="mt-2 text-xs text-orange-400">
             Only {product.stockCount} left
           </p>
         )}
 
-        {!product.isPreorder && product.stockCount === 0 && (
+        {!preorderable && product.stockCount === 0 && (
           <p className="mt-2 text-xs text-red-400">Out of stock</p>
         )}
       </div>

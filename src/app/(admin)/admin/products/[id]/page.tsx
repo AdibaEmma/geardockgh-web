@@ -325,6 +325,14 @@ export default function AdminProductDetailPage({ params }: PageProps) {
                 value={String(product.stockCount)}
                 valueColor={product.stockCount > 0 ? 'var(--teal)' : '#ef4444'}
               />
+              {product.allowPreorderWhenOOS && (
+                <DetailRow
+                  icon={Layers}
+                  label="OOS Pre-order"
+                  value={product.stockCount === 0 ? 'Active (out of stock)' : 'Enabled (in stock)'}
+                  valueColor={product.stockCount === 0 ? 'var(--gold)' : 'var(--muted)'}
+                />
+              )}
               {product.category && (
                 <DetailRow icon={Tag} label="Category" value={categoryLabel ?? '--'} />
               )}
@@ -350,7 +358,7 @@ export default function AdminProductDetailPage({ params }: PageProps) {
           )}
 
           {/* Pre-order info */}
-          {product.isPreorder && (() => {
+          {(product.isPreorder || product.allowPreorderWhenOOS) && (() => {
             const slotTarget = product.preorderSlotTarget;
             const slotsTaken = product.preorderSlotsTaken;
             const hasTarget = slotTarget != null && slotTarget > 0;

@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/Button';
 import { PreorderBadge } from '@/components/shop/PreorderBadge';
 import { PreorderInfo, calculateDeposit } from '@/components/shop/PreorderInfo';
 import { WishlistButton } from '@/components/shop/WishlistButton';
+import { isProductPreorderable } from '@/lib/utils/product-helpers';
 import type { Product, ProductVariant, ProductOption, ProductOptionValue } from '@/types';
 
 interface ProductDetailProps {
@@ -84,7 +85,8 @@ export function ProductDetail({ slug }: ProductDetailProps) {
   const activePrice =
     (selectedVariant?.pricePesewas ?? product.pricePesewas) + optionsDelta;
   const activeStock = selectedVariant?.stockCount ?? product.stockCount;
-  const isOutOfStock = !product.isPreorder && activeStock === 0;
+  const preorderable = isProductPreorderable(product);
+  const isOutOfStock = !preorderable && activeStock === 0;
 
   // Check if all required options are selected
   const missingOptions = options.filter((o) => !selections[o.name]);
@@ -111,8 +113,8 @@ export function ProductDetail({ slug }: ProductDetailProps) {
         name: displayName,
         pricePesewas: selectedVariant?.pricePesewas ?? product.pricePesewas,
         image: images[0] ?? null,
-        isPreorder: product.isPreorder,
-        depositPesewas: product.isPreorder
+        isPreorder: preorderable,
+        depositPesewas: preorderable
           ? calculateDeposit(product, 1, optionsDelta)
           : activePrice,
         selectedOptions: selectedOpts,
@@ -344,7 +346,7 @@ export function ProductDetail({ slug }: ProductDetailProps) {
 
           {/* Stock Status */}
           <div className="mt-4">
-            {product.isPreorder ? (
+            {preorderable ? (
               <div className="space-y-3">
                 <PreorderBadge size="md" />
                 <PreorderInfo product={product} quantity={quantity} optionsDeltaPesewas={optionsDelta} />
@@ -396,7 +398,7 @@ export function ProductDetail({ slug }: ProductDetailProps) {
           </div>
 
           {/* Quantity + Add to Cart / Notify Me */}
-          {isOutOfStock && !product.isPreorder ? (
+          {isOutOfStock && !preorderable ? (
             <div className="mt-6">
               {user ? (
                 isNotifySubscribed ? (
@@ -462,12 +464,12 @@ export function ProductDetail({ slug }: ProductDetailProps) {
                 className="flex-1 gap-2"
                 disabled={!allOptionsSelected}
                 onClick={handleAddToCart}
-                style={product.isPreorder ? { background: 'var(--gold)', color: 'var(--black)' } : undefined}
+                style={preorderable ? { background: 'var(--gold)', color: 'var(--black)' } : undefined}
               >
                 <ShoppingCart size={18} />
                 {!allOptionsSelected
                   ? `Select ${missingOptions.map((o) => o.name).join(', ')}`
-                  : product.isPreorder
+                  : preorderable
                     ? 'Pre-Order Now — Pay with MoMo'
                     : 'Add to Cart'}
               </Button>
