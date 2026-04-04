@@ -16,17 +16,17 @@ const zones = [
   {
     name: 'Kumasi & Ashanti Region',
     timeline: '3-4 business days',
-    cost: 'From GH\u20B5 40',
+    cost: 'From GH\u20B5 50',
   },
   {
     name: 'Accra & Greater Accra',
     timeline: '3-5 business days',
-    cost: 'From GH\u20B5 45',
+    cost: 'From GH\u20B5 60',
   },
   {
     name: 'Other Regions',
     timeline: '4-7 business days',
-    cost: 'From GH\u20B5 50',
+    cost: 'From GH\u20B5 60',
   },
 ];
 
