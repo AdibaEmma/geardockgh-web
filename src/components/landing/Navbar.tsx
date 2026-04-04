@@ -91,7 +91,7 @@ export function Navbar() {
                 gap: 4,
                 background: 'none',
                 border: 'none',
-                color: 'inherit',
+                color: 'var(--muted)',
                 font: 'inherit',
                 cursor: 'pointer',
                 padding: 0,
