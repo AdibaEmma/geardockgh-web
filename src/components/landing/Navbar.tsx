@@ -9,7 +9,7 @@ import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 const NAV_ITEMS = [
   { href: '/products', label: 'Shop' },
-  { href: '/preorder', label: 'Pre-Order' },
+  { href: '/preorder', label: 'Pre-Order (Wholesale)' },
   { href: '/blog', label: 'Blog' },
   { href: '#featured', label: 'Featured' },
   { href: '#how', label: 'How It Works' },

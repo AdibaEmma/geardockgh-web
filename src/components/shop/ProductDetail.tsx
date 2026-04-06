@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Minus, Plus, ShoppingCart, Package, Bell, BellOff } from 'lucide-react';
 import { ShareButton } from '@/components/shop/ShareButton';
@@ -15,6 +15,7 @@ import { PreorderBadge } from '@/components/shop/PreorderBadge';
 import { PreorderInfo, calculateDeposit } from '@/components/shop/PreorderInfo';
 import { WishlistButton } from '@/components/shop/WishlistButton';
 import { isProductPreorderable } from '@/lib/utils/product-helpers';
+import { useRecentlyViewedStore } from '@/stores/recently-viewed-store';
 import type { Product, ProductVariant, ProductOption, ProductOptionValue } from '@/types';
 
 interface ProductDetailProps {
@@ -34,10 +35,26 @@ export function ProductDetail({ slug }: ProductDetailProps) {
   const { mutate: subscribeStock, isPending: isSubscribing } = useSubscribeStock();
   const { mutate: unsubscribeStock, isPending: isUnsubscribing } = useUnsubscribeStock();
 
+  const addRecentlyViewed = useRecentlyViewedStore((s) => s.addItem);
+
   const [quantity, setQuantity] = useState(1);
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selections, setSelections] = useState<Record<string, ProductOptionValue>>({});
+
+  useEffect(() => {
+    if (!product) return;
+    const images = product.imagesJson ? (JSON.parse(product.imagesJson) as string[]) : [];
+    addRecentlyViewed({
+      productId: product.id,
+      name: product.name,
+      slug: product.slug,
+      pricePesewas: product.pricePesewas,
+      comparePricePesewas: product.comparePricePesewas,
+      image: images[0] ?? null,
+      category: product.category ?? null,
+    });
+  }, [product?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (isLoading) {
     return (

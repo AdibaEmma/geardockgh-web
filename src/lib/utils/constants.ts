@@ -111,7 +111,18 @@ export const CATEGORY_TREE: CategoryNode[] = [
   { value: 'cameras-video', label: 'Cameras & Video', icon: 'Camera' },
   { value: 'storage-networking', label: 'Storage & Networking', icon: 'HardDrive' },
   { value: 'tv-streaming', label: 'TV & Streaming', icon: 'Tv' },
-  { value: 'accessories', label: 'Accessories', icon: 'Cable' },
+  {
+    value: 'accessories',
+    label: 'Accessories',
+    icon: 'Cable',
+    subcategories: [
+      { value: 'car-accessories', label: 'Car Accessories' },
+      { value: 'computer-accessories', label: 'Computer Accessories' },
+      { value: 'phone-accessories', label: 'Phone Accessories' },
+      { value: 'cables-adapters', label: 'Cables & Adapters' },
+      { value: 'other-accessories', label: 'Other Accessories' },
+    ],
+  },
 ];
 
 /** Flat list derived from tree — backward compat for admin dropdown etc. */

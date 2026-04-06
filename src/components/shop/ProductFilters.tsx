@@ -1,20 +1,7 @@
 'use client';
 
-import {
-  Search, X, SlidersHorizontal,
-  Smartphone, Laptop, Headphones, Battery,
-  Armchair, Camera, Gamepad2, HardDrive,
-  Cable, Tv,
-} from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import { CATEGORY_TREE } from '@/lib/utils/constants';
-import { cn } from '@/lib/utils/cn';
-
-const ICON_MAP: Record<string, LucideIcon> = {
-  Smartphone, Laptop, Headphones, Battery,
-  Armchair, Camera, Gamepad2, HardDrive,
-  Cable, Tv,
-};
 
 const PRICE_RANGES = [
   { label: 'Under GH₵ 200', min: 0, max: 20000 },
@@ -29,16 +16,16 @@ interface ProductFiltersProps {
   onSearchChange: (value: string) => void;
   selectedCategories: string[];
   onCategoriesChange: (categories: string[]) => void;
-  selectedSubcategory: string | null;
-  onSubcategoryChange: (subcategory: string | null) => void;
+  selectedSubcategories: string[];
+  onSubcategoriesChange: (subcategories: string[]) => void;
   priceRange: { min?: number; max?: number } | null;
   onPriceRangeChange: (range: { min?: number; max?: number } | null) => void;
   inStockOnly: boolean;
   onInStockChange: (inStock: boolean) => void;
-  /** Set to true to hide the in-stock filter (e.g., on pre-order page) */
   hideInStock?: boolean;
-  /** Set to true to hide the category pills (e.g., on dedicated category pages) */
   hideCategories?: boolean;
+  shippingMethod?: string | null;
+  onShippingMethodChange?: (method: string | null) => void;
 }
 
 export function ProductFilters({
@@ -46,49 +33,80 @@ export function ProductFilters({
   onSearchChange,
   selectedCategories,
   onCategoriesChange,
-  selectedSubcategory,
-  onSubcategoryChange,
+  selectedSubcategories,
+  onSubcategoriesChange,
   priceRange,
   onPriceRangeChange,
   inStockOnly,
   onInStockChange,
-  hideInStock,
-  hideCategories,
+  shippingMethod,
+  onShippingMethodChange,
 }: ProductFiltersProps) {
-  const activeCategory = selectedCategories.length === 1
-    ? CATEGORY_TREE.find(c => c.value === selectedCategories[0])
-    : null;
-  const subcategories = activeCategory?.subcategories;
+  // Build active filter tags
+  const tags: { label: string; onRemove: () => void }[] = [];
 
-  const hasActiveFilters = selectedCategories.length > 0 || selectedSubcategory || priceRange || inStockOnly || search;
-
-  const toggleCategory = (value: string) => {
-    const isSelected = selectedCategories.includes(value);
-    if (isSelected) {
-      onCategoriesChange(selectedCategories.filter(c => c !== value));
-    } else {
-      onCategoriesChange([...selectedCategories, value]);
+  // Category tags
+  for (const catValue of selectedCategories) {
+    const cat = CATEGORY_TREE.find((c) => c.value === catValue);
+    if (cat) {
+      tags.push({
+        label: cat.label,
+        onRemove: () => {
+          onCategoriesChange(selectedCategories.filter((c) => c !== catValue));
+          // Clear subcategories belonging to this category
+          const catSubs = cat.subcategories?.map((s) => s.value) ?? [];
+          onSubcategoriesChange(selectedSubcategories.filter((s) => !catSubs.includes(s)));
+        },
+      });
     }
-    onSubcategoryChange(null);
-  };
+  }
+
+  // Subcategory tags
+  for (const subValue of selectedSubcategories) {
+    const allSubs = CATEGORY_TREE.flatMap((c) => c.subcategories ?? []);
+    const sub = allSubs.find((s) => s.value === subValue);
+    if (sub) {
+      tags.push({
+        label: sub.label,
+        onRemove: () => onSubcategoriesChange(selectedSubcategories.filter((s) => s !== subValue)),
+      });
+    }
+  }
+
+  // Price range tag
+  if (priceRange) {
+    const match = PRICE_RANGES.find((r) => r.min === priceRange.min && r.max === priceRange.max);
+    tags.push({
+      label: match?.label ?? 'Price filter',
+      onRemove: () => onPriceRangeChange(null),
+    });
+  }
+
+  // In Stock tag
+  if (inStockOnly) {
+    tags.push({
+      label: 'In Stock',
+      onRemove: () => onInStockChange(false),
+    });
+  }
+
+  // Shipping method tag
+  if (shippingMethod) {
+    tags.push({
+      label: shippingMethod === 'AIR' ? 'Air Shipping' : 'Sea Shipping',
+      onRemove: () => onShippingMethodChange?.(null),
+    });
+  }
+
+  const hasActiveFilters = tags.length > 0 || search;
 
   const clearAll = () => {
     onCategoriesChange([]);
-    onSubcategoryChange(null);
+    onSubcategoriesChange([]);
     onPriceRangeChange(null);
     onInStockChange(false);
+    onShippingMethodChange?.(null);
     onSearchChange('');
-  };
-
-  const isPriceSelected = (range: typeof PRICE_RANGES[number]) =>
-    priceRange?.min === range.min && priceRange?.max === range.max;
-
-  const togglePrice = (range: typeof PRICE_RANGES[number]) => {
-    if (isPriceSelected(range)) {
-      onPriceRangeChange(null);
-    } else {
-      onPriceRangeChange({ min: range.min, max: range.max });
-    }
   };
 
   return (
@@ -124,122 +142,38 @@ export function ProductFilters({
           )}
         </div>
 
-        {/* Clear all filters */}
         {hasActiveFilters && (
           <button
             onClick={clearAll}
             className="shrink-0 rounded-lg border px-3 py-2.5 text-xs font-medium transition-all hover:border-red-400/40 hover:text-red-400"
             style={{ borderColor: 'var(--border)', color: 'var(--muted)' }}
           >
-            <X size={14} className="inline mr-1" />
+            <X size={14} className="mr-1 inline" />
             Clear
           </button>
         )}
       </div>
 
-      {/* Category pills — multi-select (hidden on dedicated category pages) */}
-      {!hideCategories && (
-        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide sm:flex-wrap sm:overflow-visible sm:pb-0">
-          <button
-            onClick={() => { onCategoriesChange([]); onSubcategoryChange(null); }}
-            className={cn(
-              'rounded-full border px-3 py-1.5 text-xs font-medium transition-all',
-              selectedCategories.length === 0
-                ? 'border-[var(--gold)] bg-[var(--gold)]/10 text-[var(--gold)]'
-                : 'border-[var(--border)] text-[var(--muted)] hover:border-[var(--gold)]/40 hover:text-[var(--white)]',
-            )}
-          >
-            All
-          </button>
-          {CATEGORY_TREE.map((cat) => {
-            const Icon = ICON_MAP[cat.icon];
-            const isSelected = selectedCategories.includes(cat.value);
-            return (
-              <button
-                key={cat.value}
-                onClick={() => toggleCategory(cat.value)}
-                className={cn(
-                  'inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border px-3 py-1.5 text-xs font-medium transition-all',
-                  isSelected
-                    ? 'border-[var(--gold)] bg-[var(--gold)]/10 text-[var(--gold)]'
-                    : 'border-[var(--border)] text-[var(--muted)] hover:border-[var(--gold)]/40 hover:text-[var(--white)]',
-                )}
-              >
-                {Icon && <Icon size={14} />}
-                {cat.label}
-              </button>
-            );
-          })}
-        </div>
-      )}
-
-      {/* Subcategory pills */}
-      {subcategories && subcategories.length > 0 && (
-        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide sm:flex-wrap sm:overflow-visible sm:pb-0">
-          <button
-            onClick={() => onSubcategoryChange(null)}
-            className={cn(
-              'rounded-full border px-2.5 py-1 text-[11px] font-medium transition-all',
-              !selectedSubcategory
-                ? 'border-[var(--teal)] bg-[var(--teal)]/10 text-[var(--teal)]'
-                : 'border-[var(--border)] text-[var(--muted)] hover:border-[var(--teal)]/40 hover:text-[var(--white)]',
-            )}
-          >
-            All {activeCategory!.label}
-          </button>
-          {subcategories.map((sub) => (
+      {/* Active filter tags */}
+      {tags.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {tags.map((tag) => (
             <button
-              key={sub.value}
-              onClick={() => onSubcategoryChange(selectedSubcategory === sub.value ? null : sub.value)}
-              className={cn(
-                'shrink-0 whitespace-nowrap rounded-full border px-2.5 py-1 text-[11px] font-medium transition-all',
-                selectedSubcategory === sub.value
-                  ? 'border-[var(--teal)] bg-[var(--teal)]/10 text-[var(--teal)]'
-                  : 'border-[var(--border)] text-[var(--muted)] hover:border-[var(--teal)]/40 hover:text-[var(--white)]',
-              )}
+              key={tag.label}
+              onClick={tag.onRemove}
+              className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-all hover:border-red-400/40 hover:text-red-400"
+              style={{
+                borderColor: 'var(--gold)',
+                color: 'var(--gold)',
+                background: 'rgba(245, 158, 11, 0.08)',
+              }}
             >
-              {sub.label}
+              {tag.label}
+              <X size={12} />
             </button>
           ))}
         </div>
       )}
-
-      {/* Price range + In Stock row */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide sm:flex-wrap sm:overflow-visible sm:pb-0">
-        <SlidersHorizontal size={14} style={{ color: 'var(--muted)' }} className="shrink-0" />
-        {PRICE_RANGES.map((range) => (
-          <button
-            key={range.label}
-            onClick={() => togglePrice(range)}
-            className={cn(
-              'shrink-0 whitespace-nowrap rounded-full border px-2.5 py-1 text-[11px] font-medium transition-all',
-              isPriceSelected(range)
-                ? 'border-[var(--gold)] bg-[var(--gold)]/10 text-[var(--gold)]'
-                : 'border-[var(--border)] text-[var(--muted)] hover:border-[var(--gold)]/40 hover:text-[var(--white)]',
-            )}
-          >
-            {range.label}
-          </button>
-        ))}
-
-        {/* Divider */}
-        {!hideInStock && (
-          <>
-            <span className="mx-1 hidden sm:block" style={{ color: 'var(--border)' }}>|</span>
-            <button
-              onClick={() => onInStockChange(!inStockOnly)}
-              className={cn(
-                'shrink-0 whitespace-nowrap rounded-full border px-2.5 py-1 text-[11px] font-medium transition-all',
-                inStockOnly
-                  ? 'border-green-500 bg-green-500/10 text-green-400'
-                  : 'border-[var(--border)] text-[var(--muted)] hover:border-green-500/40 hover:text-[var(--white)]',
-              )}
-            >
-              In Stock
-            </button>
-          </>
-        )}
-      </div>
     </div>
   );
 }

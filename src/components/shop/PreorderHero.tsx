@@ -17,7 +17,7 @@ export function PreorderHero() {
           className="mb-4 inline-block rounded-full border px-3 py-1 font-[family-name:var(--font-space-mono)] text-[10px] uppercase tracking-wider"
           style={{ borderColor: 'var(--gold)', color: 'var(--gold)' }}
         >
-          Pre-Order from GearDockGH
+          Pre-Order (Wholesale) from GearDockGH
         </span>
 
         <h1
@@ -88,7 +88,7 @@ export function PreorderHero() {
             className="inline-flex items-center gap-2 rounded-lg px-6 py-3 text-sm font-semibold transition-all hover:brightness-110"
             style={{ background: 'var(--gold)', color: 'var(--black)' }}
           >
-            Browse Pre-Order Gear &darr;
+            Browse Wholesale Gear &darr;
           </Link>
           <Link
             href="/returns"

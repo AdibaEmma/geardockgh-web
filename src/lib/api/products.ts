@@ -11,6 +11,7 @@ interface GetProductsParams {
   minPrice?: number;
   maxPrice?: number;
   inStock?: boolean;
+  shippingMethod?: string;
 }
 
 export async function getProducts(params?: GetProductsParams) {

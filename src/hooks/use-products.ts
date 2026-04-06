@@ -13,6 +13,7 @@ interface UseProductsParams {
   minPrice?: number;
   maxPrice?: number;
   inStock?: boolean;
+  shippingMethod?: string;
 }
 
 export function useProducts(params?: UseProductsParams) {

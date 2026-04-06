@@ -68,7 +68,7 @@ export function ShopHeader() {
                 className="text-sm transition-colors hover:text-[var(--gold)]"
                 style={{ color: isOnProducts ? 'var(--gold)' : 'var(--muted)' }}
               >
-                Pre-Order
+                Pre-Order (Wholesale)
               </Link>
             )}
 

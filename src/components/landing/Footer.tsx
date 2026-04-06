@@ -12,7 +12,7 @@ const SHOP_LINKS = [
 const INFO_LINKS = [
   { href: '#how', label: 'How It Works' },
   { href: '/products', label: 'All Products' },
-  { href: '/preorder', label: 'Pre-Order' },
+  { href: '/preorder', label: 'Pre-Order (Wholesale)' },
   { href: '/blog', label: 'Blog' },
   { href: '/faq', label: 'FAQ' },
   { href: '/shipping', label: 'Shipping & Delivery' },
