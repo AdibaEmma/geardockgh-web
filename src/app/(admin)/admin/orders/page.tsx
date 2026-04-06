@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { ChevronRight, Search } from 'lucide-react';
+import { SortableHeader, type SortState } from '@/components/admin/SortableHeader';
 import { getAdminOrders, updateOrderStatus, bulkUpdateOrderStatus } from '@/lib/api/admin';
 import { OrderStatusBadge } from '@/components/orders/OrderStatusBadge';
 import { Button } from '@/components/ui/Button';
@@ -35,6 +36,7 @@ export default function AdminOrdersPage() {
   const [search, setSearch] = useState('');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [bulkStatus, setBulkStatus] = useState<OrderStatus>('PROCESSING');
+  const [sort, setSort] = useState<SortState | null>(null);
   const queryClient = useQueryClient();
   const addToast = useToastStore((s) => s.addToast);
 
@@ -46,13 +48,15 @@ export default function AdminOrdersPage() {
   };
 
   const { data, isLoading } = useQuery({
-    queryKey: ['admin-orders', { page, status: statusFilter, search }],
+    queryKey: ['admin-orders', { page, status: statusFilter, search, sort }],
     queryFn: () =>
       getAdminOrders({
         page,
         limit: 20,
         status: statusFilter || undefined,
         search: search || undefined,
+        sortBy: sort?.field,
+        sortOrder: sort?.order,
       }),
   });
 
@@ -236,11 +240,11 @@ export default function AdminOrdersPage() {
                       className="accent-[var(--gold)]"
                     />
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold" style={{ color: 'var(--muted)' }}>Order</th>
+                  <SortableHeader label="Order" field="orderNumber" currentSort={sort} onSort={(s) => { setSort(s); setPage(1); }} />
                   <th className="hidden px-4 py-3 text-left text-xs font-semibold md:table-cell" style={{ color: 'var(--muted)' }}>Customer</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold" style={{ color: 'var(--muted)' }}>Status</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold" style={{ color: 'var(--muted)' }}>Total</th>
-                  <th className="hidden px-4 py-3 text-left text-xs font-semibold lg:table-cell" style={{ color: 'var(--muted)' }}>Date</th>
+                  <SortableHeader label="Status" field="status" currentSort={sort} onSort={(s) => { setSort(s); setPage(1); }} />
+                  <SortableHeader label="Total" field="totalPesewas" currentSort={sort} onSort={(s) => { setSort(s); setPage(1); }} />
+                  <SortableHeader label="Date" field="createdAt" currentSort={sort} onSort={(s) => { setSort(s); setPage(1); }} className="hidden lg:table-cell" />
                   <th className="px-4 py-3 text-left text-xs font-semibold" style={{ color: 'var(--muted)' }}>Actions</th>
                 </tr>
               </thead>

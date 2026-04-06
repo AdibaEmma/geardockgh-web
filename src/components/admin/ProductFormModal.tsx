@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { X } from 'lucide-react';
+import { X, Plane, Ship } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { ImageUploader } from '@/components/admin/ImageUploader';
@@ -422,21 +422,21 @@ export function ProductFormModal({ open, onClose, onSubmit, product, isSubmittin
                 </label>
                 <div className="flex gap-2">
                   {[
-                    { value: 'AIR', label: 'Air (1–3 weeks)', emoji: '✈️' },
-                    { value: 'SEA', label: 'Sea (6–10 weeks)', emoji: '🚢' },
+                    { value: 'AIR', label: 'Air (1–3 weeks)', Icon: Plane },
+                    { value: 'SEA', label: 'Sea (6–10 weeks)', Icon: Ship },
                   ].map((method) => (
                     <button
                       key={method.value}
                       type="button"
                       onClick={() => handleChange('shippingMethod', form.shippingMethod === method.value ? '' : method.value)}
-                      className="flex-1 rounded-lg border px-3 py-2.5 text-xs font-medium transition-all"
+                      className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg border px-3 py-2.5 text-xs font-medium transition-all"
                       style={{
                         borderColor: form.shippingMethod === method.value ? 'var(--gold)' : 'var(--border)',
                         color: form.shippingMethod === method.value ? 'var(--gold)' : 'var(--muted)',
                         background: form.shippingMethod === method.value ? 'rgba(245, 158, 11, 0.1)' : 'transparent',
                       }}
                     >
-                      {method.emoji} {method.label}
+                      <method.Icon size={14} /> {method.label}
                     </button>
                   ))}
                 </div>

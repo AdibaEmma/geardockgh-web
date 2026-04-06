@@ -46,6 +46,8 @@ interface AdminOrdersParams {
   limit?: number;
   status?: string;
   search?: string;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
 }
 
 export async function getAdminStats() {
@@ -85,6 +87,8 @@ interface AdminCustomersParams {
   limit?: number;
   search?: string;
   role?: string;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
 }
 
 interface AdminCustomersResponse {
@@ -194,6 +198,8 @@ interface AdminProductsParams {
   search?: string;
   category?: string;
   status?: string; // 'published' | 'draft'
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
 }
 
 export async function getAdminProducts(params?: AdminProductsParams) {

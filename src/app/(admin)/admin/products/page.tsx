@@ -5,6 +5,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Plus, Pencil, Trash2, Search, Package, Eye, Globe, GlobeLock, Star, Zap } from 'lucide-react';
+import { SortableHeader, type SortState } from '@/components/admin/SortableHeader';
 import {
   getAdminProducts,
   createAdminProduct,
@@ -34,6 +35,7 @@ export default function AdminProductsPage() {
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('');
+  const [sort, setSort] = useState<SortState | null>(null);
 
   // Modal state
   const [modalOpen, setModalOpen] = useState(false);
@@ -42,7 +44,7 @@ export default function AdminProductsPage() {
 
   // Fetch products
   const { data, isLoading } = useQuery({
-    queryKey: ['admin-products', { page, search, category: categoryFilter, status: statusFilter }],
+    queryKey: ['admin-products', { page, search, category: categoryFilter, status: statusFilter, sort }],
     queryFn: () =>
       getAdminProducts({
         page,
@@ -50,6 +52,8 @@ export default function AdminProductsPage() {
         search: search || undefined,
         category: categoryFilter || undefined,
         status: statusFilter || undefined,
+        sortBy: sort?.field,
+        sortOrder: sort?.order,
       }),
   });
 
@@ -283,10 +287,10 @@ export default function AdminProductsPage() {
             <table className="w-full">
               <thead>
                 <tr style={{ background: 'var(--card)' }}>
-                  <th className="px-4 py-3 text-left text-xs font-semibold" style={{ color: 'var(--muted)' }}>Name</th>
-                  <th className="hidden px-4 py-3 text-left text-xs font-semibold md:table-cell" style={{ color: 'var(--muted)' }}>Category</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold" style={{ color: 'var(--muted)' }}>Price</th>
-                  <th className="hidden px-4 py-3 text-left text-xs font-semibold sm:table-cell" style={{ color: 'var(--muted)' }}>Stock</th>
+                  <SortableHeader label="Name" field="name" currentSort={sort} onSort={(s) => { setSort(s); setPage(1); }} />
+                  <SortableHeader label="Category" field="category" currentSort={sort} onSort={(s) => { setSort(s); setPage(1); }} className="hidden md:table-cell" />
+                  <SortableHeader label="Price" field="pricePesewas" currentSort={sort} onSort={(s) => { setSort(s); setPage(1); }} />
+                  <SortableHeader label="Stock" field="stockCount" currentSort={sort} onSort={(s) => { setSort(s); setPage(1); }} className="hidden sm:table-cell" />
                   <th className="hidden px-4 py-3 text-left text-xs font-semibold sm:table-cell" style={{ color: 'var(--muted)' }}>Status</th>
                   <th className="px-4 py-3 text-left text-xs font-semibold" style={{ color: 'var(--muted)' }}>Actions</th>
                 </tr>

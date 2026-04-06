@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Search, User, ShoppingCart, Mail, Phone } from 'lucide-react';
+import { SortableHeader, type SortState } from '@/components/admin/SortableHeader';
 import { getAdminCustomers, type AdminCustomer } from '@/lib/api/admin';
 import { formatDate } from '@/lib/utils/formatters';
 
@@ -94,15 +95,18 @@ export default function AdminCustomersPage() {
   const [search, setSearch] = useState('');
   const [searchInput, setSearchInput] = useState('');
   const [roleFilter, setRoleFilter] = useState('');
+  const [sort, setSort] = useState<SortState | null>(null);
 
   const { data, isLoading } = useQuery({
-    queryKey: ['admin-customers', page, search, roleFilter],
+    queryKey: ['admin-customers', page, search, roleFilter, sort],
     queryFn: () =>
       getAdminCustomers({
         page,
         limit: 20,
         search: search || undefined,
         role: roleFilter || undefined,
+        sortBy: sort?.field,
+        sortOrder: sort?.order,
       }),
   });
 
@@ -199,12 +203,8 @@ export default function AdminCustomersPage() {
             <table className="w-full text-left">
               <thead>
                 <tr style={{ borderBottom: '1px solid var(--border)' }}>
-                  <th className="px-5 py-3 text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--muted)' }}>
-                    Customer
-                  </th>
-                  <th className="px-5 py-3 text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--muted)' }}>
-                    Email
-                  </th>
+                  <SortableHeader label="Customer" field="firstName" currentSort={sort} onSort={(s) => { setSort(s); setPage(1); }} />
+                  <SortableHeader label="Email" field="email" currentSort={sort} onSort={(s) => { setSort(s); setPage(1); }} />
                   <th className="hidden px-5 py-3 text-xs font-medium uppercase tracking-wide md:table-cell" style={{ color: 'var(--muted)' }}>
                     Phone
                   </th>
@@ -214,9 +214,7 @@ export default function AdminCustomersPage() {
                   <th className="hidden px-5 py-3 text-center text-xs font-medium uppercase tracking-wide lg:table-cell" style={{ color: 'var(--muted)' }}>
                     Status
                   </th>
-                  <th className="hidden px-5 py-3 text-right text-xs font-medium uppercase tracking-wide lg:table-cell" style={{ color: 'var(--muted)' }}>
-                    Joined
-                  </th>
+                  <SortableHeader label="Joined" field="createdAt" currentSort={sort} onSort={(s) => { setSort(s); setPage(1); }} className="hidden lg:table-cell" />
                 </tr>
               </thead>
               <tbody>

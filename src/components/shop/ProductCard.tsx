@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { ShoppingCart, Bell, Loader2, Check } from 'lucide-react';
+import { ShoppingCart, Bell, Loader2, Check, Plane, Ship } from 'lucide-react';
 import { formatPesewas, formatDate } from '@/lib/utils/formatters';
 import { useCartStore } from '@/stores/cart-store';
 import { useToastStore } from '@/stores/toast-store';
@@ -101,7 +101,7 @@ export function ProductCard({ product }: ProductCardProps) {
                   color: 'var(--black)',
                 }}
               >
-                {product.shippingMethod === 'AIR' ? '✈ Air' : '🚢 Sea'}
+                {product.shippingMethod === 'AIR' ? <><Plane size={10} className="mr-0.5 inline" /> Air</> : <><Ship size={10} className="mr-0.5 inline" /> Sea</>}
               </span>
             )}
           </div>
