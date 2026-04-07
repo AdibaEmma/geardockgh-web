@@ -2057,8 +2057,8 @@ html.theme-transitioning *::after {
   .categories-grid::-webkit-scrollbar { display: none; }
   .category-card {
     flex-shrink: 0;
-    width: 260px;
-    scroll-snap-align: start;
+    width: calc(100vw - 72px);
+    scroll-snap-align: center;
     text-align: center;
     padding: 32px 24px;
   }
@@ -2088,7 +2088,7 @@ html.theme-transitioning *::after {
   .hero-left { padding: 100px 0 40px; max-width: 100%; overflow: hidden; }
   .hero-sub { max-width: 100%; }
   .hero-actions { flex-direction: column; max-width: 100%; }
-  .hero-price-callout { max-width: 100%; box-sizing: border-box; }
+  .hero-price-callout { max-width: 100%; box-sizing: border-box; display: flex; justify-content: center; width: 100%; }
   .trust-stat { text-align: center; }
   .trust-badges { justify-content: center; }
   .btn-primary { font-size: 14px; padding: 16px 24px; width: 100%; text-align: center; justify-content: center; box-sizing: border-box; }
