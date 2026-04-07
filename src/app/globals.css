@@ -2078,20 +2078,26 @@ html.theme-transitioning *::after {
   .products-grid::-webkit-scrollbar { display: none; }
   .products-grid .product-card {
     flex-shrink: 0;
-    width: calc(100vw - 56px);
+    width: calc(100vw - 40px);
     scroll-snap-align: start;
   }
   .products-grid .product-card.featured-card {
     grid-row: unset;
   }
+  .hero { padding: 0 20px; }
+  .hero-left { padding: 100px 0 40px; }
   .trust-stat { text-align: center; }
   .trust-badges { justify-content: center; }
   .hero-actions { flex-direction: column; }
   .btn-primary { font-size: 14px; padding: 16px 24px; width: 100%; text-align: center; justify-content: center; }
   .btn-secondary { justify-content: center; }
-  .hero-stats { gap: 24px; flex-wrap: wrap; }
+  .hero-stats { gap: 16px; flex-wrap: wrap; justify-content: space-between; }
   .hero-heading { font-size: clamp(40px, 10vw, 56px); }
+  .hero-trust { flex-wrap: wrap; gap: 6px 12px; }
   .section, .featured, .why, .newsletter, .landing-footer, .how-it-works, .testimonials, .flash-deal { padding: 56px 20px; }
+  .trust-bar { padding: 16px 20px; gap: 12px; }
+  .trust-item { padding: 6px 0; border-right: none; gap: 6px; }
+  .trust-label { font-size: 9px; letter-spacing: 0.5px; }
   .footer-top { grid-template-columns: 1fr; }
   .trust-grid { grid-template-columns: 1fr; }
   .testimonial-card { width: 300px; }
