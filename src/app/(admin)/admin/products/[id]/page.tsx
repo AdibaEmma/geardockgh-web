@@ -1,6 +1,6 @@
 'use client';
 
-import { use } from 'react';
+import { use, useState } from 'react';
 import Link from 'next/link';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
@@ -52,6 +52,7 @@ export default function AdminProductDetailPage({ params }: PageProps) {
   });
 
   const auditLogs = (auditData?.data ?? []) as ProductAuditLog[];
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   const togglePublish = useMutation({
     mutationFn: () => toggleAdminProductPublish(id),
@@ -216,7 +217,7 @@ export default function AdminProductDetailPage({ params }: PageProps) {
           >
             {images.length > 0 ? (
               <img
-                src={images[0]}
+                src={images[selectedImageIndex]}
                 alt={product.name}
                 className="h-72 w-full object-contain"
                 style={{ background: 'var(--deep)' }}
@@ -235,13 +236,23 @@ export default function AdminProductDetailPage({ params }: PageProps) {
                 style={{ borderColor: 'var(--border)' }}
               >
                 {images.map((img, i) => (
-                  <img
+                  <button
                     key={i}
-                    src={img}
-                    alt={`${product.name} ${i + 1}`}
-                    className="h-16 w-16 rounded-lg border object-cover"
-                    style={{ borderColor: 'var(--border)' }}
-                  />
+                    onClick={() => setSelectedImageIndex(i)}
+                    className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg border transition-all duration-200 hover:scale-105"
+                    style={{
+                      borderColor:
+                        i === selectedImageIndex ? 'var(--gold)' : 'var(--border)',
+                      boxShadow:
+                        i === selectedImageIndex ? '0 0 0 1px var(--gold)' : 'none',
+                    }}
+                  >
+                    <img
+                      src={img}
+                      alt={`${product.name} ${i + 1}`}
+                      className="h-full w-full object-cover"
+                    />
+                  </button>
                 ))}
               </div>
             )}

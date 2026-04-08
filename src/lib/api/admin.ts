@@ -218,10 +218,15 @@ export async function createAdminProduct(data: {
   costPricePesewas?: number;
   stockCount?: number;
   isPreorder?: boolean;
+  allowPreorderWhenOOS?: boolean;
   isPublished?: boolean;
+  preorderSlotTarget?: number | null;
+  shippingMethod?: string | null;
   category?: string;
+  subcategory?: string;
   imagesJson?: string;
   specsJson?: string;
+  optionsJson?: string;
 }) {
   return apiClient.post<Product>('/admin/products', data);
 }
@@ -234,10 +239,15 @@ export async function updateAdminProduct(id: string, data: Partial<{
   costPricePesewas: number;
   stockCount: number;
   isPreorder: boolean;
+  allowPreorderWhenOOS: boolean;
   isPublished: boolean;
+  preorderSlotTarget: number | null;
+  shippingMethod: string | null;
   category: string;
+  subcategory: string;
   imagesJson: string;
   specsJson: string;
+  optionsJson: string;
 }>) {
   return apiClient.patch<Product>(`/admin/products/${id}`, data);
 }
