@@ -19,7 +19,7 @@ const CONTACT_METHODS = [
     title: 'WhatsApp',
     subtitle: 'Fastest way to reach us',
     value: '0200011849',
-    href: 'https://wa.me/233200011849?text=Hi%20GearDockGH!%20I%20have%20a%20question.',
+    href: 'https://wa.me/233200011849?text=Hello%2C%20GearDockGH.%20I%20would%20like%20to%20make%20an%20inquiry%20regarding%20your%20products%2Fservices.',
     cta: 'Chat on WhatsApp',
     accent: 'var(--gold)',
     isPrimary: true,

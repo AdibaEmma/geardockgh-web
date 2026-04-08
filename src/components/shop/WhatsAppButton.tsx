@@ -17,13 +17,13 @@ function getWhatsAppUrl(pathname: string): string {
     const productSlug = productMatch[1];
     const productName = productSlug.replace(/-/g, ' ');
     const message = encodeURIComponent(
-      `Hi GearDockGH! I have a question about: ${productName}`
+      `Hello, GearDockGH. I would like to make an inquiry regarding: ${productName}`
     );
     return `${baseUrl}?text=${message}`;
   }
 
   const message = encodeURIComponent(
-    'Hi GearDockGH! I have a question about a product.'
+    'Hello, GearDockGH. I would like to make an inquiry regarding your products/services.'
   );
   return `${baseUrl}?text=${message}`;
 }
