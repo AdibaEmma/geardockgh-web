@@ -1994,8 +1994,9 @@ html.theme-transitioning *::after {
 @media (max-width: 1024px) {
   .announcement-bar { font-size: 10px; letter-spacing: 1.5px; }
   nav.landing-nav { padding: 20px 32px; }
-  .nav-links { gap: 20px; }
-  .nav-links a { font-size: 11px; letter-spacing: 0.5px; }
+  .nav-links { display: none; }
+  .hamburger-btn { display: flex; }
+  .nav-cta { display: none; }
   .hero { grid-template-columns: 1fr 1fr; padding: 0 32px; }
   .hero-showcase { width: 320px; height: 380px; }
   .showcase-card { width: 220px; padding: 24px; }
@@ -2015,9 +2016,6 @@ html.theme-transitioning *::after {
   .footer-top { grid-template-columns: 1fr 1fr; gap: 40px; }
 }
 @media (max-width: 768px) {
-  .nav-links { display: none; }
-  .hamburger-btn { display: flex; }
-  .nav-cta { display: none; }
   .hero { grid-template-columns: 1fr; }
   .hero-right { display: none; }
   .hero-left { padding: 100px 0 40px; max-width: 100%; overflow: hidden; }
