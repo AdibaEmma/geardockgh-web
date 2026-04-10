@@ -50,7 +50,7 @@ export function ShopHeader() {
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden items-center gap-6 md:flex">
+          <nav className="hidden items-center gap-6 lg:flex">
             <ThemeToggle />
 
             {/* Context-aware nav: show Pre-Order when on shop, show Shop when on preorder */}
@@ -168,7 +168,7 @@ export function ShopHeader() {
           </nav>
 
           {/* Mobile: Logo actions (cart handled by bottom nav) */}
-          <div className="flex items-center gap-3 md:hidden">
+          <div className="flex items-center gap-3 lg:hidden">
             <ThemeToggle />
             <button
               onClick={() => setCartOpen(true)}
