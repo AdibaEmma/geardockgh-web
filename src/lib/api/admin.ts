@@ -279,3 +279,90 @@ export interface ProductAuditLog {
 export async function getProductAuditLogs(id: string) {
   return apiClient.get<ProductAuditLog[]>(`/admin/products/${id}/audit-logs`);
 }
+
+// ─── LEADS ────────────────────────────────────────────────────
+
+export interface Lead {
+  id: string;
+  email: string;
+  customerId: string | null;
+  source: string;
+  status: string;
+  score: number;
+  firstTouchAt: string;
+  lastActivityAt: string;
+  convertedAt: string | null;
+  convertedOrderId: string | null;
+  metadata: string | null;
+  createdAt: string;
+  updatedAt: string;
+  activities?: LeadActivity[];
+}
+
+export interface LeadActivity {
+  id: string;
+  action: string;
+  productId: string | null;
+  metadata: string | null;
+  scoreDelta: number;
+  createdAt: string;
+}
+
+export interface LeadPipeline {
+  NEW: number;
+  ENGAGED: number;
+  QUALIFIED: number;
+  CONVERTED: number;
+  INACTIVE: number;
+}
+
+export interface LeadStats {
+  pipeline: LeadPipeline;
+  totalLeads: number;
+  conversionRate: number;
+  sourceBreakdown: Record<string, number>;
+  avgTimeToConversion: number | null;
+  recentLeads: Lead[];
+}
+
+export interface LeadScoringRule {
+  id: string;
+  action: string;
+  points: number;
+  isActive: boolean;
+}
+
+export interface LeadQueryParams {
+  page?: number;
+  limit?: number;
+  status?: string;
+  source?: string;
+  minScore?: number;
+  search?: string;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+}
+
+export async function getAdminLeads(params?: LeadQueryParams) {
+  return apiClient.get<Lead[]>('/admin/leads', { params });
+}
+
+export async function getAdminLead(id: string) {
+  return apiClient.get<Lead>(`/admin/leads/${id}`);
+}
+
+export async function getAdminLeadStats() {
+  return apiClient.get<LeadStats>('/admin/leads/stats');
+}
+
+export async function getAdminScoringRules() {
+  return apiClient.get<LeadScoringRule[]>('/admin/leads/scoring-rules');
+}
+
+export async function updateAdminScoringRules(rules: { action: string; points: number; isActive?: boolean }[]) {
+  return apiClient.put<LeadScoringRule[]>('/admin/leads/scoring-rules', { rules });
+}
+
+export async function backfillLeads() {
+  return apiClient.post<{ created: number; updated: number; total: number }>('/admin/leads/backfill');
+}

@@ -1,3 +1,5 @@
+import { trackLeadEvent } from '@/lib/api/leads';
+
 type GtagEvent = {
   action: string;
   category?: string;
@@ -32,6 +34,12 @@ export function trackViewItem(item: {
       },
     ],
   });
+
+  trackLeadEvent({
+    action: 'page_view',
+    productId: item.id,
+    metadata: { name: item.name, category: item.category },
+  });
 }
 
 export function trackAddToCart(item: {
@@ -63,6 +71,11 @@ export function trackBeginCheckout(value: number, itemCount: number) {
     currency: 'GHS',
     value,
     items_count: itemCount,
+  });
+
+  trackLeadEvent({
+    action: 'checkout_start',
+    metadata: { valuePesewas: Math.round(value * 100), itemCount },
   });
 }
 

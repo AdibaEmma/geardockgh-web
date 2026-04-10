@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { trackLeadEvent } from '@/lib/api/leads';
 import type { SelectedOption } from '@/types';
 
 interface CartItem {
@@ -75,6 +76,13 @@ export const useCartStore = create<CartStore>()(
           }
 
           return { items: [...state.items, { ...item, selectedOptions: selOptions, quantity }] };
+        });
+
+        // Track lead event
+        trackLeadEvent({
+          action: 'add_to_cart',
+          productId: item.productId,
+          metadata: { name: item.name, pricePesewas: item.pricePesewas },
         });
       },
 

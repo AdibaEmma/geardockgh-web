@@ -1,6 +1,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
+import { trackLeadEvent } from '@/lib/api/leads';
 
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_SOCIAL_WHATSAPP ?? '';
 
@@ -53,6 +54,13 @@ export function WhatsAppButton() {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat with us on WhatsApp"
+        onClick={() => {
+          const productMatch = pathname.match(/^\/products\/([^/]+)$/);
+          trackLeadEvent({
+            action: 'whatsapp_click',
+            metadata: { page: pathname, product: productMatch?.[1] ?? null },
+          });
+        }}
         className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full shadow-lg transition-transform hover:scale-110 active:scale-95 max-md:bottom-20"
         style={{ background: 'var(--gold)' }}
       >
