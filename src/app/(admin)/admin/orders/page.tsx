@@ -17,7 +17,7 @@ import { OrderStatusBadge } from '@/components/orders/OrderStatusBadge';
 import { Button } from '@/components/ui/Button';
 import { formatPesewas, formatDate } from '@/lib/utils/formatters';
 import { useToastStore } from '@/stores/toast-store';
-import type { Order, OrderStatus, Product } from '@/types';
+import type { Order, OrderStatus, Product, ProductOption, ProductOptionValue } from '@/types';
 
 const allStatuses: OrderStatus[] = [
   'PENDING_PAYMENT',
@@ -37,10 +37,18 @@ const nextStatusMap: Record<string, OrderStatus> = {
 };
 
 // ── Manual Order Form ──
+interface SelectedOptionEntry {
+  name: string;
+  value: string;
+  priceDelta: number;
+}
+
 interface OrderItemRow {
   productId: string;
   quantity: number;
   unitPricePesewas: number;
+  options: ProductOption[];
+  selectedOptions: SelectedOptionEntry[];
 }
 
 function ManualOrderForm({
@@ -63,7 +71,7 @@ function ManualOrderForm({
   const [paymentMethod, setPaymentMethod] = useState<'CASH' | 'MOMO' | 'BANK_TRANSFER'>('CASH');
   const [notes, setNotes] = useState('');
   const [items, setItems] = useState<OrderItemRow[]>([
-    { productId: '', quantity: 1, unitPricePesewas: 0 },
+    { productId: '', quantity: 1, unitPricePesewas: 0, options: [], selectedOptions: [] },
   ]);
 
   useEffect(() => {
@@ -77,8 +85,18 @@ function ManualOrderForm({
     }
   }, [open]);
 
+  const parseOptions = (product: Product): ProductOption[] => {
+    if (!product.optionsJson) return [];
+    try {
+      return JSON.parse(product.optionsJson) as ProductOption[];
+    } catch {
+      return [];
+    }
+  };
+
   const handleProductChange = (index: number, productId: string) => {
     const product = products.find((p) => p.id === productId);
+    const options = product ? parseOptions(product) : [];
     setItems((prev) =>
       prev.map((item, i) =>
         i === index
@@ -86,14 +104,32 @@ function ManualOrderForm({
               ...item,
               productId,
               unitPricePesewas: product?.pricePesewas ?? 0,
+              options,
+              selectedOptions: [],
             }
           : item,
       ),
     );
   };
 
+  const handleOptionSelect = (itemIndex: number, optionName: string, val: ProductOptionValue) => {
+    setItems((prev) =>
+      prev.map((item, i) => {
+        if (i !== itemIndex) return item;
+        const updated = item.selectedOptions.filter((s) => s.name !== optionName);
+        updated.push({ name: optionName, value: val.label, priceDelta: val.priceDelta ?? 0 });
+        return { ...item, selectedOptions: updated };
+      }),
+    );
+  };
+
+  const getItemTotal = (item: OrderItemRow) => {
+    const optionsDelta = item.selectedOptions.reduce((sum, o) => sum + o.priceDelta, 0);
+    return (item.unitPricePesewas + optionsDelta) * item.quantity;
+  };
+
   const addItem = () => {
-    setItems((prev) => [...prev, { productId: '', quantity: 1, unitPricePesewas: 0 }]);
+    setItems((prev) => [...prev, { productId: '', quantity: 1, unitPricePesewas: 0, options: [], selectedOptions: [] }]);
   };
 
   const removeItem = (index: number) => {
@@ -101,7 +137,7 @@ function ManualOrderForm({
     setItems((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const subtotal = items.reduce((sum, item) => sum + item.unitPricePesewas * item.quantity, 0);
+  const subtotal = items.reduce((sum, item) => sum + getItemTotal(item), 0);
 
   const resetForm = () => {
     setCustomerName('');
@@ -109,7 +145,7 @@ function ManualOrderForm({
     setCustomerEmail('');
     setPaymentMethod('CASH');
     setNotes('');
-    setItems([{ productId: '', quantity: 1, unitPricePesewas: 0 }]);
+    setItems([{ productId: '', quantity: 1, unitPricePesewas: 0, options: [], selectedOptions: [] }]);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -132,6 +168,9 @@ function ManualOrderForm({
         items: validItems.map((i) => ({
           productId: i.productId,
           quantity: i.quantity,
+          selectedOptions: i.selectedOptions.length > 0
+            ? JSON.stringify(i.selectedOptions.map((s) => ({ name: s.name, value: s.value, priceDelta: s.priceDelta })))
+            : undefined,
         })),
         customerName: customerName.trim(),
         customerPhone: customerPhone.trim() || undefined,
@@ -250,6 +289,66 @@ function ManualOrderForm({
                             </option>
                           ))}
                       </select>
+
+                      {/* Option Groups */}
+                      {item.options.length > 0 && (
+                        <div className="space-y-2">
+                          {item.options.map((option) => {
+                            const selected = item.selectedOptions.find((s) => s.name === option.name);
+                            return (
+                              <div key={option.name}>
+                                <label className="mb-1 block text-[10px] font-medium" style={{ color: 'var(--muted)' }}>
+                                  {option.name}
+                                  {selected && (
+                                    <span style={{ color: 'var(--gold)' }}> — {selected.value}</span>
+                                  )}
+                                </label>
+                                <div className="flex flex-wrap gap-1.5">
+                                  {option.type === 'color' ? (
+                                    option.values.map((val) => (
+                                      <button
+                                        key={val.label}
+                                        type="button"
+                                        onClick={() => handleOptionSelect(index, option.name, val)}
+                                        className="h-7 w-7 rounded-full transition-all"
+                                        style={{
+                                          background: val.hex ?? '#888',
+                                          boxShadow: selected?.value === val.label
+                                            ? '0 0 0 2px var(--deep), 0 0 0 4px var(--gold)'
+                                            : '0 0 0 1px var(--border)',
+                                        }}
+                                        title={val.priceDelta ? `${val.label} (+${formatPesewas(val.priceDelta)})` : val.label}
+                                      />
+                                    ))
+                                  ) : (
+                                    option.values.map((val) => (
+                                      <button
+                                        key={val.label}
+                                        type="button"
+                                        onClick={() => handleOptionSelect(index, option.name, val)}
+                                        className="rounded-md border px-2.5 py-1 text-xs transition-all"
+                                        style={{
+                                          borderColor: selected?.value === val.label ? 'var(--gold)' : 'var(--border)',
+                                          color: selected?.value === val.label ? 'var(--gold)' : 'var(--white)',
+                                          background: selected?.value === val.label ? 'rgba(245,158,11,0.08)' : 'transparent',
+                                        }}
+                                      >
+                                        {val.label}
+                                        {val.priceDelta ? (
+                                          <span className="ml-1 text-[10px]" style={{ color: 'var(--muted)' }}>
+                                            +{formatPesewas(val.priceDelta)}
+                                          </span>
+                                        ) : null}
+                                      </button>
+                                    ))
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+
                       <div className="flex items-center gap-2">
                         <div className="flex-1">
                           <label className="mb-1 block text-[10px]" style={{ color: 'var(--muted)' }}>
@@ -276,7 +375,12 @@ function ManualOrderForm({
                             Unit Price
                           </label>
                           <p className="px-1 py-1.5 text-sm font-medium" style={{ color: 'var(--gold)' }}>
-                            {item.unitPricePesewas > 0 ? formatPesewas(item.unitPricePesewas) : '—'}
+                            {item.unitPricePesewas > 0
+                              ? formatPesewas(
+                                  item.unitPricePesewas +
+                                  item.selectedOptions.reduce((s, o) => s + o.priceDelta, 0),
+                                )
+                              : '—'}
                           </p>
                         </div>
                         <div className="flex-1">
@@ -284,7 +388,7 @@ function ManualOrderForm({
                             Subtotal
                           </label>
                           <p className="px-1 py-1.5 text-sm font-medium" style={{ color: 'var(--white)' }}>
-                            {item.unitPricePesewas > 0 ? formatPesewas(item.unitPricePesewas * item.quantity) : '—'}
+                            {item.unitPricePesewas > 0 ? formatPesewas(getItemTotal(item)) : '—'}
                           </p>
                         </div>
                       </div>
