@@ -1,16 +1,23 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
-import { ChevronRight, Search } from 'lucide-react';
+import { ChevronRight, Search, Plus, X, Trash2 } from 'lucide-react';
 import { SortableHeader, type SortState } from '@/components/admin/SortableHeader';
-import { getAdminOrders, updateOrderStatus, bulkUpdateOrderStatus } from '@/lib/api/admin';
+import {
+  getAdminOrders,
+  getAdminProducts,
+  updateOrderStatus,
+  bulkUpdateOrderStatus,
+  createAdminOrder,
+  type CreateAdminOrderPayload,
+} from '@/lib/api/admin';
 import { OrderStatusBadge } from '@/components/orders/OrderStatusBadge';
 import { Button } from '@/components/ui/Button';
 import { formatPesewas, formatDate } from '@/lib/utils/formatters';
 import { useToastStore } from '@/stores/toast-store';
-import type { Order, OrderStatus } from '@/types';
+import type { Order, OrderStatus, Product } from '@/types';
 
 const allStatuses: OrderStatus[] = [
   'PENDING_PAYMENT',
@@ -29,6 +36,346 @@ const nextStatusMap: Record<string, OrderStatus> = {
   SHIPPED: 'DELIVERED',
 };
 
+// ── Manual Order Form ──
+interface OrderItemRow {
+  productId: string;
+  quantity: number;
+  unitPricePesewas: number;
+}
+
+function ManualOrderForm({
+  open,
+  onClose,
+  onCreated,
+}: {
+  open: boolean;
+  onClose: () => void;
+  onCreated: () => void;
+}) {
+  const addToast = useToastStore((s) => s.addToast);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Form state
+  const [customerName, setCustomerName] = useState('');
+  const [customerPhone, setCustomerPhone] = useState('');
+  const [customerEmail, setCustomerEmail] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState<'CASH' | 'MOMO' | 'BANK_TRANSFER'>('CASH');
+  const [notes, setNotes] = useState('');
+  const [items, setItems] = useState<OrderItemRow[]>([
+    { productId: '', quantity: 1, unitPricePesewas: 0 },
+  ]);
+
+  useEffect(() => {
+    if (open) {
+      getAdminProducts({ limit: 100 })
+        .then((res) => {
+          const data = res.data as any;
+          setProducts(Array.isArray(data) ? data : data?.data ?? []);
+        })
+        .catch(() => {});
+    }
+  }, [open]);
+
+  const handleProductChange = (index: number, productId: string) => {
+    const product = products.find((p) => p.id === productId);
+    setItems((prev) =>
+      prev.map((item, i) =>
+        i === index
+          ? {
+              ...item,
+              productId,
+              unitPricePesewas: product?.pricePesewas ?? 0,
+            }
+          : item,
+      ),
+    );
+  };
+
+  const addItem = () => {
+    setItems((prev) => [...prev, { productId: '', quantity: 1, unitPricePesewas: 0 }]);
+  };
+
+  const removeItem = (index: number) => {
+    if (items.length <= 1) return;
+    setItems((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const subtotal = items.reduce((sum, item) => sum + item.unitPricePesewas * item.quantity, 0);
+
+  const resetForm = () => {
+    setCustomerName('');
+    setCustomerPhone('');
+    setCustomerEmail('');
+    setPaymentMethod('CASH');
+    setNotes('');
+    setItems([{ productId: '', quantity: 1, unitPricePesewas: 0 }]);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!customerName.trim()) {
+      addToast({ type: 'error', message: 'Customer name is required' });
+      return;
+    }
+
+    const validItems = items.filter((i) => i.productId);
+    if (validItems.length === 0) {
+      addToast({ type: 'error', message: 'Add at least one product' });
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const payload: CreateAdminOrderPayload = {
+        items: validItems.map((i) => ({
+          productId: i.productId,
+          quantity: i.quantity,
+        })),
+        customerName: customerName.trim(),
+        customerPhone: customerPhone.trim() || undefined,
+        customerEmail: customerEmail.trim() || undefined,
+        paymentMethod,
+        notes: notes.trim() || undefined,
+      };
+
+      await createAdminOrder(payload);
+      addToast({ type: 'success', message: 'Manual order created' });
+      resetForm();
+      onClose();
+      onCreated();
+    } catch {
+      addToast({ type: 'error', message: 'Failed to create order' });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (!open) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-start justify-end">
+      <div className="absolute inset-0 bg-black/60" onClick={onClose} />
+      <div
+        className="relative z-10 flex h-full w-full max-w-lg flex-col border-l"
+        style={{ background: 'var(--deep)', borderColor: 'var(--border)' }}
+      >
+        {/* Header */}
+        <div
+          className="flex items-center justify-between border-b px-6 py-4"
+          style={{ borderColor: 'var(--border)' }}
+        >
+          <h2 className="text-lg font-bold" style={{ color: 'var(--white)' }}>
+            Create Manual Order
+          </h2>
+          <button onClick={onClose} className="rounded p-1 transition-colors hover:bg-white/5">
+            <X size={18} style={{ color: 'var(--muted)' }} />
+          </button>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto px-6 py-4 space-y-5">
+          {/* Customer */}
+          <div>
+            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--muted)' }}>
+              Customer
+            </h3>
+            <div className="grid gap-3">
+              <input
+                value={customerName}
+                onChange={(e) => setCustomerName(e.target.value)}
+                placeholder="Customer name *"
+                className="w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:border-[var(--gold)]"
+                style={{ background: 'var(--card)', borderColor: 'var(--border)', color: 'var(--white)' }}
+                required
+              />
+              <div className="grid grid-cols-2 gap-3">
+                <input
+                  value={customerPhone}
+                  onChange={(e) => setCustomerPhone(e.target.value)}
+                  placeholder="Phone (optional)"
+                  className="w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:border-[var(--gold)]"
+                  style={{ background: 'var(--card)', borderColor: 'var(--border)', color: 'var(--white)' }}
+                />
+                <input
+                  value={customerEmail}
+                  onChange={(e) => setCustomerEmail(e.target.value)}
+                  placeholder="Email (optional)"
+                  type="email"
+                  className="w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:border-[var(--gold)]"
+                  style={{ background: 'var(--card)', borderColor: 'var(--border)', color: 'var(--white)' }}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Items */}
+          <div>
+            <div className="mb-3 flex items-center justify-between">
+              <h3 className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--muted)' }}>
+                Products
+              </h3>
+              <button
+                type="button"
+                onClick={addItem}
+                className="flex items-center gap-1 text-xs font-medium transition-colors hover:underline"
+                style={{ color: 'var(--gold)' }}
+              >
+                <Plus size={12} /> Add Item
+              </button>
+            </div>
+            <div className="space-y-3">
+              {items.map((item, index) => {
+                const product = products.find((p) => p.id === item.productId);
+                return (
+                  <div
+                    key={index}
+                    className="flex items-start gap-2 rounded-lg border p-3"
+                    style={{ borderColor: 'var(--border)', background: 'var(--card)' }}
+                  >
+                    <div className="flex-1 grid gap-2">
+                      <select
+                        value={item.productId}
+                        onChange={(e) => handleProductChange(index, e.target.value)}
+                        className="w-full rounded-lg border px-3 py-2 text-sm outline-none"
+                        style={{ background: 'var(--deep)', borderColor: 'var(--border)', color: 'var(--white)' }}
+                      >
+                        <option value="">Select product...</option>
+                        {products
+                          .filter((p) => p.isPublished)
+                          .map((p) => (
+                            <option key={p.id} value={p.id}>
+                              {p.name} — {formatPesewas(p.pricePesewas)} (Stock: {p.stockCount})
+                            </option>
+                          ))}
+                      </select>
+                      <div className="flex items-center gap-2">
+                        <div className="flex-1">
+                          <label className="mb-1 block text-[10px]" style={{ color: 'var(--muted)' }}>
+                            Qty
+                          </label>
+                          <input
+                            type="number"
+                            min={1}
+                            max={product?.stockCount ?? 999}
+                            value={item.quantity}
+                            onChange={(e) =>
+                              setItems((prev) =>
+                                prev.map((it, i) =>
+                                  i === index ? { ...it, quantity: Math.max(1, Number(e.target.value)) } : it,
+                                ),
+                              )
+                            }
+                            className="w-full rounded-lg border px-3 py-1.5 text-sm outline-none"
+                            style={{ background: 'var(--deep)', borderColor: 'var(--border)', color: 'var(--white)' }}
+                          />
+                        </div>
+                        <div className="flex-1">
+                          <label className="mb-1 block text-[10px]" style={{ color: 'var(--muted)' }}>
+                            Unit Price
+                          </label>
+                          <p className="px-1 py-1.5 text-sm font-medium" style={{ color: 'var(--gold)' }}>
+                            {item.unitPricePesewas > 0 ? formatPesewas(item.unitPricePesewas) : '—'}
+                          </p>
+                        </div>
+                        <div className="flex-1">
+                          <label className="mb-1 block text-[10px]" style={{ color: 'var(--muted)' }}>
+                            Subtotal
+                          </label>
+                          <p className="px-1 py-1.5 text-sm font-medium" style={{ color: 'var(--white)' }}>
+                            {item.unitPricePesewas > 0 ? formatPesewas(item.unitPricePesewas * item.quantity) : '—'}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    {items.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => removeItem(index)}
+                        className="mt-2 rounded p-1 text-red-400 transition-colors hover:bg-red-500/10"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Payment Method */}
+          <div>
+            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--muted)' }}>
+              Payment Method
+            </h3>
+            <div className="flex gap-2">
+              {(['CASH', 'MOMO', 'BANK_TRANSFER'] as const).map((method) => (
+                <button
+                  key={method}
+                  type="button"
+                  onClick={() => setPaymentMethod(method)}
+                  className="flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition-all"
+                  style={{
+                    borderColor: paymentMethod === method ? 'var(--gold)' : 'var(--border)',
+                    color: paymentMethod === method ? 'var(--gold)' : 'var(--white)',
+                    background: paymentMethod === method ? 'rgba(245, 158, 11, 0.08)' : 'var(--card)',
+                  }}
+                >
+                  {method === 'BANK_TRANSFER' ? 'Bank' : method === 'MOMO' ? 'MoMo' : 'Cash'}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Notes */}
+          <div>
+            <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--muted)' }}>
+              Notes
+            </h3>
+            <textarea
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder="Optional notes about this sale..."
+              rows={2}
+              className="w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors resize-none focus:border-[var(--gold)]"
+              style={{ background: 'var(--card)', borderColor: 'var(--border)', color: 'var(--white)' }}
+            />
+          </div>
+
+          {/* Totals */}
+          <div
+            className="rounded-lg border p-4"
+            style={{ borderColor: 'var(--border)', background: 'var(--card)' }}
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-sm" style={{ color: 'var(--muted)' }}>Total</span>
+              <span className="text-lg font-bold" style={{ color: 'var(--gold)' }}>
+                {formatPesewas(subtotal)}
+              </span>
+            </div>
+          </div>
+        </form>
+
+        {/* Footer */}
+        <div
+          className="flex items-center justify-end gap-3 border-t px-6 py-4"
+          style={{ borderColor: 'var(--border)' }}
+        >
+          <Button variant="ghost" onClick={onClose} size="sm">
+            Cancel
+          </Button>
+          <Button onClick={handleSubmit} disabled={isSubmitting} size="sm">
+            {isSubmitting ? 'Creating...' : 'Create Order'}
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Main Page ──
+
 export default function AdminOrdersPage() {
   const [statusFilter, setStatusFilter] = useState<string>('');
   const [page, setPage] = useState(1);
@@ -37,6 +384,7 @@ export default function AdminOrdersPage() {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [bulkStatus, setBulkStatus] = useState<OrderStatus>('PROCESSING');
   const [sort, setSort] = useState<SortState | null>(null);
+  const [createOpen, setCreateOpen] = useState(false);
   const queryClient = useQueryClient();
   const addToast = useToastStore((s) => s.addToast);
 
@@ -101,12 +449,24 @@ export default function AdminOrdersPage() {
 
   return (
     <div>
-      <h1
-        className="mb-6 font-[family-name:var(--font-outfit)] text-2xl font-bold"
-        style={{ color: 'var(--white)' }}
-      >
-        Orders
-      </h1>
+      <div className="mb-6 flex items-center justify-between">
+        <h1
+          className="font-[family-name:var(--font-outfit)] text-2xl font-bold"
+          style={{ color: 'var(--white)' }}
+        >
+          Orders
+        </h1>
+        <Button size="sm" onClick={() => setCreateOpen(true)}>
+          <Plus size={14} className="mr-1.5" />
+          Create Order
+        </Button>
+      </div>
+
+      <ManualOrderForm
+        open={createOpen}
+        onClose={() => setCreateOpen(false)}
+        onCreated={() => queryClient.invalidateQueries({ queryKey: ['admin-orders'] })}
+      />
 
       {/* Search */}
       <form onSubmit={handleSearch} className="mb-4 flex items-center gap-3">

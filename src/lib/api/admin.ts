@@ -70,6 +70,22 @@ export async function bulkUpdateOrderStatus(data: { orderIds: string[]; status: 
   return apiClient.patch<{ updatedCount: number }>('/admin/orders/bulk-status', data);
 }
 
+export interface CreateAdminOrderPayload {
+  items: { productId: string; quantity: number; variantId?: string; selectedOptions?: string }[];
+  customerName: string;
+  customerPhone?: string;
+  customerEmail?: string;
+  customerId?: string;
+  paymentMethod: 'CASH' | 'MOMO' | 'BANK_TRANSFER';
+  notes?: string;
+  deliveryFee?: number;
+  discountPesewas?: number;
+}
+
+export async function createAdminOrder(data: CreateAdminOrderPayload) {
+  return apiClient.post<Order>('/admin/orders', data);
+}
+
 export interface AdminCustomer {
   id: string;
   firstName: string;
