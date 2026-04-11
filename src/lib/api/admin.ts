@@ -383,3 +383,47 @@ export async function updateAdminScoringRules(rules: { action: string; points: n
 export async function backfillLeads() {
   return apiClient.post<{ created: number; updated: number; total: number }>('/admin/leads/backfill');
 }
+
+// ─── DISCOUNTS ────────────────────────────────────────────────
+
+export interface DiscountCode {
+  id: string;
+  code: string;
+  type: 'percentage' | 'fixed';
+  value: number;
+  minOrderPesewas: number | null;
+  maxUses: number | null;
+  usedCount: number;
+  isActive: boolean;
+  expiresAt: string | null;
+  createdAt: string;
+}
+
+export interface CreateDiscountPayload {
+  code: string;
+  type: 'percentage' | 'fixed';
+  value: number;
+  minOrderPesewas?: number;
+  maxUses?: number;
+  expiresAt?: string;
+}
+
+export async function getAdminDiscounts(params?: { page?: number; limit?: number; search?: string }) {
+  return apiClient.get<DiscountCode[]>('/admin/discounts', { params });
+}
+
+export async function createAdminDiscount(data: CreateDiscountPayload) {
+  return apiClient.post<DiscountCode>('/admin/discounts', data);
+}
+
+export async function toggleDiscountActive(id: string) {
+  return apiClient.patch<DiscountCode>(`/admin/discounts/${id}/toggle`);
+}
+
+export async function deleteAdminDiscount(id: string) {
+  return apiClient.delete(`/admin/discounts/${id}`);
+}
+
+export async function validateDiscountCode(code: string, subtotalPesewas: number) {
+  return apiClient.post<{ valid: boolean; discountPesewas: number; type: string; message: string }>('/discounts/validate', { code, subtotalPesewas });
+}

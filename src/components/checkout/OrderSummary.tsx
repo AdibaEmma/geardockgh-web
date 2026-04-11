@@ -1,18 +1,32 @@
 'use client';
 
-import { ShoppingBag, Info } from 'lucide-react';
+import { useState } from 'react';
+import { ShoppingBag, Info, Tag, Loader2, X } from 'lucide-react';
 import { useCartStore } from '@/stores/cart-store';
 import { formatPesewas } from '@/lib/utils/formatters';
 import { PreorderFeeNotice } from '@/components/shop/PreorderFeeNotice';
+import { validateDiscountCode } from '@/lib/api/admin';
 
 const FREE_DELIVERY_MIN_PESEWAS = 10000; // GH₵100 minimum for free delivery
 
-export function OrderSummary() {
+interface OrderSummaryProps {
+  onDiscountApplied?: (code: string, discountPesewas: number) => void;
+  onDiscountRemoved?: () => void;
+}
+
+export function OrderSummary({ onDiscountApplied, onDiscountRemoved }: OrderSummaryProps = {}) {
   const items = useCartStore((s) => s.items);
   const totalPesewas = useCartStore((s) => s.totalPesewas);
   const depositTotal = useCartStore((s) => s.depositTotalPesewas);
   const regularTotal = useCartStore((s) => s.regularTotalPesewas);
   const hasPreorderItems = useCartStore((s) => s.hasPreorderItems);
+
+  const [discountInput, setDiscountInput] = useState('');
+  const [appliedCode, setAppliedCode] = useState<string | null>(null);
+  const [discountAmount, setDiscountAmount] = useState(0);
+  const [discountMessage, setDiscountMessage] = useState('');
+  const [isValidating, setIsValidating] = useState(false);
+  const [discountError, setDiscountError] = useState('');
 
   const hasPreorder = hasPreorderItems();
   const regularItemsTotal = regularTotal();
@@ -23,9 +37,43 @@ export function OrderSummary() {
   const qualifiesForFreeDelivery = regularItemsTotal >= FREE_DELIVERY_MIN_PESEWAS;
   const deliveryFee = !hasRegularItems ? 0 : qualifiesForFreeDelivery ? 0 : 2500; // GH₵25 flat rate
 
+  const subtotal = totalPesewas();
   const dueToday = hasPreorder
-    ? regularItemsTotal + preorderDepositsTotal + deliveryFee
-    : totalPesewas() + deliveryFee;
+    ? regularItemsTotal + preorderDepositsTotal + deliveryFee - discountAmount
+    : subtotal + deliveryFee - discountAmount;
+
+  const handleApplyDiscount = async () => {
+    if (!discountInput.trim()) return;
+    setIsValidating(true);
+    setDiscountError('');
+
+    try {
+      const res = await validateDiscountCode(discountInput.trim(), subtotal);
+      const result = res.data as any;
+      if (result.valid) {
+        setAppliedCode(discountInput.trim().toUpperCase());
+        setDiscountAmount(result.discountPesewas);
+        setDiscountMessage(result.message);
+        setDiscountError('');
+        onDiscountApplied?.(discountInput.trim().toUpperCase(), result.discountPesewas);
+      } else {
+        setDiscountError(result.message);
+      }
+    } catch {
+      setDiscountError('Failed to validate code');
+    } finally {
+      setIsValidating(false);
+    }
+  };
+
+  const handleRemoveDiscount = () => {
+    setAppliedCode(null);
+    setDiscountAmount(0);
+    setDiscountMessage('');
+    setDiscountInput('');
+    setDiscountError('');
+    onDiscountRemoved?.();
+  };
 
   return (
     <div
@@ -90,6 +138,56 @@ export function OrderSummary() {
         ))}
       </div>
 
+      {/* Discount Code */}
+      <div className="mt-4 border-t pt-4" style={{ borderColor: 'var(--border)' }}>
+        {appliedCode ? (
+          <div
+            className="flex items-center justify-between rounded-lg border px-3 py-2"
+            style={{ borderColor: 'rgba(34,197,94,0.3)', background: 'rgba(34,197,94,0.05)' }}
+          >
+            <div className="flex items-center gap-2">
+              <Tag size={14} style={{ color: '#4ade80' }} />
+              <span className="font-mono text-sm font-bold" style={{ color: '#4ade80' }}>
+                {appliedCode}
+              </span>
+              <span className="text-xs" style={{ color: 'var(--muted)' }}>
+                {discountMessage}
+              </span>
+            </div>
+            <button
+              onClick={handleRemoveDiscount}
+              className="rounded p-1 transition-colors hover:bg-white/5"
+            >
+              <X size={14} style={{ color: 'var(--muted)' }} />
+            </button>
+          </div>
+        ) : (
+          <div>
+            <div className="flex gap-2">
+              <input
+                value={discountInput}
+                onChange={(e) => { setDiscountInput(e.target.value.toUpperCase()); setDiscountError(''); }}
+                placeholder="Discount code"
+                className="flex-1 rounded-lg border px-3 py-2 text-sm uppercase outline-none transition-colors focus:border-[var(--gold)]"
+                style={{ background: 'var(--deep)', borderColor: 'var(--border)', color: 'var(--white)' }}
+                onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleApplyDiscount())}
+              />
+              <button
+                onClick={handleApplyDiscount}
+                disabled={isValidating || !discountInput.trim()}
+                className="shrink-0 rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:opacity-40"
+                style={{ background: 'var(--gold)', color: 'var(--black)' }}
+              >
+                {isValidating ? <Loader2 size={14} className="animate-spin" /> : 'Apply'}
+              </button>
+            </div>
+            {discountError && (
+              <p className="mt-1.5 text-xs" style={{ color: '#ef4444' }}>{discountError}</p>
+            )}
+          </div>
+        )}
+      </div>
+
       {/* Totals */}
       <div
         className="mt-4 border-t pt-4 space-y-2"
@@ -98,9 +196,17 @@ export function OrderSummary() {
         <div className="flex justify-between text-sm">
           <span style={{ color: 'var(--muted)' }}>Subtotal</span>
           <span style={{ color: 'var(--white)' }}>
-            {formatPesewas(totalPesewas())}
+            {formatPesewas(subtotal)}
           </span>
         </div>
+
+        {/* Applied discount */}
+        {discountAmount > 0 && (
+          <div className="flex justify-between text-sm">
+            <span style={{ color: '#4ade80' }}>Discount ({appliedCode})</span>
+            <span style={{ color: '#4ade80' }}>-{formatPesewas(discountAmount)}</span>
+          </div>
+        )}
 
         {/* Delivery for regular items */}
         {hasRegularItems && (

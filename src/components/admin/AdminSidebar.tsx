@@ -8,6 +8,7 @@ import {
   Package,
   Users,
   Target,
+  Tag,
   Settings,
   ChevronLeft,
   ChevronRight,
@@ -25,6 +26,7 @@ const mainNav = [
   { href: '/admin/products', label: 'Products', Icon: Package },
   { href: '/admin/customers', label: 'Customers', Icon: Users },
   { href: '/admin/leads', label: 'Leads', Icon: Target },
+  { href: '/admin/discounts', label: 'Discounts', Icon: Tag },
 ];
 
 const bottomNav = [

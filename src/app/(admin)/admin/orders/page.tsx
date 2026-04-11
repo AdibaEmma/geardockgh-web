@@ -70,6 +70,8 @@ function ManualOrderForm({
   const [customerEmail, setCustomerEmail] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<'CASH' | 'MOMO' | 'BANK_TRANSFER'>('CASH');
   const [orderStatus, setOrderStatus] = useState<OrderStatus>('PAYMENT_CONFIRMED');
+  const [discountType, setDiscountType] = useState<'none' | 'fixed' | 'percentage'>('none');
+  const [discountValue, setDiscountValue] = useState('');
   const [notes, setNotes] = useState('');
   const [items, setItems] = useState<OrderItemRow[]>([
     { productId: '', quantity: 1, unitPricePesewas: 0, options: [], selectedOptions: [] },
@@ -140,12 +142,23 @@ function ManualOrderForm({
 
   const subtotal = items.reduce((sum, item) => sum + getItemTotal(item), 0);
 
+  const computedDiscountPesewas = (() => {
+    if (discountType === 'none' || !discountValue) return 0;
+    const val = Number(discountValue);
+    if (discountType === 'fixed') return Math.round(val * 100);
+    if (discountType === 'percentage') return Math.round((subtotal * val) / 100);
+    return 0;
+  })();
+  const finalTotal = Math.max(0, subtotal - computedDiscountPesewas);
+
   const resetForm = () => {
     setCustomerName('');
     setCustomerPhone('');
     setCustomerEmail('');
     setPaymentMethod('CASH');
     setOrderStatus('PAYMENT_CONFIRMED');
+    setDiscountType('none');
+    setDiscountValue('');
     setNotes('');
     setItems([{ productId: '', quantity: 1, unitPricePesewas: 0, options: [], selectedOptions: [] }]);
   };
@@ -179,6 +192,7 @@ function ManualOrderForm({
         customerEmail: customerEmail.trim() || undefined,
         paymentMethod,
         status: orderStatus,
+        discountPesewas: computedDiscountPesewas > 0 ? computedDiscountPesewas : undefined,
         notes: notes.trim() || undefined,
       };
 
@@ -454,6 +468,52 @@ function ManualOrderForm({
             </select>
           </div>
 
+          {/* Discount */}
+          <div>
+            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--muted)' }}>
+              Discount
+            </h3>
+            <div className="flex gap-2 mb-3">
+              {([['none', 'None'], ['fixed', 'Fixed (GHS)'], ['percentage', '% Off']] as const).map(
+                ([t, label]) => (
+                  <button
+                    key={t}
+                    type="button"
+                    onClick={() => { setDiscountType(t); setDiscountValue(''); }}
+                    className="flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition-all"
+                    style={{
+                      borderColor: discountType === t ? 'var(--gold)' : 'var(--border)',
+                      color: discountType === t ? 'var(--gold)' : 'var(--white)',
+                      background: discountType === t ? 'rgba(245,158,11,0.08)' : 'var(--card)',
+                    }}
+                  >
+                    {label}
+                  </button>
+                ),
+              )}
+            </div>
+            {discountType !== 'none' && (
+              <div className="flex items-center gap-3">
+                <input
+                  type="number"
+                  step={discountType === 'percentage' ? '1' : '0.01'}
+                  min="0"
+                  max={discountType === 'percentage' ? '100' : undefined}
+                  value={discountValue}
+                  onChange={(e) => setDiscountValue(e.target.value)}
+                  placeholder={discountType === 'percentage' ? 'e.g. 10' : 'e.g. 20.00'}
+                  className="flex-1 rounded-lg border px-3 py-2 text-sm outline-none focus:border-[var(--gold)]"
+                  style={{ background: 'var(--card)', borderColor: 'var(--border)', color: 'var(--white)' }}
+                />
+                {computedDiscountPesewas > 0 && (
+                  <span className="text-sm font-medium" style={{ color: '#ef4444' }}>
+                    -{formatPesewas(computedDiscountPesewas)}
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+
           {/* Notes */}
           <div>
             <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--muted)' }}>
@@ -471,13 +531,27 @@ function ManualOrderForm({
 
           {/* Totals */}
           <div
-            className="rounded-lg border p-4"
+            className="rounded-lg border p-4 space-y-2"
             style={{ borderColor: 'var(--border)', background: 'var(--card)' }}
           >
             <div className="flex items-center justify-between">
-              <span className="text-sm" style={{ color: 'var(--muted)' }}>Total</span>
-              <span className="text-lg font-bold" style={{ color: 'var(--gold)' }}>
+              <span className="text-sm" style={{ color: 'var(--muted)' }}>Subtotal</span>
+              <span className="text-sm" style={{ color: 'var(--white)' }}>
                 {formatPesewas(subtotal)}
+              </span>
+            </div>
+            {computedDiscountPesewas > 0 && (
+              <div className="flex items-center justify-between">
+                <span className="text-sm" style={{ color: '#ef4444' }}>Discount</span>
+                <span className="text-sm" style={{ color: '#ef4444' }}>
+                  -{formatPesewas(computedDiscountPesewas)}
+                </span>
+              </div>
+            )}
+            <div className="flex items-center justify-between border-t pt-2" style={{ borderColor: 'var(--border)' }}>
+              <span className="text-sm font-medium" style={{ color: 'var(--white)' }}>Total</span>
+              <span className="text-lg font-bold" style={{ color: 'var(--gold)' }}>
+                {formatPesewas(finalTotal)}
               </span>
             </div>
           </div>
