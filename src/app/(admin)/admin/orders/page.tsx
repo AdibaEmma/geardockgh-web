@@ -69,6 +69,7 @@ function ManualOrderForm({
   const [customerPhone, setCustomerPhone] = useState('');
   const [customerEmail, setCustomerEmail] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<'CASH' | 'MOMO' | 'BANK_TRANSFER'>('CASH');
+  const [orderStatus, setOrderStatus] = useState<OrderStatus>('PAYMENT_CONFIRMED');
   const [notes, setNotes] = useState('');
   const [items, setItems] = useState<OrderItemRow[]>([
     { productId: '', quantity: 1, unitPricePesewas: 0, options: [], selectedOptions: [] },
@@ -144,6 +145,7 @@ function ManualOrderForm({
     setCustomerPhone('');
     setCustomerEmail('');
     setPaymentMethod('CASH');
+    setOrderStatus('PAYMENT_CONFIRMED');
     setNotes('');
     setItems([{ productId: '', quantity: 1, unitPricePesewas: 0, options: [], selectedOptions: [] }]);
   };
@@ -176,6 +178,7 @@ function ManualOrderForm({
         customerPhone: customerPhone.trim() || undefined,
         customerEmail: customerEmail.trim() || undefined,
         paymentMethod,
+        status: orderStatus,
         notes: notes.trim() || undefined,
       };
 
@@ -430,6 +433,25 @@ function ManualOrderForm({
                 </button>
               ))}
             </div>
+          </div>
+
+          {/* Order Status */}
+          <div>
+            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--muted)' }}>
+              Order Status
+            </h3>
+            <select
+              value={orderStatus}
+              onChange={(e) => setOrderStatus(e.target.value as OrderStatus)}
+              className="w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:border-[var(--gold)]"
+              style={{ background: 'var(--card)', borderColor: 'var(--border)', color: 'var(--white)' }}
+            >
+              <option value="PENDING_PAYMENT">Pending Payment</option>
+              <option value="PAYMENT_CONFIRMED">Payment Confirmed</option>
+              <option value="PROCESSING">Processing</option>
+              <option value="SHIPPED">Shipped</option>
+              <option value="DELIVERED">Delivered</option>
+            </select>
           </div>
 
           {/* Notes */}

@@ -77,6 +77,7 @@ export interface CreateAdminOrderPayload {
   customerEmail?: string;
   customerId?: string;
   paymentMethod: 'CASH' | 'MOMO' | 'BANK_TRANSFER';
+  status?: string;
   notes?: string;
   deliveryFee?: number;
   discountPesewas?: number;
