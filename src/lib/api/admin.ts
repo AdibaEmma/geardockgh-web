@@ -215,6 +215,8 @@ interface AdminProductsParams {
   search?: string;
   category?: string;
   status?: string; // 'published' | 'draft'
+  isPreorder?: boolean;
+  isOnSale?: boolean;
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
 }
