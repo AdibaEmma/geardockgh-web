@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Plus, Pencil, Trash2, Search, Package, Eye, Globe, GlobeLock, Star, Zap } from 'lucide-react';
+import { Plus, Pencil, Trash2, Search, Package, Eye, Globe, GlobeLock, Star, Zap, X } from 'lucide-react';
 import { SortableHeader, type SortState } from '@/components/admin/SortableHeader';
 import {
   getAdminProducts,
@@ -23,6 +23,8 @@ import { useToastStore } from '@/stores/toast-store';
 import type { Product } from '@/types';
 
 type StatusFilter = '' | 'published' | 'draft';
+type PreorderFilter = '' | 'preorder' | 'regular';
+type SaleFilter = '' | 'sale' | 'regular';
 
 export default function AdminProductsPage() {
   const queryClient = useQueryClient();
@@ -35,6 +37,8 @@ export default function AdminProductsPage() {
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('');
+  const [preorderFilter, setPreorderFilter] = useState<PreorderFilter>('');
+  const [saleFilter, setSaleFilter] = useState<SaleFilter>('');
   const [sort, setSort] = useState<SortState | null>(null);
 
   // Modal state
@@ -43,8 +47,24 @@ export default function AdminProductsPage() {
   const [deleteTarget, setDeleteTarget] = useState<Product | null>(null);
 
   // Fetch products
+  const isPreorderParam =
+    preorderFilter === 'preorder' ? true : preorderFilter === 'regular' ? false : undefined;
+  const isOnSaleParam =
+    saleFilter === 'sale' ? true : saleFilter === 'regular' ? false : undefined;
+
   const { data, isLoading } = useQuery({
-    queryKey: ['admin-products', { page, search, category: categoryFilter, status: statusFilter, sort }],
+    queryKey: [
+      'admin-products',
+      {
+        page,
+        search,
+        category: categoryFilter,
+        status: statusFilter,
+        preorder: preorderFilter,
+        sale: saleFilter,
+        sort,
+      },
+    ],
     queryFn: () =>
       getAdminProducts({
         page,
@@ -52,26 +72,40 @@ export default function AdminProductsPage() {
         search: search || undefined,
         category: categoryFilter || undefined,
         status: statusFilter || undefined,
+        isPreorder: isPreorderParam,
+        isOnSale: isOnSaleParam,
         sortBy: sort?.field,
         sortOrder: sort?.order,
       }),
   });
 
-  const products = (data?.data ?? []) as Product[];
+  // Backend may not yet filter on isPreorder / isOnSale, so refine client-side as a safety net.
+  const rawProducts = (data?.data ?? []) as Product[];
+  const products = rawProducts.filter((p) => {
+    if (preorderFilter === 'preorder' && !p.isPreorder) return false;
+    if (preorderFilter === 'regular' && p.isPreorder) return false;
+    if (saleFilter === 'sale') {
+      if (!p.comparePricePesewas || p.comparePricePesewas <= p.pricePesewas) return false;
+    }
+    if (saleFilter === 'regular') {
+      if (p.comparePricePesewas && p.comparePricePesewas > p.pricePesewas) return false;
+    }
+    return true;
+  });
   const meta = data?.meta as { total: number; page: number; limit: number; totalPages: number } | undefined;
 
   // Auto-open edit modal from query param (e.g. ?edit=product-id)
   const editParam = searchParams.get('edit');
   useEffect(() => {
-    if (editParam && products.length > 0 && !modalOpen) {
-      const target = products.find((p) => p.id === editParam);
+    if (editParam && rawProducts.length > 0 && !modalOpen) {
+      const target = rawProducts.find((p) => p.id === editParam);
       if (target) {
         setEditingProduct(target);
         setModalOpen(true);
         router.replace('/admin/products', { scroll: false });
       }
     }
-  }, [editParam, products, modalOpen, router]);
+  }, [editParam, rawProducts, modalOpen, router]);
 
   // Mutations
   const { mutate: doCreate, isPending: isCreating } = useMutation({
@@ -157,10 +191,31 @@ export default function AdminProductsPage() {
     { label: 'Draft', value: 'draft' },
   ];
 
+  const hasActiveFilters = Boolean(
+    search || categoryFilter || statusFilter || preorderFilter || saleFilter || sort,
+  );
+
+  const resetFilters = () => {
+    setSearchInput('');
+    setSearch('');
+    setCategoryFilter('');
+    setStatusFilter('');
+    setPreorderFilter('');
+    setSaleFilter('');
+    setSort(null);
+    setPage(1);
+  };
+
+  const selectStyle: React.CSSProperties = {
+    background: 'var(--card)',
+    color: 'var(--white)',
+    borderColor: 'var(--border)',
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <h1
           className="font-[family-name:var(--font-outfit)] text-2xl font-bold"
           style={{ color: 'var(--white)' }}
@@ -181,7 +236,7 @@ export default function AdminProductsPage() {
       </div>
 
       {/* Search bar */}
-      <form onSubmit={handleSearch} className="flex items-center gap-3">
+      <form onSubmit={handleSearch} className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
         <div
           className="flex flex-1 items-center gap-2 rounded-lg border px-3 py-2"
           style={{ background: 'var(--card)', borderColor: 'var(--border)' }}
@@ -191,10 +246,24 @@ export default function AdminProductsPage() {
             type="text"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
-            placeholder="Search products by name..."
+            placeholder="Search by name or slug..."
             className="flex-1 bg-transparent text-sm outline-none placeholder:text-[var(--muted)]"
             style={{ color: 'var(--white)' }}
           />
+          {searchInput && (
+            <button
+              type="button"
+              onClick={() => {
+                setSearchInput('');
+                setSearch('');
+                setPage(1);
+              }}
+              className="rounded-md p-1 transition-colors hover:bg-white/10"
+              aria-label="Clear search"
+            >
+              <X size={14} style={{ color: 'var(--muted)' }} />
+            </button>
+          )}
         </div>
         <button
           type="submit"
@@ -206,31 +275,106 @@ export default function AdminProductsPage() {
       </form>
 
       {/* Filters row */}
-      <div className="flex flex-wrap items-center gap-4">
-        {/* Category filter */}
-        <select
-          value={categoryFilter}
-          onChange={(e) => {
-            setCategoryFilter(e.target.value);
-            setPage(1);
-          }}
-          className="rounded-lg border px-3 py-1.5 text-xs outline-none"
-          style={{
-            background: 'var(--card)',
-            color: 'var(--white)',
-            borderColor: 'var(--border)',
-          }}
-        >
-          <option value="">All Categories</option>
-          {CATEGORIES.map((cat) => (
-            <option key={cat.value} value={cat.value}>
-              {cat.label}
-            </option>
-          ))}
-        </select>
+      <div className="flex flex-col gap-3">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
+          {/* Category filter */}
+          <label className="flex flex-col gap-1">
+            <span className="text-[10px] font-semibold uppercase tracking-wide" style={{ color: 'var(--muted)' }}>
+              Category
+            </span>
+            <select
+              value={categoryFilter}
+              onChange={(e) => {
+                setCategoryFilter(e.target.value);
+                setPage(1);
+              }}
+              className="w-full rounded-lg border px-3 py-2 text-xs outline-none"
+              style={selectStyle}
+            >
+              <option value="">All Categories</option>
+              {CATEGORIES.map((cat) => (
+                <option key={cat.value} value={cat.value}>
+                  {cat.label}
+                </option>
+              ))}
+            </select>
+          </label>
 
-        {/* Status pills */}
-        <div className="flex gap-2">
+          {/* Pre-order filter */}
+          <label className="flex flex-col gap-1">
+            <span className="text-[10px] font-semibold uppercase tracking-wide" style={{ color: 'var(--muted)' }}>
+              Pre-order
+            </span>
+            <select
+              value={preorderFilter}
+              onChange={(e) => {
+                setPreorderFilter(e.target.value as PreorderFilter);
+                setPage(1);
+              }}
+              className="w-full rounded-lg border px-3 py-2 text-xs outline-none"
+              style={selectStyle}
+            >
+              <option value="">All Types</option>
+              <option value="preorder">Pre-order only</option>
+              <option value="regular">In-stock only</option>
+            </select>
+          </label>
+
+          {/* Sale filter */}
+          <label className="flex flex-col gap-1">
+            <span className="text-[10px] font-semibold uppercase tracking-wide" style={{ color: 'var(--muted)' }}>
+              Sale
+            </span>
+            <select
+              value={saleFilter}
+              onChange={(e) => {
+                setSaleFilter(e.target.value as SaleFilter);
+                setPage(1);
+              }}
+              className="w-full rounded-lg border px-3 py-2 text-xs outline-none"
+              style={selectStyle}
+            >
+              <option value="">All Prices</option>
+              <option value="sale">On sale</option>
+              <option value="regular">Regular price</option>
+            </select>
+          </label>
+
+          {/* Sort control (mirrors sortable headers for mobile) */}
+          <label className="flex flex-col gap-1">
+            <span className="text-[10px] font-semibold uppercase tracking-wide" style={{ color: 'var(--muted)' }}>
+              Sort by
+            </span>
+            <select
+              value={sort ? `${sort.field}:${sort.order}` : ''}
+              onChange={(e) => {
+                const v = e.target.value;
+                if (!v) {
+                  setSort(null);
+                } else {
+                  const [field, order] = v.split(':');
+                  setSort({ field, order: order as 'asc' | 'desc' });
+                }
+                setPage(1);
+              }}
+              className="w-full rounded-lg border px-3 py-2 text-xs outline-none"
+              style={selectStyle}
+            >
+              <option value="">Default</option>
+              <option value="name:asc">Name (A–Z)</option>
+              <option value="name:desc">Name (Z–A)</option>
+              <option value="pricePesewas:asc">Price (low to high)</option>
+              <option value="pricePesewas:desc">Price (high to low)</option>
+              <option value="stockCount:asc">Stock (low to high)</option>
+              <option value="stockCount:desc">Stock (high to low)</option>
+              <option value="createdAt:desc">Newest first</option>
+              <option value="createdAt:asc">Oldest first</option>
+            </select>
+          </label>
+        </div>
+
+        {/* Status pills + reset */}
+        <div className="flex flex-wrap items-center gap-2">
           {statusFilters.map((sf) => (
             <button
               key={sf.value}
@@ -238,7 +382,7 @@ export default function AdminProductsPage() {
                 setStatusFilter(sf.value);
                 setPage(1);
               }}
-              className="whitespace-nowrap rounded-full border px-3 py-1 text-xs font-medium"
+              className="whitespace-nowrap rounded-full border px-3 py-1 text-xs font-medium transition-colors"
               style={{
                 background: statusFilter === sf.value ? 'var(--gold)' : 'transparent',
                 color: statusFilter === sf.value ? 'var(--deep)' : 'var(--muted)',
@@ -248,13 +392,33 @@ export default function AdminProductsPage() {
               {sf.label}
             </button>
           ))}
+          {hasActiveFilters && (
+            <button
+              type="button"
+              onClick={resetFilters}
+              className="ml-auto inline-flex items-center gap-1 rounded-full border border-dashed px-3 py-1 text-xs font-medium transition-colors hover:bg-white/5"
+              style={{ borderColor: 'var(--border)', color: 'var(--muted)' }}
+            >
+              <X size={12} />
+              Reset filters
+            </button>
+          )}
         </div>
       </div>
 
       {/* Total count */}
       {meta && (
         <p className="text-sm" style={{ color: 'var(--muted)' }}>
-          {meta.total} {meta.total === 1 ? 'product' : 'products'} total
+          {products.length === rawProducts.length ? (
+            <>
+              {meta.total} {meta.total === 1 ? 'product' : 'products'} total
+            </>
+          ) : (
+            <>
+              Showing {products.length} of {meta.total}{' '}
+              {meta.total === 1 ? 'product' : 'products'}
+            </>
+          )}
         </p>
       )}
 
@@ -273,10 +437,21 @@ export default function AdminProductsPage() {
         >
           <Package size={40} style={{ color: 'var(--border)' }} />
           <p className="mt-3 text-sm" style={{ color: 'var(--muted)' }}>
-            {search || categoryFilter || statusFilter
+            {hasActiveFilters
               ? 'No products match your filters'
               : 'No products yet. Add your first product.'}
           </p>
+          {hasActiveFilters && (
+            <button
+              type="button"
+              onClick={resetFilters}
+              className="mt-3 inline-flex items-center gap-1 rounded-full border border-dashed px-3 py-1 text-xs font-medium transition-colors hover:bg-white/5"
+              style={{ borderColor: 'var(--border)', color: 'var(--muted)' }}
+            >
+              <X size={12} />
+              Reset filters
+            </button>
+          )}
         </div>
       ) : (
         <div
@@ -329,10 +504,28 @@ export default function AdminProductsPage() {
                           );
                         })()}
                         <div className="min-w-0">
-                          <p className="truncate text-sm font-medium" style={{ color: 'var(--white)' }}>
-                            {product.name}
-                          </p>
-                          <p className="text-xs" style={{ color: 'var(--muted)' }}>
+                          <div className="flex flex-wrap items-center gap-1.5">
+                            <p className="truncate text-sm font-medium" style={{ color: 'var(--white)' }}>
+                              {product.name}
+                            </p>
+                            {product.isPreorder && (
+                              <span
+                                className="rounded-full px-1.5 py-0.5 text-[10px] font-semibold"
+                                style={{ background: 'rgba(245,158,11,0.12)', color: '#f59e0b' }}
+                              >
+                                Pre-order
+                              </span>
+                            )}
+                            {product.comparePricePesewas && product.comparePricePesewas > product.pricePesewas && (
+                              <span
+                                className="rounded-full px-1.5 py-0.5 text-[10px] font-semibold"
+                                style={{ background: 'rgba(0,201,167,0.12)', color: 'var(--teal)' }}
+                              >
+                                Sale
+                              </span>
+                            )}
+                          </div>
+                          <p className="truncate text-xs" style={{ color: 'var(--muted)' }}>
                             {product.slug}
                           </p>
                         </div>
@@ -393,8 +586,8 @@ export default function AdminProductsPage() {
                         {product.isPublished ? 'Published' : 'Draft'}
                       </button>
                     </td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-2">
+                    <td className="whitespace-nowrap px-4 py-3">
+                      <div className="flex items-center gap-1">
                         <button
                           onClick={(e) => { e.stopPropagation(); doToggleFeatured(product.id); }}
                           className="rounded-md p-1.5 transition-colors hover:bg-white/10"
@@ -464,7 +657,7 @@ export default function AdminProductsPage() {
 
       {/* Pagination */}
       {meta && meta.totalPages > 1 && (
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col items-center justify-between gap-3 sm:flex-row">
           <p className="text-xs" style={{ color: 'var(--muted)' }}>
             Page {meta.page} of {meta.totalPages}
           </p>
