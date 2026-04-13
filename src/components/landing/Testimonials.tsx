@@ -1,5 +1,8 @@
 'use client';
 
+import { useTestimonials } from '@/hooks/use-reviews';
+import type { Review } from '@/types';
+
 interface Testimonial {
   name: string;
   role: string;
@@ -8,7 +11,7 @@ interface Testimonial {
   rating: number;
 }
 
-const TESTIMONIALS: Testimonial[] = [
+const FALLBACK_TESTIMONIALS: Testimonial[] = [
   {
     name: 'Kwame A.',
     role: 'Software Engineer, Bolgatanga',
@@ -38,6 +41,19 @@ const TESTIMONIALS: Testimonial[] = [
     rating: 5,
   },
 ];
+
+function mapReviewsToTestimonials(reviews: Review[]): Testimonial[] {
+  const accents: Array<'gold' | 'teal'> = ['gold', 'teal'];
+  return reviews
+    .filter((r) => r.text)
+    .map((r, i) => ({
+      name: `${r.customer.firstName} ${r.customer.lastName[0]}.`,
+      role: 'Verified Buyer',
+      text: r.text!,
+      rating: r.rating,
+      accent: accents[i % accents.length],
+    }));
+}
 
 function Stars({ count }: { count: number }) {
   return (
@@ -73,6 +89,15 @@ function TestimonialCard({ t }: { t: Testimonial }) {
 }
 
 export function Testimonials() {
+  const { data, isLoading } = useTestimonials();
+  const apiReviews = (data?.data ?? []) as Review[];
+  const liveTestimonials = mapReviewsToTestimonials(apiReviews);
+
+  const testimonials =
+    isLoading || liveTestimonials.length === 0
+      ? FALLBACK_TESTIMONIALS
+      : liveTestimonials;
+
   return (
     <section className="testimonials">
       <div className="section-tag">// WHAT CUSTOMERS SAY</div>
@@ -80,11 +105,11 @@ export function Testimonials() {
         Real reviews from<br />real buyers.
       </h2>
       <div className="testimonials-track">
-        {TESTIMONIALS.map((t) => (
+        {testimonials.map((t) => (
           <TestimonialCard key={t.name} t={t} />
         ))}
         {/* Duplicate for seamless loop */}
-        {TESTIMONIALS.map((t) => (
+        {testimonials.map((t) => (
           <TestimonialCard key={`dup-${t.name}`} t={t} />
         ))}
       </div>

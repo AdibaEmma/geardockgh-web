@@ -22,4 +22,8 @@ export type {
   Preorder,
   Payment,
   Address,
+  ReviewStatus,
+  Review,
+  RatingSummary,
+  CanReviewResponse,
 } from './entities';

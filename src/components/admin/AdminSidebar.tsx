@@ -9,6 +9,7 @@ import {
   Users,
   Target,
   Tag,
+  MessageSquare,
   Settings,
   ChevronLeft,
   ChevronRight,
@@ -27,6 +28,7 @@ const mainNav = [
   { href: '/admin/customers', label: 'Customers', Icon: Users },
   { href: '/admin/leads', label: 'Leads', Icon: Target },
   { href: '/admin/discounts', label: 'Discounts', Icon: Tag },
+  { href: '/admin/reviews', label: 'Reviews', Icon: MessageSquare },
 ];
 
 const bottomNav = [

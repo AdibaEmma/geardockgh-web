@@ -16,6 +16,7 @@ import { PreorderInfo, calculateDeposit } from '@/components/shop/PreorderInfo';
 import { WishlistButton } from '@/components/shop/WishlistButton';
 import { isProductPreorderable } from '@/lib/utils/product-helpers';
 import { useRecentlyViewedStore } from '@/stores/recently-viewed-store';
+import { ReviewSection } from '@/components/shop/ReviewSection';
 import type { Product, ProductVariant, ProductOption, ProductOptionValue } from '@/types';
 
 interface ProductDetailProps {
@@ -546,6 +547,8 @@ export function ProductDetail({ slug }: ProductDetailProps) {
           )}
         </div>
       </div>
+
+      <ReviewSection productId={product.id} />
     </div>
   );
 }

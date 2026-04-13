@@ -39,6 +39,35 @@ export interface SelectedOption {
   priceDelta?: number;
 }
 
+// Reviews
+export type ReviewStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
+
+export interface Review {
+  id: string;
+  productId: string;
+  customerId: string;
+  rating: number;
+  title: string | null;
+  text: string | null;
+  imagesJson: string | null;
+  isVerified: boolean;
+  status: ReviewStatus;
+  customer: { firstName: string; lastName: string };
+  createdAt: string;
+}
+
+export interface RatingSummary {
+  averageRating: number;
+  totalReviews: number;
+  distribution: Record<number, number>;
+}
+
+export interface CanReviewResponse {
+  canReview: boolean;
+  hasExisting: boolean;
+  hasDeliveredOrder: boolean;
+}
+
 // Product
 export interface Product {
   id: string;

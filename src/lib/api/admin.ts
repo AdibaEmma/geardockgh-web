@@ -1,5 +1,5 @@
 import { apiClient } from './client';
-import type { Order, Product } from '@/types';
+import type { Order, Product, Review } from '@/types';
 
 export interface DashboardStats {
   totalOrders: number;
@@ -429,4 +429,18 @@ export async function deleteAdminDiscount(id: string) {
 
 export async function validateDiscountCode(code: string, subtotalPesewas: number) {
   return apiClient.post<{ valid: boolean; discountPesewas: number; type: string; message: string }>('/discounts/validate', { code, subtotalPesewas });
+}
+
+// ─── REVIEWS ─────────────────────────────────────────────────
+
+export async function getAdminReviews(params?: { page?: number; limit?: number; status?: string }) {
+  return apiClient.get<Review[]>('/admin/reviews', { params });
+}
+
+export async function updateReviewStatus(id: string, status: string) {
+  return apiClient.patch(`/admin/reviews/${id}/status`, { status });
+}
+
+export async function deleteAdminReview(id: string) {
+  return apiClient.delete(`/admin/reviews/${id}`);
 }
