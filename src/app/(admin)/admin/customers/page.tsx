@@ -110,9 +110,8 @@ export default function AdminCustomersPage() {
       }),
   });
 
-  const result = data?.data as { data: AdminCustomer[]; meta: { total: number; page: number; totalPages: number } } | undefined;
-  const customers = result?.data ?? [];
-  const meta = result?.meta;
+  const customers = (data?.data ?? []) as AdminCustomer[];
+  const meta = data?.meta as { total: number; page: number; totalPages: number } | undefined;
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
