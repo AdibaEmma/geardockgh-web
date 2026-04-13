@@ -72,6 +72,7 @@ function ManualOrderForm({
   const [orderStatus, setOrderStatus] = useState<OrderStatus>('PAYMENT_CONFIRMED');
   const [discountType, setDiscountType] = useState<'none' | 'fixed' | 'percentage'>('none');
   const [discountValue, setDiscountValue] = useState('');
+  const [orderDate, setOrderDate] = useState('');
   const [notes, setNotes] = useState('');
   const [items, setItems] = useState<OrderItemRow[]>([
     { productId: '', quantity: 1, unitPricePesewas: 0, options: [], selectedOptions: [] },
@@ -159,6 +160,7 @@ function ManualOrderForm({
     setOrderStatus('PAYMENT_CONFIRMED');
     setDiscountType('none');
     setDiscountValue('');
+    setOrderDate('');
     setNotes('');
     setItems([{ productId: '', quantity: 1, unitPricePesewas: 0, options: [], selectedOptions: [] }]);
   };
@@ -193,6 +195,7 @@ function ManualOrderForm({
         paymentMethod,
         status: orderStatus,
         discountPesewas: computedDiscountPesewas > 0 ? computedDiscountPesewas : undefined,
+        orderDate: orderDate ? new Date(orderDate).toISOString() : undefined,
         notes: notes.trim() || undefined,
       };
 
@@ -466,6 +469,23 @@ function ManualOrderForm({
               <option value="SHIPPED">Shipped</option>
               <option value="DELIVERED">Delivered</option>
             </select>
+          </div>
+
+          {/* Order Date */}
+          <div>
+            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--muted)' }}>
+              Order Date
+            </h3>
+            <input
+              type="datetime-local"
+              value={orderDate}
+              onChange={(e) => setOrderDate(e.target.value)}
+              className="w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:border-[var(--gold)]"
+              style={{ background: 'var(--card)', borderColor: 'var(--border)', color: 'var(--white)' }}
+            />
+            <p className="mt-1 text-[10px]" style={{ color: 'var(--muted)' }}>
+              Leave empty to use current date/time
+            </p>
           </div>
 
           {/* Discount */}

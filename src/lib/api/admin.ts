@@ -81,6 +81,7 @@ export interface CreateAdminOrderPayload {
   notes?: string;
   deliveryFee?: number;
   discountPesewas?: number;
+  orderDate?: string;
 }
 
 export async function createAdminOrder(data: CreateAdminOrderPayload) {
