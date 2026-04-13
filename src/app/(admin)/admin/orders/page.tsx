@@ -8,10 +8,12 @@ import { SortableHeader, type SortState } from '@/components/admin/SortableHeade
 import {
   getAdminOrders,
   getAdminProducts,
+  getAdminCustomers,
   updateOrderStatus,
   bulkUpdateOrderStatus,
   createAdminOrder,
   type CreateAdminOrderPayload,
+  type AdminCustomer,
 } from '@/lib/api/admin';
 import { OrderStatusBadge } from '@/components/orders/OrderStatusBadge';
 import { Button } from '@/components/ui/Button';
@@ -62,9 +64,12 @@ function ManualOrderForm({
 }) {
   const addToast = useToastStore((s) => s.addToast);
   const [products, setProducts] = useState<Product[]>([]);
+  const [customers, setCustomers] = useState<AdminCustomer[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Form state
+  const [customerMode, setCustomerMode] = useState<'existing' | 'new'>('new');
+  const [selectedCustomerId, setSelectedCustomerId] = useState('');
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
   const [customerEmail, setCustomerEmail] = useState('');
@@ -84,6 +89,12 @@ function ManualOrderForm({
         .then((res) => {
           const data = res.data as any;
           setProducts(Array.isArray(data) ? data : data?.data ?? []);
+        })
+        .catch(() => {});
+      getAdminCustomers({ limit: 100 })
+        .then((res) => {
+          const data = res.data as any;
+          setCustomers(Array.isArray(data) ? data : data?.data ?? []);
         })
         .catch(() => {});
     }
@@ -153,6 +164,8 @@ function ManualOrderForm({
   const finalTotal = Math.max(0, subtotal - computedDiscountPesewas);
 
   const resetForm = () => {
+    setCustomerMode('new');
+    setSelectedCustomerId('');
     setCustomerName('');
     setCustomerPhone('');
     setCustomerEmail('');
@@ -168,8 +181,12 @@ function ManualOrderForm({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!customerName.trim()) {
+    if (customerMode === 'new' && !customerName.trim()) {
       addToast({ type: 'error', message: 'Customer name is required' });
+      return;
+    }
+    if (customerMode === 'existing' && !selectedCustomerId) {
+      addToast({ type: 'error', message: 'Select a customer' });
       return;
     }
 
@@ -189,9 +206,12 @@ function ManualOrderForm({
             ? JSON.stringify(i.selectedOptions.map((s) => ({ name: s.name, value: s.value, priceDelta: s.priceDelta })))
             : undefined,
         })),
-        customerName: customerName.trim(),
-        customerPhone: customerPhone.trim() || undefined,
-        customerEmail: customerEmail.trim() || undefined,
+        customerName: customerMode === 'existing'
+          ? customers.find((c) => c.id === selectedCustomerId)?.firstName ?? 'Customer'
+          : customerName.trim(),
+        customerId: customerMode === 'existing' ? selectedCustomerId : undefined,
+        customerPhone: customerMode === 'new' ? (customerPhone.trim() || undefined) : undefined,
+        customerEmail: customerMode === 'new' ? (customerEmail.trim() || undefined) : undefined,
         paymentMethod,
         status: orderStatus,
         discountPesewas: computedDiscountPesewas > 0 ? computedDiscountPesewas : undefined,
@@ -237,36 +257,71 @@ function ManualOrderForm({
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto px-6 py-4 space-y-5">
           {/* Customer */}
           <div>
-            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--muted)' }}>
-              Customer
-            </h3>
-            <div className="grid gap-3">
-              <input
-                value={customerName}
-                onChange={(e) => setCustomerName(e.target.value)}
-                placeholder="Customer name *"
-                className="w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:border-[var(--gold)]"
-                style={{ background: 'var(--card)', borderColor: 'var(--border)', color: 'var(--white)' }}
-                required
-              />
-              <div className="grid grid-cols-2 gap-3">
-                <input
-                  value={customerPhone}
-                  onChange={(e) => setCustomerPhone(e.target.value)}
-                  placeholder="Phone (optional)"
-                  className="w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:border-[var(--gold)]"
-                  style={{ background: 'var(--card)', borderColor: 'var(--border)', color: 'var(--white)' }}
-                />
-                <input
-                  value={customerEmail}
-                  onChange={(e) => setCustomerEmail(e.target.value)}
-                  placeholder="Email (optional)"
-                  type="email"
-                  className="w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:border-[var(--gold)]"
-                  style={{ background: 'var(--card)', borderColor: 'var(--border)', color: 'var(--white)' }}
-                />
+            <div className="mb-3 flex items-center justify-between">
+              <h3 className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--muted)' }}>
+                Customer
+              </h3>
+              <div className="flex gap-1">
+                {(['existing', 'new'] as const).map((mode) => (
+                  <button
+                    key={mode}
+                    type="button"
+                    onClick={() => { setCustomerMode(mode); setSelectedCustomerId(''); }}
+                    className="rounded-md px-2.5 py-1 text-[11px] font-medium transition-all"
+                    style={{
+                      background: customerMode === mode ? 'var(--gold)' : 'transparent',
+                      color: customerMode === mode ? 'var(--black)' : 'var(--muted)',
+                    }}
+                  >
+                    {mode === 'existing' ? 'Existing' : 'New'}
+                  </button>
+                ))}
               </div>
             </div>
+
+            {customerMode === 'existing' ? (
+              <select
+                value={selectedCustomerId}
+                onChange={(e) => setSelectedCustomerId(e.target.value)}
+                className="w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:border-[var(--gold)]"
+                style={{ background: 'var(--card)', borderColor: 'var(--border)', color: 'var(--white)' }}
+              >
+                <option value="">Select customer...</option>
+                {customers.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.firstName} {c.lastName} — {c.email}
+                    {c.phone ? ` (${c.phone})` : ''}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <div className="grid gap-3">
+                <input
+                  value={customerName}
+                  onChange={(e) => setCustomerName(e.target.value)}
+                  placeholder="Customer name *"
+                  className="w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:border-[var(--gold)]"
+                  style={{ background: 'var(--card)', borderColor: 'var(--border)', color: 'var(--white)' }}
+                />
+                <div className="grid grid-cols-2 gap-3">
+                  <input
+                    value={customerPhone}
+                    onChange={(e) => setCustomerPhone(e.target.value)}
+                    placeholder="Phone (optional)"
+                    className="w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:border-[var(--gold)]"
+                    style={{ background: 'var(--card)', borderColor: 'var(--border)', color: 'var(--white)' }}
+                  />
+                  <input
+                    value={customerEmail}
+                    onChange={(e) => setCustomerEmail(e.target.value)}
+                    placeholder="Email (optional)"
+                    type="email"
+                    className="w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:border-[var(--gold)]"
+                    style={{ background: 'var(--card)', borderColor: 'var(--border)', color: 'var(--white)' }}
+                  />
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Items */}
